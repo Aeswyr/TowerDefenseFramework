@@ -78,7 +78,8 @@ public class TilemapManager : MonoBehaviour {
         return adjustedWaypoints;
     }
 
-    private void CalculatePathHelper(int[,] mapArray, Vector2Int startPos, Vector2Int endPos, ref List<Vector2> currWaypoints, ref List<Vector2> shortestWaypoints) {
+    // returns true if end path was reached (or could be on shorter path), somewhere down the recursion, false otherwise
+    private bool CalculatePathHelper(int[,] mapArray, Vector2Int startPos, Vector2Int endPos, ref List<Vector2> currWaypoints, ref List<Vector2> shortestWaypoints) {
         if (startPos.x == endPos.x && startPos.y == endPos.y) {
             // base case: found a path to the end
             if (shortestWaypoints == null) {
@@ -94,6 +95,7 @@ public class TilemapManager : MonoBehaviour {
                     shortestWaypoints.Add(waypoint);
                 }
             }
+            return true;
         }
         else {
             // mark cell as visited
@@ -103,59 +105,76 @@ public class TilemapManager : MonoBehaviour {
             if (shortestWaypoints != null && currWaypoints.Count >= shortestWaypoints.Count) {
                 currWaypoints.Remove(startPos);
                 mapArray[startPos.y, startPos.x] = 0;
-                return;
+                return true;
             }
+
+            bool foundPath = false;
 
             // Recurse on the bottom cell
             if (CanMove(startPos.y + 1, startPos.x, mapArray)) {
-                CalculatePathHelper(
+                if (CalculatePathHelper(
                     mapArray,
                     new Vector2Int(startPos.x, startPos.y + 1),
                     endPos,
                     ref currWaypoints,
                     ref shortestWaypoints
-                    );
+                    ))
+                    {
+                    foundPath = true;
+                }
             }
 
             // Recurse on the left cell
             if (CanMove(startPos.y, startPos.x - 1, mapArray)) {
-                CalculatePathHelper(
+                if (CalculatePathHelper(
                     mapArray,
                     new Vector2Int(startPos.x - 1, startPos.y),
                     endPos,
                     ref currWaypoints,
                     ref shortestWaypoints
-                    );
+                    )) {
+                    foundPath = true;
+                }
             }
 
             // Recurse on the right cell
             if (CanMove(startPos.y, startPos.x + 1, mapArray)) {
-                CalculatePathHelper(
+                if (CalculatePathHelper(
                    mapArray,
                    new Vector2Int(startPos.x + 1, startPos.y),
                    endPos,
                    ref currWaypoints,
                    ref shortestWaypoints
-                   );
+                   )) {
+                    foundPath = true;
+                }
             }
 
             // Recurse on the top cell
             if (CanMove(startPos.y - 1, startPos.x, mapArray)) {
-                CalculatePathHelper(
+                if (CalculatePathHelper(
                    mapArray,
                    new Vector2Int(startPos.x, startPos.y - 1),
                    endPos,
                    ref currWaypoints,
                    ref shortestWaypoints
-                   );
+                   )) {
+                    foundPath = true;
+                }
             }
 
             // Backtrack
-            mapArray[startPos.y, startPos.x] = 0;
+            if (foundPath) {
+                mapArray[startPos.y, startPos.x] = 0;
+            }
+            else {
+                // path cannot be found down this cell, so treat as impassable
+                mapArray[startPos.y, startPos.x] = 1;
+            }
             currWaypoints.Remove(startPos);
-        }
 
-        return;
+            return foundPath;
+        }
     }
 
     private bool CanMove(int y, int x, int[,] mapArray) {
