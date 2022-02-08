@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -89,12 +90,15 @@ public class TilemapManager : MonoBehaviour {
                     shortestWaypoints.Add(waypoint);
                 }
             }
-            else if (currWaypoints.Count < shortestWaypoints.Count) {
+            else if (currWaypoints.Count < shortestWaypoints.Count - 1) {
                 shortestWaypoints.Clear();
+                currWaypoints.Add(startPos);
                 foreach (Vector2 waypoint in currWaypoints) {
                     shortestWaypoints.Add(waypoint);
                 }
             }
+            // backtrack
+            currWaypoints.Remove(startPos);
             return true;
         }
         else {
@@ -178,12 +182,12 @@ public class TilemapManager : MonoBehaviour {
     }
 
     private bool CanMove(int y, int x, int[,] mapArray) {
-        if (y < 0 || x < 0 || y > mapArray.GetLength(0) || x > mapArray.GetLength(1)) {
-            // out of bounds
+        try {
+            return mapArray[y, x] == 0;
+        }
+        catch (Exception e) {
             return false;
         }
-
-        return mapArray[y, x] == 0;
     }
 
     private int[,] ConvertMapToArray(List<TileData.WalkType> canWalkOn) {

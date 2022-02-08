@@ -2667,6 +2667,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Oncomer (Spider)
       objectReference: {fileID: 0}
+    - target: {fileID: 683611376501781135, guid: 240b5e31597a8bf47b04e592f075fd54, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 240b5e31597a8bf47b04e592f075fd54, type: 3}
 --- !u!1001 &8152347767010163918
