@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer))]
+[RequireComponent(typeof(BoxCollider2D))]
 public class Oncomer : MonoBehaviour {
     [SerializeField]
     private bool m_debugPath = false;
@@ -84,4 +85,12 @@ public class Oncomer : MonoBehaviour {
             m_debugHolder.transform.parent = null;
         }
     }
+
+    #region Projectile
+
+    public void ApplyProjectileEffects() {
+        Debug.Log("Target was hit by a projectile!");
+    }
+
+    #endregion
 }

@@ -90,7 +90,7 @@ public class TilemapManager : MonoBehaviour {
                     shortestWaypoints.Add(waypoint);
                 }
             }
-            else if (currWaypoints.Count < shortestWaypoints.Count - 1) {
+            else if (currWaypoints.Count < shortestWaypoints.Count - 2) {
                 shortestWaypoints.Clear();
                 currWaypoints.Add(startPos);
                 foreach (Vector2 waypoint in currWaypoints) {
@@ -128,29 +128,58 @@ public class TilemapManager : MonoBehaviour {
                 }
             }
 
-            // Recurse on the left cell
-            if (CanMove(startPos.y, startPos.x - 1, mapArray)) {
-                if (CalculatePathHelper(
-                    mapArray,
-                    new Vector2Int(startPos.x - 1, startPos.y),
-                    endPos,
-                    ref currWaypoints,
-                    ref shortestWaypoints
-                    )) {
-                    foundPath = true;
+            if ((startPos - endPos).x > 0) {
+                // Recurse on the left cell
+                if (CanMove(startPos.y, startPos.x - 1, mapArray)) {
+                    if (CalculatePathHelper(
+                        mapArray,
+                        new Vector2Int(startPos.x - 1, startPos.y),
+                        endPos,
+                        ref currWaypoints,
+                        ref shortestWaypoints
+                        )) {
+                        foundPath = true;
+                    }
+                }
+
+                // Recurse on the right cell
+                if (CanMove(startPos.y, startPos.x + 1, mapArray)) {
+                    if (CalculatePathHelper(
+                       mapArray,
+                       new Vector2Int(startPos.x + 1, startPos.y),
+                       endPos,
+                       ref currWaypoints,
+                       ref shortestWaypoints
+                       )) {
+                        foundPath = true;
+                    }
                 }
             }
+            else {
+                // Recurse on the right cell
+                if (CanMove(startPos.y, startPos.x + 1, mapArray)) {
+                    if (CalculatePathHelper(
+                       mapArray,
+                       new Vector2Int(startPos.x + 1, startPos.y),
+                       endPos,
+                       ref currWaypoints,
+                       ref shortestWaypoints
+                       )) {
+                        foundPath = true;
+                    }
+                }
 
-            // Recurse on the right cell
-            if (CanMove(startPos.y, startPos.x + 1, mapArray)) {
-                if (CalculatePathHelper(
-                   mapArray,
-                   new Vector2Int(startPos.x + 1, startPos.y),
-                   endPos,
-                   ref currWaypoints,
-                   ref shortestWaypoints
-                   )) {
-                    foundPath = true;
+                // Recurse on the left cell
+                if (CanMove(startPos.y, startPos.x - 1, mapArray)) {
+                    if (CalculatePathHelper(
+                        mapArray,
+                        new Vector2Int(startPos.x - 1, startPos.y),
+                        endPos,
+                        ref currWaypoints,
+                        ref shortestWaypoints
+                        )) {
+                        foundPath = true;
+                    }
                 }
             }
 

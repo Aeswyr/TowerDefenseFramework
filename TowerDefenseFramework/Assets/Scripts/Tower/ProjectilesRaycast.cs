@@ -5,14 +5,15 @@ using UnityEngine;
 public class ProjectilesRaycast 
 {
     public static void Shoot(Vector3 shootPos, Vector3 shootDir) {
+        // TODO: apply layer mask to filter out tiles,
+        // otherwise create a projectile with own 2d collider and trigger effects through trigger collisions
         RaycastHit2D raycastHit2D = Physics2D.Raycast(shootPos, shootDir);
         if (raycastHit2D.collider != null)
         {
-            Target target = raycastHit2D.collider.GetComponent<Target>();
-            Debug.Log("hit");
+            Oncomer target = raycastHit2D.collider.GetComponent<Oncomer>();
             if (target != null)
             {
-                target.Damage();
+                target.ApplyProjectileEffects(); // currently non-functional because raycast hits tiles
             }
         }
             }

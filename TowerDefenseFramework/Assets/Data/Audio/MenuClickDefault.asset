@@ -9,9 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b1a4eba442501c341a1be83da22c85ba, type: 3}
-  m_Name: Spider
+  m_Script: {fileID: 11500000, guid: c6a24fa7b189e4646817df2c5907a075, type: 3}
+  m_Name: MenuClickDefault
   m_EditorClassIdentifier: 
-  m_sprite: {fileID: 21300000, guid: bb3c778f176daef448299b938a071fda, type: 3}
-  m_canWalkOn: 00000000
-  m_speed: 1.6
+  m_id: menu-click-default
+  m_clip: {fileID: 8300000, guid: e75cb743c8841f24c9e6371bef3c3d7a, type: 3}
+  m_volume: 1
+  m_pan: 0
