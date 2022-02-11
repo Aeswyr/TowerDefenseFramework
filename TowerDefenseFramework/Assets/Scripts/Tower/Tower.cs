@@ -86,7 +86,7 @@ public class Tower : MonoBehaviour
         Vector3 shootDir = (toPos - transform.position).normalized;
 
         // Produce launching sound
-        AudioManager.instance.PlayOneShot("projectile1");
+        //AudioManager.instance.PlayOneShot("projectile1");
         
         // TODO: define each tower's effects within TowerData and pass to projectile
         ProjectilesRaycast.Shoot(transform.position, shootDir);
