@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 
 public class TowerPlacementManager : MonoBehaviour
 {
@@ -27,19 +28,21 @@ public class TowerPlacementManager : MonoBehaviour
     void FixedUpdate()
     {
         if (targetTower != null) {
-            placementIndicator.transform.position = tilemap.WorldToCell(cam.ScreenToWorldPoint(Input.mousePosition));
-
-            if (Input.GetMouseButtonDown(1)) {
-                Instantiate(targetTower, placementIndicator.transform.position, targetTower.transform.rotation);
-            }
+            placementIndicator.transform.position = cam.WorldToScreenPoint(tilemap.WorldToCell(cam.ScreenToWorldPoint(Input.mousePosition)));
         }
+    }
+
+    public void PlaceTower() {
+        if (targetTower == null)
+            return;
+        Instantiate(targetTower, tilemap.WorldToCell(cam.ScreenToWorldPoint(Input.mousePosition)), targetTower.transform.rotation);
     }
 
     public void SetPlacable(GameObject tower) {
         targetTower = tower;
         placementIndicator.SetActive(true);
         exitButton.SetActive(true);
-        placementIndicator.GetComponent<SpriteRenderer>().sprite = tower.GetComponent<SpriteRenderer>().sprite;
+        placementIndicator.GetComponent<Image>().sprite = tower.GetComponent<SpriteRenderer>().sprite;
     }
 
     public void RevokePlacable() {
