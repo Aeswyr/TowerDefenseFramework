@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 90971922536958881}
   - component: {fileID: -8827945308216018906}
-  - component: {fileID: 8079471422874570750}
   - component: {fileID: 2257141206443188120}
   - component: {fileID: 8158684379635704114}
   m_Layer: 0
@@ -84,9 +83,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8079471422874570750}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: TowerPlacementIndicator, Assembly-CSharp
-        m_MethodName: PlaceTower
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -96,19 +95,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &8079471422874570750
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4951519331744838872}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0af70b0e72984b045acb2827bd2a48ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  manager: {fileID: 0}
 --- !u!222 &2257141206443188120
 CanvasRenderer:
   m_ObjectHideFlags: 0
