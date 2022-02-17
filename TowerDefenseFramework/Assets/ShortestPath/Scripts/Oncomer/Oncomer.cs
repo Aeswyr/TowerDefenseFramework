@@ -12,6 +12,8 @@ public class Oncomer : MonoBehaviour {
     [SerializeField]
     private GameObject m_debugHolder;
 
+    private float m_maxHealth; // or equivalent measurement of Oncomer trait that is modified by towers
+    private float m_currHealth; // or equivalent measurement of Oncomer trait that is modified by towers
     private List<TileData.WalkType> m_canWalkOn;
     private List<Vector2> m_waypoints;
     private float m_speed;
@@ -64,6 +66,8 @@ public class Oncomer : MonoBehaviour {
         this.GetComponent<SpriteRenderer>().sprite = m_oncomerData.Sprite;
         m_canWalkOn = m_oncomerData.CanWalkOn;
         m_speed = m_oncomerData.Speed;
+        m_maxHealth = m_oncomerData.MaxHealth;
+        m_currHealth = m_maxHealth;
     }
 
     private void CalculatePath() {
@@ -88,8 +92,15 @@ public class Oncomer : MonoBehaviour {
 
     #region Projectile
 
-    public void ApplyProjectileEffects() {
-        Debug.Log("Target was hit by a projectile!");
+    public void ApplyDamage(float damage) {
+        m_currHealth -= damage;
+        Debug.Log("Target was hit by a projectile of damage " + damage + "!");
+
+        if (m_currHealth <= 0) {
+            // Handle removal of enemy
+            Destroy(this.gameObject);
+            Debug.Log("Target was destroyed!");
+        }
     }
 
     #endregion

@@ -13,7 +13,7 @@ public class ProjectilesRaycast
             Oncomer target = raycastHit2D.collider.GetComponent<Oncomer>();
             if (target != null)
             {
-                target.ApplyProjectileEffects(); // currently non-functional because raycast hits tiles
+                // target.ApplyProjectileEffects(); // currently non-functional because raycast hits tiles
             }
         }
             }

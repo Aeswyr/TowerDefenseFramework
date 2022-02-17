@@ -38,7 +38,17 @@ public class TowerPlacementManager : MonoBehaviour
     public void PlaceTower() {
         if (targetTower == null)
             return;
-        Instantiate(targetTower, tilemap.WorldToCell(cam.ScreenToWorldPoint(Input.mousePosition)), targetTower.transform.rotation);
+
+        // TODO: check if a tower already exists on this square
+        bool cellIsEmpty = true;
+
+        if (cellIsEmpty) {
+            Instantiate(targetTower, tilemap.WorldToCell(cam.ScreenToWorldPoint(Input.mousePosition)), targetTower.transform.rotation);
+        }
+        else {
+            // TODO: handle full cell case
+        }
+
     }
 
     public void SetPlacable(GameObject tower) {

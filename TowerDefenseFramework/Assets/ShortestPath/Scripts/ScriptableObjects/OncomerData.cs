@@ -11,6 +11,8 @@ public class OncomerData : ScriptableObject
     private List<TileData.WalkType> m_canWalkOn;
     [SerializeField]
     private float m_speed;
+    [SerializeField]
+    private float m_maxHealth;
 
     public Sprite Sprite {
         get { return m_sprite; }
@@ -20,5 +22,8 @@ public class OncomerData : ScriptableObject
     }
     public float Speed {
         get { return m_speed; }
+    }
+    public float MaxHealth {
+        get { return m_maxHealth; }
     }
 }

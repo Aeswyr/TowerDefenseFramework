@@ -12,10 +12,14 @@ public class Projectile : MonoBehaviour
     public GameObject TargetObj {
         get; set;
     }
+    public float Damage {
+        get; set;
+    }
 
     private void OnTriggerEnter2D(Collider2D collision) {
         if (collision.gameObject == TargetObj) {
-            // TODO: affect the target
+            // affect the target
+            TargetObj.GetComponent<Oncomer>().ApplyDamage(this.Damage);
 
             // destroy this projectile
             Destroy(this.gameObject);
@@ -26,6 +30,7 @@ public class Projectile : MonoBehaviour
         if (TargetObj == null) {
             // target has been destroyed before this projectile reached it
             Destroy(this.gameObject);
+            return;
         }
 
         // calculate trajectory

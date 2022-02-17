@@ -104,6 +104,7 @@ MonoBehaviour:
   radius: 3
   projectileSoundID: projectile-default
   projectilePrefab: {fileID: 7706054819071973796, guid: a78acdf8f38343447a942451b67da1d5, type: 3}
+  projectileDamage: 1
   Tracer: {fileID: 6213430191266403413, guid: 955b4046bb0bf7246b6a49d2be5630df, type: 3}
 --- !u!58 &4267734552468271426
 CircleCollider2D:

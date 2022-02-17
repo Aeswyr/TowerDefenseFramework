@@ -21,6 +21,8 @@ public class Tower : MonoBehaviour
     private string projectileSoundID = "projectile-default";
     [SerializeField]
     private GameObject projectilePrefab;
+    [SerializeField]
+    private float projectileDamage;
 
     private float reloadTimer = 0f;
     private List<Oncomer> targets;
@@ -29,6 +31,8 @@ public class Tower : MonoBehaviour
     private AudioSource m_audioSrc;
 
     public GameObject Tracer;
+
+    private const float CELL_OFFSET = 0.5f;
 
     private void OnTriggerEnter2D(Collider2D collider) {
         // when an intruder enters this tower's range, add it to the list of targets
@@ -95,14 +99,14 @@ public class Tower : MonoBehaviour
 
         // Instantiate projectile
         GameObject projectileObj = Instantiate(projectilePrefab);
-        projectileObj.transform.position = this.transform.position;
+        projectileObj.transform.position = this.transform.position + new Vector3(CELL_OFFSET, CELL_OFFSET, 0);
 
         // Assign projectile target
-        projectileObj.GetComponent<Projectile>().TargetObj = chosenTarget.gameObject;
+        Projectile projectileComp = projectileObj.GetComponent<Projectile>();
+        projectileComp.TargetObj = chosenTarget.gameObject;
+        projectileComp.Damage = projectileDamage;
 
-        /*
-        
-        // TODO: define each tower's effects within TowerData and pass to projectile
+        /* Raycast implementation
         ProjectilesRaycast.Shoot(transform.position, shootDir);
 
         // inserted here because ProjectilesRaycast needs tweaking to filter out tile layers
@@ -115,10 +119,7 @@ public class Tower : MonoBehaviour
             this.transform.position.y + m_collider.offset.y,
             this.transform.position.z);
         CreateWeaponTracer(tracerOrigin, toPos, 0.03f);
-
         */
-
-        // TODO: Define what happens to target on hit
 
         // tower must now reload
         currState = State.Reloading;
