@@ -14,6 +14,7 @@ public class TowerPlacementManager : MonoBehaviour
     private Camera cam;
     [SerializeField] private GameObject[] towers;
     private GameObject targetTower = null;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -28,7 +29,9 @@ public class TowerPlacementManager : MonoBehaviour
     void FixedUpdate()
     {
         if (targetTower != null) {
-            placementIndicator.transform.position = cam.WorldToScreenPoint(tilemap.WorldToCell(cam.ScreenToWorldPoint(Input.mousePosition)));
+            Vector3 currPos = cam.WorldToScreenPoint(tilemap.WorldToCell(cam.ScreenToWorldPoint(Input.mousePosition)));
+            placementIndicator.transform.position = currPos;
+            
         }
     }
 

@@ -12,8 +12,8 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
+  - Oncomer
+  - Projectile
   - 
   - 
   - 
@@ -41,4 +41,16 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Terrain
+    uniqueID: 3471671487
+    locked: 0
+  - name: Oncomer
+    uniqueID: 1103426423
+    locked: 0
+  - name: Projectile
+    uniqueID: 1114351625
+    locked: 0
+  - name: Tower
+    uniqueID: 3210724089
     locked: 0

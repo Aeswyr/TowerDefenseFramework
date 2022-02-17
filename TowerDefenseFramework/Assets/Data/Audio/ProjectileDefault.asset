@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c6a24fa7b189e4646817df2c5907a075, type: 3}
-  m_Name: Projectile1
+  m_Name: ProjectileDefault
   m_EditorClassIdentifier: 
-  m_id: projectile1
+  m_id: projectile-default
   m_clip: {fileID: 8300000, guid: d3d27cda42ee67541b8baa859aa9ac98, type: 3}
   m_volume: 1
   m_pan: 0

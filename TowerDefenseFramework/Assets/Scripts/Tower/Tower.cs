@@ -4,6 +4,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(CircleCollider2D))]
 [RequireComponent(typeof(SpriteRenderer))]
+[RequireComponent(typeof(AudioSource))]
 public class Tower : MonoBehaviour
 {
     // The tower's state of readiness
@@ -16,12 +17,16 @@ public class Tower : MonoBehaviour
     private float shootSpeed = 1f;
     [SerializeField]
     private float radius = 3f;
+    [SerializeField]
+    private string projectileSoundID = "projectile-default";
+    [SerializeField]
+    private GameObject projectilePrefab;
 
     private float reloadTimer = 0f;
     private List<Oncomer> targets;
     private State currState;
     private CircleCollider2D m_collider;
-
+    private AudioSource m_audioSrc;
 
     public GameObject Tracer;
 
@@ -46,6 +51,7 @@ public class Tower : MonoBehaviour
         currState = State.Armed;
         m_collider = GetComponent<CircleCollider2D>();
         m_collider.radius = this.radius;
+        m_audioSrc = this.GetComponent<AudioSource>();
     }
 
     void FixedUpdate()
@@ -81,12 +87,20 @@ public class Tower : MonoBehaviour
         }
 
         // Create projectile
-        Vector3 targetColliderOffset = new Vector3(0.5f, 0.5f, 0);
-        Vector3 toPos = chosenTarget.transform.position + targetColliderOffset;
+        Vector3 toPos = chosenTarget.transform.position;
         Vector3 shootDir = (toPos - transform.position).normalized;
 
         // Produce launching sound
-        //AudioManager.instance.PlayOneShot("projectile1");
+        PlayLaunchSound();
+
+        // Instantiate projectile
+        GameObject projectileObj = Instantiate(projectilePrefab);
+        projectileObj.transform.position = this.transform.position;
+
+        // Assign projectile target
+        projectileObj.GetComponent<Projectile>().TargetObj = chosenTarget.gameObject;
+
+        /*
         
         // TODO: define each tower's effects within TowerData and pass to projectile
         ProjectilesRaycast.Shoot(transform.position, shootDir);
@@ -102,11 +116,18 @@ public class Tower : MonoBehaviour
             this.transform.position.z);
         CreateWeaponTracer(tracerOrigin, toPos, 0.03f);
 
+        */
+
         // TODO: Define what happens to target on hit
 
         // tower must now reload
         currState = State.Reloading;
         reloadTimer = shootSpeed;
+    }
+
+    private void PlayLaunchSound() {
+        AudioClip clip = GameDB.instance.GetAudioData(projectileSoundID).Clip;
+        m_audioSrc.PlayOneShot(clip);
     }
 
     // Note: currently gets the target which first entered the tower's radius

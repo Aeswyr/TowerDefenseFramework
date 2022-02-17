@@ -62,7 +62,7 @@ public class TilemapManager : MonoBehaviour {
         List<Vector2> shortestWaypoints = null;
         List<Vector2> currWaypoints = new List<Vector2>();
 
-        
+        // TODO: Change this to A* shortest path algorithm for improved efficiency
         CalculatePathHelper(
             mapArray,
             startArrPos,
