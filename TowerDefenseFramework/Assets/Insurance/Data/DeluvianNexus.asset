@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b1a4eba442501c341a1be83da22c85ba, type: 3}
-  m_Name: Salamander
+  m_Script: {fileID: 11500000, guid: 004c2a0bf3e76084488b1f1ce0881a17, type: 3}
+  m_Name: DeluvianNexus
   m_EditorClassIdentifier: 
-  m_sprite: {fileID: 21300000, guid: 60b5faaa0fca41d4a9868debe63e96aa, type: 3}
-  m_canWalkOn: 0000000002000000
-  m_speed: 1
-  m_maxHealth: 7
+  m_type: 2
+  m_growthRate: 0.75
+  m_incubationTime: 15
+  m_color: {r: 0.18045564, g: 0.46293673, b: 0.6981132, a: 1}

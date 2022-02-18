@@ -9,10 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b1a4eba442501c341a1be83da22c85ba, type: 3}
-  m_Name: Spider
+  m_Script: {fileID: 11500000, guid: 82614cbfefb619d419cf772c59718c20, type: 3}
+  m_Name: Grass
   m_EditorClassIdentifier: 
-  m_sprite: {fileID: 21300000, guid: bb3c778f176daef448299b938a071fda, type: 3}
-  m_canWalkOn: 00000000
-  m_speed: 1.6
-  m_maxHealth: 5
+  Tiles:
+  - {fileID: 11400000, guid: e72ea045282930144b605b2784d366e0, type: 2}
+  m_walkType: 3

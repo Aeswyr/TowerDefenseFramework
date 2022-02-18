@@ -48,5 +48,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 702b1ffe6c3d96a419beb256f13201b1, type: 2}
   - {fileID: 11400000, guid: 83b98d2aec3f4864ebc2376fd3ddaa86, type: 2}
   - {fileID: 11400000, guid: 4c84fea44d1366144b5d2401ac2a8fac, type: 2}
+  - {fileID: 11400000, guid: dea0aec51613e8e40aa2059357f989c5, type: 2}
+  - {fileID: 11400000, guid: b1fbad448b603aa478d569001256aadb, type: 2}
+  - {fileID: 11400000, guid: 9c6c26309684a1d448016b0a6e7b1a9e, type: 2}
+  - {fileID: 11400000, guid: 67d7511e32caa314b93fc1fd1b1ec113, type: 2}
+  - {fileID: 11400000, guid: fc39fb55351c273429c95dbff8183ca2, type: 2}
+  - {fileID: 11400000, guid: 463bb6b3406a6244ab41f2c362d4273a, type: 2}
   m_map: {fileID: 0}
   m_destination: {fileID: 0}

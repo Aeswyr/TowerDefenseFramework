@@ -26,7 +26,8 @@ public class UIMainMenu : MenuBase {
     #region ButtonHandlers
 
     private void HandleNewGame() {
-        SceneManager.LoadScene("SampleScene"); // change to whichever scene is your next
+        //SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("InsuranceSample"); // change to whichever scene is your next
         AudioManager.instance.PlayOneShot("menu-click-default");
     }
 

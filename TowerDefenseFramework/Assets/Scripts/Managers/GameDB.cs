@@ -6,11 +6,17 @@ public class GameDB : MonoBehaviour {
     public static GameDB instance;
 
     private Dictionary<string, AudioData> m_audioMap;
+    private Dictionary<Nexus.Type, NexusData> m_nexusMap;
+    private Dictionary<Oncomer.Type, OncomerData> m_oncomerMap;
 
     #region Editor
 
     [SerializeField]
     private AudioData[] m_audioData;
+    [SerializeField]
+    private NexusData[] m_nexusData;
+    [SerializeField]
+    private OncomerData[] m_oncomerData;
 
     #endregion
 
@@ -28,6 +34,42 @@ public class GameDB : MonoBehaviour {
         else {
             throw new KeyNotFoundException(string.Format("No Audio " +
                 "with id `{0}' is in the database", id
+            ));
+        }
+    }
+
+    public NexusData GetNexusData(Nexus.Type type) {
+        // initialize the map if it does not exist
+        if (instance.m_nexusMap == null) {
+            instance.m_nexusMap = new Dictionary<Nexus.Type, NexusData>();
+            foreach (NexusData data in instance.m_nexusData) {
+                instance.m_nexusMap.Add(data.Type, data);
+            }
+        }
+        if (instance.m_nexusMap.ContainsKey(type)) {
+            return instance.m_nexusMap[type];
+        }
+        else {
+            throw new KeyNotFoundException(string.Format("No Nexus " +
+                "with type `{0}' is in the database", type
+            ));
+        }
+    }
+
+    public OncomerData GetOncomerData(Oncomer.Type type) {
+        // initialize the map if it does not exist
+        if (instance.m_oncomerMap == null) {
+            instance.m_oncomerMap = new Dictionary<Oncomer.Type, OncomerData>();
+            foreach (OncomerData data in instance.m_oncomerData) {
+                instance.m_oncomerMap.Add(data.Type, data);
+            }
+        }
+        if (instance.m_oncomerMap.ContainsKey(type)) {
+            return instance.m_oncomerMap[type];
+        }
+        else {
+            throw new KeyNotFoundException(string.Format("No Oncomer " +
+                "with type `{0}' is in the database", type
             ));
         }
     }
