@@ -12,10 +12,21 @@ public class Nexus : MonoBehaviour
         Deluvian
     }
 
+    private enum State {
+        Incubating,
+        Returning,
+        Releasing,
+        Dissolving
+    }
+
     [SerializeField]
     private Type m_type;
     [SerializeField]
     private float m_scaleReduction;
+    [SerializeField]
+    private float m_incubateSpeed;
+    [SerializeField]
+    private float m_returnSpeed;
     [SerializeField]
     private GameObject m_oncomerPrefab;
 
@@ -25,9 +36,44 @@ public class Nexus : MonoBehaviour
     private float m_size;
     private float m_incubationTimer;
 
+    private State m_state;
+    private Vector3 m_returnPos;
+
     private SpriteRenderer m_sr;
 
-    private void Awake() {
+    private void Update() {
+        if (GameManager.instance.IsPaused) {
+            return;
+        }
+
+        if (m_state == State.Incubating) {
+            m_incubationTimer -= Time.deltaTime;
+            m_size += Time.deltaTime * m_growthRate;
+            this.transform.localScale = new Vector3((m_size + 1) / m_scaleReduction, (m_size + 1) / m_scaleReduction, 1);
+
+            if (m_incubationTimer <= 0) {
+                Return();
+            }
+        }
+        else if (m_state == State.Returning) {
+            Vector3 travelVector = (m_returnPos - this.transform.position);
+            
+            if (travelVector.magnitude <= .05f) {
+                this.transform.Translate(travelVector);
+                Release();
+            }
+            else {
+                Vector3 dir = travelVector.normalized;
+                this.transform.Translate(dir * m_returnSpeed * Time.deltaTime);
+            }
+        }
+    }
+
+    public void SetType(Nexus.Type type) {
+        m_type = type;
+    }
+
+    public void ManualAwake() {
         m_sr = this.GetComponent<SpriteRenderer>();
 
         ApplyNexusData();
@@ -35,20 +81,8 @@ public class Nexus : MonoBehaviour
         m_incubationTimer = m_incubationTime;
 
         m_size = 1;
-    }
 
-    private void Update() {
-        if (GameManager.instance.IsPaused) {
-            return;
-        }
-
-        m_incubationTimer -= Time.deltaTime;
-        m_size += Time.deltaTime * m_growthRate;
-        this.transform.localScale = new Vector3((m_size + 1) / m_scaleReduction, (m_size + 1) / m_scaleReduction, 1);
-
-        if (m_incubationTimer <= 0) {
-            EndIncubation();
-        }
+        m_state = State.Incubating;
     }
 
     private void ApplyNexusData() {
@@ -58,7 +92,14 @@ public class Nexus : MonoBehaviour
         m_sr.color = data.Color;
     }
 
-    private void EndIncubation() {
+    private void Return() {
+        m_state = State.Returning;
+
+        // TODO: move toward nexusHub
+        m_returnPos = TilemapManager.instance.GetNexusHubTransform(m_type).position;
+    }
+
+    private void Release() {
         int numSpawns = 4;
         for (int i = 0; i < numSpawns; ++i) {
 

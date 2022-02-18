@@ -16,6 +16,9 @@ public class TilemapManager : MonoBehaviour {
     [SerializeField]
     private Dictionary<TileBase, TileData> m_tileDataDict;
 
+    [SerializeField]
+    private Transform m_deluvianNexusHub, m_fireSwatheNexusHub, m_stormNexusHub;
+
     #endregion
 
     //  TODO: dynamically load this for each level
@@ -403,5 +406,41 @@ public class TilemapManager : MonoBehaviour {
         }
 
         return convertedPoints;
+    }
+
+    public float GetBound(string side) {
+        if (side == "left") {
+            return (m_map.localBounds.center - m_map.localBounds.extents).x;
+        }
+        else {
+            return (m_map.localBounds.center + m_map.localBounds.extents).x;
+        }
+    }
+
+    public float GetRandomX() {
+        int margin = 1;
+        float min = (m_map.localBounds.center - m_map.localBounds.extents).x + 1;
+        float max = (m_map.localBounds.center + m_map.localBounds.extents).x - 1;
+        return UnityEngine.Random.Range(min, max);
+    }
+
+    public float GetRandomY() {
+        int margin = 1;
+        float min = (m_map.localBounds.center - m_map.localBounds.extents).y + 3;
+        float max = (m_map.localBounds.center + m_map.localBounds.extents).y - 3;
+        float givenY = UnityEngine.Random.Range(min, max);
+        return givenY;
+    }
+
+    public Transform GetNexusHubTransform(Nexus.Type type) {
+        switch (type) {
+            case Nexus.Type.Deluvian:
+                return m_deluvianNexusHub;
+            case Nexus.Type.FireSwathe:
+                return m_fireSwatheNexusHub;
+            case Nexus.Type.Storm:
+                return m_stormNexusHub;
+            default: return m_deluvianNexusHub;
+        }
     }
 }

@@ -17,6 +17,13 @@ public class GameDB : MonoBehaviour {
     private NexusData[] m_nexusData;
     [SerializeField]
     private OncomerData[] m_oncomerData;
+    [SerializeField]
+    private Color m_deluvianNexusColor;
+    [SerializeField]
+    private Color m_fireSwatheNexusColor;
+    [SerializeField]
+    private Color m_stormNexusColor;
+
 
     #endregion
 
@@ -71,6 +78,19 @@ public class GameDB : MonoBehaviour {
             throw new KeyNotFoundException(string.Format("No Oncomer " +
                 "with type `{0}' is in the database", type
             ));
+        }
+    }
+
+    public Color GetNexusColor(Nexus.Type type) {
+        switch (type) {
+            case Nexus.Type.Deluvian:
+                return m_deluvianNexusColor;
+            case Nexus.Type.FireSwathe:
+                return m_fireSwatheNexusColor;
+            case Nexus.Type.Storm:
+                return m_stormNexusColor;
+            default:
+                return m_stormNexusColor;
         }
     }
 

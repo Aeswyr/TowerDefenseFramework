@@ -449,6 +449,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a2806c34cb98f084a96a42b57dd07798, type: 2}
   - {fileID: 11400000, guid: 0bbbd45c10c33584a87039de685e0f54, type: 2}
   - {fileID: 11400000, guid: 3220040ec8cca584c891706ae83b4d71, type: 2}
+  m_deluvianNexusColor: {r: 0.18039216, g: 0.4627451, b: 0.69803923, a: 1}
+  m_fireSwatheNexusColor: {r: 0.7176471, g: 0.21176471, b: 0.21176471, a: 1}
+  m_stormNexusColor: {r: 0.69803923, g: 0.69803923, b: 0.69803923, a: 1}
 --- !u!1 &1933579263
 GameObject:
   m_ObjectHideFlags: 0
