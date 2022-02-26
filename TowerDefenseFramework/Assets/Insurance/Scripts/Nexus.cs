@@ -109,6 +109,7 @@ public class Nexus : MonoBehaviour
             Oncomer oncomer = oncomerObj.GetComponent<Oncomer>();
 
             switch (m_type) {
+
                 case Nexus.Type.Storm:
                     oncomer.OncomerData = GameDB.instance.GetOncomerData(Oncomer.Type.Tempest);
                     break;
@@ -128,5 +129,9 @@ public class Nexus : MonoBehaviour
         }
 
         Destroy(this.gameObject);
+    }
+
+    public Type GetNexusType() {
+        return m_type;
     }
 }

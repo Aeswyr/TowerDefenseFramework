@@ -137,4 +137,8 @@ public class Oncomer : MonoBehaviour {
     }
 
     #endregion
+
+    public Type GetOncomerType() {
+        return m_type;
+    }
 }

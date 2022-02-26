@@ -4530,8 +4530,8 @@ MonoBehaviour:
   buttonHolder: {fileID: 7775465987415773132}
   placementIndicator: {fileID: 4654547400052842494}
   exitButton: {fileID: 890490272051457280}
-  towers:
-  - {fileID: 4267734552468271425, guid: 825cb965d5d531d4ab9bf044dc1b9b9a, type: 3}
+  m_unlockedTowers: 000000000100000002000000
+  towerPrefab: {fileID: 4267734552468271425, guid: 825cb965d5d531d4ab9bf044dc1b9b9a, type: 3}
 --- !u!1 &890490272051457280
 GameObject:
   m_ObjectHideFlags: 0

@@ -5,14 +5,25 @@ using UnityEngine;
 [RequireComponent(typeof(CircleCollider2D))]
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(AudioSource))]
-public class Tower : MonoBehaviour
-{
+public class Tower : MonoBehaviour {
+    public enum Type {
+        Default,
+        NexusOnly,
+        OncomerOnly
+    }
+
     // The tower's state of readiness
     private enum State {
         Armed,
         Reloading
     }
 
+    [SerializeField]
+    private Type m_type;
+    [SerializeField]
+    private Oncomer.Type[] m_oncomerTargetTypes;
+    [SerializeField]
+    private Nexus.Type[] m_nexusTargetTypes;
     [SerializeField]
     private float shootSpeed = 1f;
     [SerializeField]
@@ -25,7 +36,8 @@ public class Tower : MonoBehaviour
     private float projectileDamage;
 
     private float reloadTimer = 0f;
-    private List<Oncomer> targets;
+    private List<Oncomer> m_oncomerTargets;
+    private List<Nexus> m_nexusTargets;
     private State currState;
     private CircleCollider2D m_collider;
     private AudioSource m_audioSrc;
@@ -35,31 +47,54 @@ public class Tower : MonoBehaviour
     private const float CELL_OFFSET = 0.5f;
 
     private void OnTriggerEnter2D(Collider2D collider) {
-        // when an intruder enters this tower's range, add it to the list of targets
+        // when an intruder enters this tower's range, add it to the list of targets if it is targetable by the tower
         if (collider.gameObject.tag == "target") {
-            Oncomer target = collider.gameObject.GetComponent<Oncomer>();
-            targets.Add(target);
+            if (CanTarget(collider.gameObject)) {
+                Debug.Log("1");
+                Oncomer oTarget = collider.gameObject.GetComponent<Oncomer>();
+                if (oTarget != null) {
+                    m_oncomerTargets.Add(oTarget);
+                }
+                else {
+                    Debug.Log("2");
+                    Nexus nTarget = collider.gameObject.GetComponent<Nexus>();
+                    if (nTarget != null) {
+                        Debug.Log("3");
+                        m_nexusTargets.Add(nTarget);
+                    }
+                }
+            }
         }
     }
 
     private void OnTriggerExit2D(Collider2D collider) {
         // when an intruder enters this tower's range, add it to the list of targets
         if (collider.gameObject.tag == "target") {
-            Oncomer target = collider.gameObject.GetComponent<Oncomer>();
-            targets.Remove(target);
+
+            Oncomer oTarget = collider.gameObject.GetComponent<Oncomer>();
+            if (oTarget != null) {
+                m_oncomerTargets.Remove(oTarget);
+            }
+            else {
+                Nexus nTarget = collider.gameObject.GetComponent<Nexus>();
+                if (nTarget != null) {
+                    m_nexusTargets.Remove(nTarget);
+                }
+            }
+            
         }
     }
 
     private void Awake() {
-        targets = new List<Oncomer>();
+        m_oncomerTargets = new List<Oncomer>();
+        m_nexusTargets = new List<Nexus>();
         currState = State.Armed;
         m_collider = GetComponent<CircleCollider2D>();
         m_collider.radius = this.radius;
         m_audioSrc = this.GetComponent<AudioSource>();
     }
 
-    void FixedUpdate()
-    {
+    void FixedUpdate() {
         // perform actions according to tower's state
         switch (currState) {
             case State.Reloading:
@@ -72,7 +107,7 @@ public class Tower : MonoBehaviour
                 break;
             case State.Armed:
                 // search for target to shoot at
-                if (targets.Count == 0) {
+                if (m_oncomerTargets.Count == 0 && m_nexusTargets.Count == 0) {
                     // no targets means no shooting
                     return;
                 }
@@ -85,7 +120,9 @@ public class Tower : MonoBehaviour
     }
 
     private void Shoot() {
-        Oncomer chosenTarget = getClosestTarget(transform.position);
+        Debug.Log("4");
+        // TODO: check for nexus
+        GameObject chosenTarget = getClosestTarget(transform.position);
         if (chosenTarget == null) {
             return;
         }
@@ -97,29 +134,17 @@ public class Tower : MonoBehaviour
         // Produce launching sound
         PlayLaunchSound();
 
+        Debug.Log("5");
         // Instantiate projectile
         GameObject projectileObj = Instantiate(projectilePrefab);
         projectileObj.transform.position = this.transform.position + new Vector3(CELL_OFFSET, CELL_OFFSET, 0);
+
+        Debug.Log("6");
 
         // Assign projectile target
         Projectile projectileComp = projectileObj.GetComponent<Projectile>();
         projectileComp.TargetObj = chosenTarget.gameObject;
         projectileComp.Damage = projectileDamage;
-
-        /* Raycast implementation
-        ProjectilesRaycast.Shoot(transform.position, shootDir);
-
-        // inserted here because ProjectilesRaycast needs tweaking to filter out tile layers
-        chosenTarget.ApplyProjectileEffects();
-
-        // Debug/Display projectile
-        // Debug.DrawLine(transform.position, toPos,Color.white,0.1f);
-        // Debug.Log(transform.position.ToString());
-        Vector3 tracerOrigin = new Vector3(this.transform.position.x + m_collider.offset.x,
-            this.transform.position.y + m_collider.offset.y,
-            this.transform.position.z);
-        CreateWeaponTracer(tracerOrigin, toPos, 0.03f);
-        */
 
         // tower must now reload
         currState = State.Reloading;
@@ -132,44 +157,81 @@ public class Tower : MonoBehaviour
     }
 
     // Note: currently gets the target which first entered the tower's radius
-    private Oncomer getClosestTarget(Vector3 Position)
-    {
-        if (targets == null) {
+    private GameObject getClosestTarget(Vector3 Position) {
+        if (m_oncomerTargets.Count == 0 && m_nexusTargets.Count == 0) {
             return null;
         }
 
         float closestDis = 1000f;
-        Oncomer closestTarget = targets[0];
-        foreach( Oncomer t in targets){
-            if (Vector3.Distance(t.transform.position, Position) < closestDis)
-            {
-                closestDis = Vector3.Distance(t.transform.position, Position);
-                closestTarget = t;
+        // TODO: specify priority (currently closest)
+        GameObject closestTarget = m_oncomerTargets.Count == 0 ? m_nexusTargets[0].gameObject : m_oncomerTargets[0].gameObject;
+        if (m_oncomerTargets != null) {
+            foreach (Oncomer t in m_oncomerTargets) {
+                if (Vector3.Distance(t.transform.position, Position) < closestDis) {
+                    closestDis = Vector3.Distance(t.transform.position, Position);
+                    closestTarget = t.gameObject;
+                }
             }
         }
+        if (m_nexusTargets != null) {
+            foreach (Nexus t in m_nexusTargets) {
+                if (Vector3.Distance(t.transform.position, Position) < closestDis) {
+                    closestDis = Vector3.Distance(t.transform.position, Position);
+                    closestTarget = t.gameObject;
+                }
+            }
+        }
+
         return closestTarget;
     }
-    
-    void CreateWeaponTracer(Vector3 fromPos, Vector3 toPos, float width)
-    {
+
+    void CreateWeaponTracer(Vector3 fromPos, Vector3 toPos, float width) {
         Vector3[] vt = new Vector3[4];
         Vector3 dir = (fromPos - toPos).normalized;
-        vt[0] = fromPos + width * new Vector3(dir.y,-dir.x);
+        vt[0] = fromPos + width * new Vector3(dir.y, -dir.x);
         vt[1] = toPos + width * new Vector3(dir.y, -dir.x);
         vt[2] = toPos + width * new Vector3(-dir.y, dir.x);
         vt[3] = fromPos + width * new Vector3(-dir.y, dir.x);
-        /*
-        Debug.Log(vt[0]);
-        Debug.Log(vt[1]);
-        Debug.Log(vt[2]);
-        Debug.Log(vt[3]);
-        */
+
         GameObject tracerObject = Instantiate(Tracer, new Vector3(0, 0, -1), Quaternion.identity);
         tracerObject.GetComponent<Trace>().duration = .1f;
         tracerObject.GetComponent<Trace>().vertices = vt;
     }
-    
-    
 
+    public void SetFields(TowerData data) {
+        m_type = data.Type;
+        this.GetComponent<SpriteRenderer>().sprite = data.Sprite;
+        m_oncomerTargetTypes = data.OncomerTargets;
+        m_nexusTargetTypes = data.NexusTargets;
+        shootSpeed = data.ShootSpeed;
+        radius = data.Radius;
+        
+        // TODO: set projectiles with their own data
+        projectileSoundID = data.ProjectileSoundID;
+        projectilePrefab = data.ProjectilePrefab;
+        projectileDamage = data.ProjectileDamage;
+    }
 
+    private bool CanTarget(GameObject potentialTarget) {
+        Oncomer oncomer = potentialTarget.GetComponent<Oncomer>();
+        if (oncomer != null) {
+            foreach(Oncomer.Type type in m_oncomerTargetTypes) {
+                if (oncomer.GetOncomerType() == type) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        else {
+            Nexus nexus = potentialTarget.GetComponent<Nexus>();
+            if (nexus != null) {
+                foreach (Nexus.Type type in m_nexusTargetTypes) {
+                    if (nexus.GetNexusType() == type) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    }
 }

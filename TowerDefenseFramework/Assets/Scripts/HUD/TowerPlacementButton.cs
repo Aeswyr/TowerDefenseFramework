@@ -6,19 +6,19 @@ using UnityEngine.UI;
 public class TowerPlacementButton : MonoBehaviour
 {
     [SerializeField] private Image image;
-    private GameObject tower;
+    private Tower.Type towerType;
     private TowerPlacementManager manager;
     void Awake() {
         manager = transform.parent.parent.GetComponent<TowerPlacementManager>();
     }
 
-    // Start is called before the first frame update
-    public void SetTower(GameObject tower) {
-        this.tower = tower;
-        image.sprite = tower.GetComponent<SpriteRenderer>().sprite;
+    public void SetTower(Tower.Type type) {
+        TowerData data = GameDB.instance.GetTowerData(type);
+        towerType = data.Type;
+        image.sprite = data.Sprite;
     }
 
     public void SetPlacable() {
-        manager.SetPlacable(tower);
+        manager.SetPlacable(towerType);
     }
 }

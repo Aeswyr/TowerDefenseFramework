@@ -8,6 +8,7 @@ public class GameDB : MonoBehaviour {
     private Dictionary<string, AudioData> m_audioMap;
     private Dictionary<Nexus.Type, NexusData> m_nexusMap;
     private Dictionary<Oncomer.Type, OncomerData> m_oncomerMap;
+    private Dictionary<Tower.Type, TowerData> m_towerMap;
 
     #region Editor
 
@@ -17,6 +18,8 @@ public class GameDB : MonoBehaviour {
     private NexusData[] m_nexusData;
     [SerializeField]
     private OncomerData[] m_oncomerData;
+    [SerializeField]
+    private TowerData[] m_towerData;
     [SerializeField]
     private Color m_deluvianNexusColor;
     [SerializeField]
@@ -76,6 +79,24 @@ public class GameDB : MonoBehaviour {
         }
         else {
             throw new KeyNotFoundException(string.Format("No Oncomer " +
+                "with type `{0}' is in the database", type
+            ));
+        }
+    }
+
+    public TowerData GetTowerData(Tower.Type type) {
+        // initialize the map if it does not exist
+        if (instance.m_towerMap == null) {
+            instance.m_towerMap = new Dictionary<Tower.Type, TowerData>();
+            foreach (TowerData data in instance.m_towerData) {
+                instance.m_towerMap.Add(data.Type, data);
+            }
+        }
+        if (instance.m_towerMap.ContainsKey(type)) {
+            return instance.m_towerMap[type];
+        }
+        else {
+            throw new KeyNotFoundException(string.Format("No Tower " +
                 "with type `{0}' is in the database", type
             ));
         }

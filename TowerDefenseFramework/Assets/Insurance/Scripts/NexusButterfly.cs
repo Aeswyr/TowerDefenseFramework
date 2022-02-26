@@ -34,7 +34,6 @@ public class NexusButterfly : MonoBehaviour
             this.transform.position = new Vector3(TilemapManager.instance.GetBound("right"), m_startY, this.transform.position.z);
             this.GetComponent<SpriteRenderer>().flipX = true;
         }
-        Debug.Log("this Y: " + this.transform.position.y);
 
         if (m_willTransform) {
             m_transformX = TilemapManager.instance.GetRandomX();
