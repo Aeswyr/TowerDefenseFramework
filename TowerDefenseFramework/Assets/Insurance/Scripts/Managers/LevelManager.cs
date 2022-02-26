@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class LevelManager : MonoBehaviour
@@ -13,6 +14,8 @@ public class LevelManager : MonoBehaviour
     private GameObject m_butterflyPrefab;
     [SerializeField]
     private float m_quarterTime;
+    [SerializeField]
+    private TextMeshProUGUI[] m_forecastTexts;
 
     private float p_fireTransform, p_stormTransform, p_floodTransform;
     private float m_quarterTimer;
@@ -42,6 +45,10 @@ public class LevelManager : MonoBehaviour
         m_quarterTimer = m_quarterTime;
         m_butterflyTime = m_quarterTime / n_butterflies;
         m_butterflyTimer = m_butterflyTime;
+
+        m_forecastTexts[0].text = "Hurricane: " + (p_storm * 100) + "%";
+        m_forecastTexts[1].text = "Wildfire: " + (p_fire * 100) + "%";
+        m_forecastTexts[2].text = "Flood: " + (p_flood * 100) + "%";
     }
 
     private void Update() {
