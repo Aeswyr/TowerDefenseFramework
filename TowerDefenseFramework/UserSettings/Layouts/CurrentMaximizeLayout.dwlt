@@ -186,8 +186,8 @@ MonoBehaviour:
     y: 0
     width: 223.2
     height: 456
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 201, y: 221}
+  m_MaxSize: {x: 4001, y: 4021}
   m_ActualView: {fileID: 6}
   m_Panes:
   - {fileID: 6}
@@ -224,20 +224,20 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 4c5f0000
+      m_SelectedIDs: 8a5f0000
       m_LastClickedID: 0
-      m_ExpandedIDs: c89cfeffcaa3feff7eabfeff52aefeff28affeff2ebffeffeec5feff34e2feff62effeff24f7feff4a17ffff361cffff641effff7c3effffe447ffff564bffff964cffff1850ffff7852fffff654ffffc05bffffae5dfffff85effff2462fffffc66ffffb469ffffca6affff4270fffffe74ffffa677ffffc278ffff867bffff067effff9480ffff8681ffff8881ffff7884ffff6a86ffff2887ffff6e89ffff2e8bffffb28dffff7c8fffffaa93ffff0e95ffffe296ffff6c99ffffc099ffffce99ffffd099ffff4a9bffffca9dffff10a0ffff2ea1ffff92a3ffffa8a4ffff76a5ffff68a6ffff7aa9ffff8aa9ffff9aacffff5eafffffa4afffff3eb2ffff5eb3ffffaab3ffff6ab4ffff7cb5ffff36b7ffffa4b8ffff20baffff04bbffff14bbfffffabbffff02befffff4beffff3ec1ffff4ac2ffff86c4ffff4acbffffd8cdffffeed8fffff0d8ffff40dcffff42dcffffaadcffff14e2ffff02e5ffff36e5ffff5ae7ffffd6f8ffffbcf9ffff2efbffffe46000000c610000567900008c790000767c00009a7c0000367d0000c87f0000fc7f00002a8000000e8200007082000052840000b484000096860000ca860000f886000096870000cc8700002e88000096890000108a0000768b0000d88b0000788e0000da8e0000be9000005e910000d69100001a9400007c9400005e960000429800007a980000dc980000029b0000e29b0000529d0000129e000030a0000012a2000046a2000072a20000c8a4000028a5000006a7000066a700003eaa000096aa00007cac0000c4ae0000ceae00009eb00000a8b0000020b100002ab1000090b30000acb30000f2b3000014b600002ebb000064bb0000f4c300004ec4000072c40000ccc400006cc50000a4c50000eac500008eca00003ecf0000
+      m_ExpandedIDs: f065ffff1667ffff2a6affff1476ffff447effff16b9ffffe6bdffffc4c1ffffd2c4ffff56c5ffffdcd7fffffedeffff90e1fffff2e2ffffa2e3ffff04faffff2efbffff467f0000e293000018940000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
-        m_Name: TowerPlacementMenu
-        m_OriginalName: TowerPlacementMenu
+        m_Name: Forecasts (1)
+        m_OriginalName: Forecasts (1)
         m_EditFieldRect:
           serializedVersion: 2
           x: 0
           y: 0
           width: 0
           height: 0
-        m_UserData: 50290
+        m_UserData: -35308
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
         m_OriginalEventType: 0
@@ -311,7 +311,7 @@ MonoBehaviour:
       floating: 0
       collapsed: 0
       displayed: 1
-      snapOffset: {x: -100, y: -25.600006}
+      snapOffset: {x: -101, y: -26}
       snapOffsetDelta: {x: 0, y: 0}
       snapCorner: 3
       id: Tool Settings
@@ -333,7 +333,7 @@ MonoBehaviour:
       floating: 0
       collapsed: 0
       displayed: 1
-      snapOffset: {x: 0, y: 24.8}
+      snapOffset: {x: 0, y: 0}
       snapOffsetDelta: {x: 0, y: 0}
       snapCorner: 0
       id: unity-scene-view-toolbar
@@ -366,7 +366,7 @@ MonoBehaviour:
       floating: 0
       collapsed: 0
       displayed: 0
-      snapOffset: {x: 0, y: 24.8}
+      snapOffset: {x: 0, y: 0}
       snapOffsetDelta: {x: 0, y: 0}
       snapCorner: 0
       id: Scene View/Tilemap Focus
@@ -410,9 +410,9 @@ MonoBehaviour:
       floating: 0
       collapsed: 0
       displayed: 0
-      snapOffset: {x: -142.40002, y: -111.19998}
+      snapOffset: {x: 0, y: 0}
       snapOffsetDelta: {x: 0, y: 0}
-      snapCorner: 3
+      snapCorner: 0
       id: Scene View/Camera
       index: 1
       layout: 4
@@ -525,9 +525,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 465.86258, y: 272.31503, z: -4.8235893}
+    m_Target: {x: 518.6229, y: 365.67365, z: -2.5072215}
     speed: 2
-    m_Value: {x: 465.86258, y: 272.31503, z: -4.8235893}
+    m_Value: {x: 518.6229, y: 365.67365, z: -2.5072215}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -578,9 +578,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 325.02008
+    m_Target: 366.21466
     speed: 2
-    m_Value: 325.02008
+    m_Value: 366.21466
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -598,7 +598,7 @@ MonoBehaviour:
     m_FarClip: 10000
     m_DynamicClip: 1
     m_OcclusionCulling: 0
-  m_LastSceneViewRotation: {x: -0.03627061, y: -0.041363843, z: 0.0015025508, w: -0.99848694}
+  m_LastSceneViewRotation: {x: -0.08717229, y: 0.89959055, z: -0.21045254, w: -0.3726226}
   m_LastSceneViewOrtho: 0
   m_ReplacementShader: {fileID: 0}
   m_ReplacementString: 
@@ -661,7 +661,7 @@ MonoBehaviour:
   - {fileID: 13}
   - {fileID: 14}
   m_Selected: 0
-  m_LastSelected: 3
+  m_LastSelected: 1
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -715,10 +715,10 @@ MonoBehaviour:
   m_LockTracker:
     m_IsLocked: 1
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 14.200012}
-    m_SelectedIDs: 425f0000
-    m_LastClickedID: 24386
-    m_ExpandedIDs: 00000000325f00003c5f0000425f0000505f0000
+    scrollPos: {x: 0, y: 2.2000122}
+    m_SelectedIDs: 805f0000
+    m_LastClickedID: 24448
+    m_ExpandedIDs: 00000000565f0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -746,7 +746,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000325f0000
+    m_ExpandedIDs: 00000000565f0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -771,8 +771,8 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: 4c5f0000
-    m_LastClickedInstanceID: 24396
+    m_SelectedInstanceIDs: 8a5f0000
+    m_LastClickedInstanceID: 24458
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: c6230000e05e00007a5f0000605f000000000000705f0000
     m_RenameOverlay:
@@ -785,7 +785,7 @@ MonoBehaviour:
         y: 0
         width: 0
         height: 0
-      m_UserData: 24396
+      m_UserData: 24458
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
       m_OriginalEventType: 0
@@ -843,22 +843,22 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Insurance/Scenes
+    - Assets/Insurance/Data/Nexus
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/Insurance/Scenes
+  - Assets/Insurance/Data/Nexus
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Users\levim\OneDrive\Documents\GameDev\Unity Projects\TowerDefenseFramework\TowerDefenseFramework
   m_LockTracker:
     m_IsLocked: 1
   m_FolderTreeState:
     scrollPos: {x: 0, y: 31}
-    m_SelectedIDs: c6600000
-    m_LastClickedID: 24774
-    m_ExpandedIDs: 00000000325f00003c5f0000425f0000465f00003262000034620000
+    m_SelectedIDs: 2c700000
+    m_LastClickedID: 28716
+    m_ExpandedIDs: 00000000565f00007a5f00002a6b0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -886,7 +886,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000325f0000
+    m_ExpandedIDs: 00000000565f0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -911,24 +911,24 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: bccf0000
-    m_LastClickedInstanceID: 53180
+    m_SelectedInstanceIDs: 7c980000
+    m_LastClickedInstanceID: 39036
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: 8ca5000028b00000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: 
-      m_OriginalName: 
+      m_Name: FireSwatheNexus
+      m_OriginalName: FireSwatheNexus
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 0
+      m_UserData: 24230
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 11
+      m_OriginalEventType: 0
       m_IsRenamingFilename: 1
       m_ClientGUIView: {fileID: 10}
     m_CreateAssetUtility:
@@ -983,22 +983,22 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Prefabs
+    - Assets/Insurance/Scenes
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/Prefabs
+  - Assets/Insurance/Scenes
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Users\levim\OneDrive\Documents\GameDev\Unity Projects\TowerDefenseFramework\TowerDefenseFramework
   m_LockTracker:
-    m_IsLocked: 0
+    m_IsLocked: 1
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 78.20001}
-    m_SelectedIDs: 405f0000
-    m_LastClickedID: 24384
-    m_ExpandedIDs: 00000000325f00003c5f0000405f0000425f0000c2600000c8600000
+    scrollPos: {x: 0, y: 31}
+    m_SelectedIDs: 04650000
+    m_LastClickedID: 25860
+    m_ExpandedIDs: 00000000565f00007a5f0000845f0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1026,7 +1026,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000325f0000
+    m_ExpandedIDs: 00000000565f0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1051,24 +1051,24 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: 6cc60000
-    m_LastClickedInstanceID: 50796
+    m_SelectedInstanceIDs: 7c980000
+    m_LastClickedInstanceID: 39036
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: a0b00000e0610000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: NexusOnly
-      m_OriginalName: NexusOnly
+      m_Name: 
+      m_OriginalName: 
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: -72376
+      m_UserData: 0
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 0
+      m_OriginalEventType: 11
       m_IsRenamingFilename: 1
       m_ClientGUIView: {fileID: 10}
     m_CreateAssetUtility:
@@ -1123,22 +1123,22 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Sprites
+    - Assets/Insurance/Data/Nexus
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/Sprites
+  - Assets/Insurance/Data/Nexus
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Users\levim\OneDrive\Documents\GameDev\Unity Projects\TowerDefenseFramework\TowerDefenseFramework
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 110.20001}
-    m_SelectedIDs: 485f0000
-    m_LastClickedID: 24392
-    m_ExpandedIDs: 00000000325f00003c5f0000405f0000c2600000
+    scrollPos: {x: 0, y: 31}
+    m_SelectedIDs: 2c700000
+    m_LastClickedID: 28716
+    m_ExpandedIDs: 00000000565f00007a5f0000845f00002a6b0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1166,7 +1166,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000325f0000
+    m_ExpandedIDs: 00000000565f0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1191,24 +1191,24 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: 
-    m_LastClickedInstanceID: 0
+    m_SelectedInstanceIDs: a85e0000
+    m_LastClickedInstanceID: 24232
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: 7a600000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: OncomerOnly
-      m_OriginalName: OncomerOnly
+      m_Name: 
+      m_OriginalName: 
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: -71946
+      m_UserData: 0
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 0
+      m_OriginalEventType: 11
       m_IsRenamingFilename: 1
       m_ClientGUIView: {fileID: 10}
     m_CreateAssetUtility:
@@ -1279,19 +1279,18 @@ MonoBehaviour:
   m_OverlayCanvas:
     m_LastAppliedPresetName: Default
     m_SaveData: []
-  m_ObjectsLockedBeforeSerialization:
-  - {fileID: 8529438230385989110, guid: c09d868423c67e94d922ce141d5377fa, type: 3}
+  m_ObjectsLockedBeforeSerialization: []
   m_InstanceIDsLockedBeforeSerialization: 
   m_PreviewResizer:
     m_CachedPref: 160
     m_ControlHash: -371814159
     m_PrefName: Preview_InspectorPreview
-  m_LastInspectedObjectInstanceID: 24612
+  m_LastInspectedObjectInstanceID: 24458
   m_LastVerticalScrollValue: 0
   m_GlobalObjectId: 
   m_InspectorMode: 0
   m_LockTracker:
-    m_IsLocked: 1
+    m_IsLocked: 0
   m_PreviewWindow: {fileID: 0}
 --- !u!114 &17
 MonoBehaviour:

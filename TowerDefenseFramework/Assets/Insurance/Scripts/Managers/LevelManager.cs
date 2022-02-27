@@ -15,28 +15,37 @@ public class LevelManager : MonoBehaviour
     [SerializeField]
     private float m_quarterTime;
     [SerializeField]
+    private float m_growthPerQuarter;
+    [SerializeField]
     private TextMeshProUGUI[] m_forecastTexts;
+    [SerializeField]
+    private TextMeshProUGUI m_periodText;
+    [SerializeField]
+    private TextMeshProUGUI m_periodTimerText;
 
     private float p_fireTransform, p_stormTransform, p_floodTransform;
     private float m_quarterTimer;
     private float m_butterflyTime;
     private float m_butterflyTimer;
 
+    private int m_quarter;
+    private float m_adjustedGrowth;
+
     private void Start() {
         if (p_fire > 0) {
-            p_fireTransform = 1 - Mathf.Pow((1-p_fire), 1.0f/n_butterflies); //Mathf.Pow(2, Mathf.Log((1 - p_fire), 2) / n_butterflies);
+            p_fireTransform = 1 - Mathf.Pow((1-p_fire), 1.0f/n_butterflies);
         }
         else {
             p_fireTransform = 0;
         }
         if (p_storm > 0) {
-            p_stormTransform = 1 - Mathf.Pow((1 - p_storm), 1.0f / n_butterflies); //Mathf.Pow(2, Mathf.Log((1 - p_storm), 2) / n_butterflies);
+            p_stormTransform = 1 - Mathf.Pow((1 - p_storm), 1.0f / n_butterflies);
         }
         else {
             p_stormTransform = 0;
         }
         if (p_flood > 0) {
-            p_floodTransform = 1 - Mathf.Pow((1 - p_flood), 1.0f / n_butterflies); //Mathf.Pow(2, Mathf.Log((1 - p_flood), 2) / n_butterflies);
+            p_floodTransform = 1 - Mathf.Pow((1 - p_flood), 1.0f / n_butterflies);
         }
         else {
             p_floodTransform = 0;
@@ -49,6 +58,11 @@ public class LevelManager : MonoBehaviour
         m_forecastTexts[0].text = "Hurricane: " + (p_storm * 100) + "%";
         m_forecastTexts[1].text = "Wildfire: " + (p_fire * 100) + "%";
         m_forecastTexts[2].text = "Flood: " + (p_flood * 100) + "%";
+
+        m_quarter = 0;
+        m_periodText.text = "Period: 1";
+        m_periodTimerText.text = m_quarterTime.ToString("F1") + " s";
+        m_adjustedGrowth = 1;
     }
 
     private void Update() {
@@ -59,7 +73,12 @@ public class LevelManager : MonoBehaviour
         m_quarterTimer -= Time.deltaTime;
         if (m_quarterTimer <= 0) {
             // End Quarter
+            m_quarter++;
+            m_periodText.text = "Period: " + (m_quarter + 1);
+            m_adjustedGrowth = 1 + m_quarter * m_growthPerQuarter;
+            m_quarterTimer = m_quarterTime;
         }
+        m_periodTimerText.text = m_quarterTimer.ToString("F1") + " s";
 
         m_butterflyTimer -= Time.deltaTime;
         if (m_butterflyTimer <= 0) {
@@ -69,21 +88,21 @@ public class LevelManager : MonoBehaviour
             GameObject butterfly = Instantiate(m_butterflyPrefab);
             NexusButterfly nexusB = butterfly.GetComponent<NexusButterfly>();
             nexusB.GetComponent<SpriteRenderer>().color = GameDB.instance.GetNexusColor(Nexus.Type.FireSwathe);
-            nexusB.SetFields(p_fireTransform, Nexus.Type.FireSwathe);
+            nexusB.SetFields(p_fireTransform, Nexus.Type.FireSwathe, m_adjustedGrowth);
             nexusB.ManualAwake();
 
             // flood
             butterfly = Instantiate(m_butterflyPrefab);
             nexusB = butterfly.GetComponent<NexusButterfly>();
             nexusB.GetComponent<SpriteRenderer>().color = GameDB.instance.GetNexusColor(Nexus.Type.Deluvian);
-            nexusB.SetFields(p_floodTransform, Nexus.Type.Deluvian);
+            nexusB.SetFields(p_floodTransform, Nexus.Type.Deluvian, m_adjustedGrowth);
             nexusB.ManualAwake();
 
             // tempest
             butterfly = Instantiate(m_butterflyPrefab);
             nexusB = butterfly.GetComponent<NexusButterfly>();
             nexusB.GetComponent<SpriteRenderer>().color = GameDB.instance.GetNexusColor(Nexus.Type.Storm);
-            nexusB.SetFields(p_stormTransform, Nexus.Type.Storm);
+            nexusB.SetFields(p_stormTransform, Nexus.Type.Storm, m_adjustedGrowth);
             nexusB.ManualAwake();
         }
     }

@@ -24,17 +24,18 @@ public class Nexus : MonoBehaviour
     [SerializeField]
     private float m_scaleReduction;
     [SerializeField]
-    private float m_incubateSpeed;
-    [SerializeField]
-    private float m_returnSpeed;
-    [SerializeField]
     private GameObject m_oncomerPrefab;
+    [SerializeField]
+    private float m_dmgNormalization;
 
-    private float m_growthRate;
+    private float m_baseGrowthRate;
     private float m_incubationTime;
+    private float m_incubateSpeed;
+    private float m_returnSpeed;
 
     private float m_size;
     private float m_incubationTimer;
+    private float m_adjustedGrowthRate;
 
     private State m_state;
     private Vector3 m_returnPos;
@@ -48,7 +49,7 @@ public class Nexus : MonoBehaviour
 
         if (m_state == State.Incubating) {
             m_incubationTimer -= Time.deltaTime;
-            m_size += Time.deltaTime * m_growthRate;
+            m_size += Time.deltaTime * m_adjustedGrowthRate;
             this.transform.localScale = new Vector3((m_size + 1) / m_scaleReduction, (m_size + 1) / m_scaleReduction, 1);
 
             if (m_incubationTimer <= 0) {
@@ -66,6 +67,7 @@ public class Nexus : MonoBehaviour
                 Vector3 dir = travelVector.normalized;
                 this.transform.Translate(dir * m_returnSpeed * Time.deltaTime);
             }
+            this.transform.localScale = new Vector3((m_size + 1) / m_scaleReduction, (m_size + 1) / m_scaleReduction, 1);
         }
     }
 
@@ -85,11 +87,18 @@ public class Nexus : MonoBehaviour
         m_state = State.Incubating;
     }
 
+    public void MultGrowth(float multGrowth) {
+        m_adjustedGrowthRate = m_baseGrowthRate * multGrowth;
+    }
+
     private void ApplyNexusData() {
         NexusData data = GameDB.instance.GetNexusData(m_type);
-        m_growthRate = data.GrowthRate;
+        m_baseGrowthRate = data.GrowthRate;
         m_incubationTime = data.IncubationTime;
+        m_returnSpeed = data.ReturnSpeed;
+        m_incubateSpeed = data.IncubateSpeed;
         m_sr.color = data.Color;
+        m_dmgNormalization = data.DmgNormalization;
     }
 
     private void Return() {
@@ -100,7 +109,7 @@ public class Nexus : MonoBehaviour
     }
 
     private void Release() {
-        int numSpawns = 4;
+        int numSpawns = (int)m_size;
         for (int i = 0; i < numSpawns; ++i) {
 
             GameObject oncomerObj = Instantiate(m_oncomerPrefab);
@@ -133,5 +142,13 @@ public class Nexus : MonoBehaviour
 
     public Type GetNexusType() {
         return m_type;
+    }
+
+    public void ApplyDamage(float damage) {
+        m_size -= damage / m_dmgNormalization;
+
+        if (m_size < -1) {
+            Destroy(this.gameObject);
+        }
     }
 }

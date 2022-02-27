@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
+    public enum TargetType {
+        Oncomer,
+        Nexus
+    }
+
     [SerializeField]
     private float m_speed;
 
@@ -15,12 +20,20 @@ public class Projectile : MonoBehaviour
     public float Damage {
         get; set;
     }
+    public TargetType TType {
+        get; set;
+    }
 
     private void OnTriggerEnter2D(Collider2D collision) {
         if (collision.gameObject == TargetObj) {
             // affect the target
-            TargetObj.GetComponent<Oncomer>().ApplyDamage(this.Damage);
-
+            if (TType == TargetType.Oncomer) {
+                TargetObj.GetComponent<Oncomer>().ApplyDamage(this.Damage);
+            }
+            else if (TType == TargetType.Nexus) {
+                TargetObj.GetComponent<Nexus>().ApplyDamage(this.Damage);
+            }
+            
             // destroy this projectile
             Destroy(this.gameObject);
         }
@@ -33,10 +46,15 @@ public class Projectile : MonoBehaviour
             return;
         }
 
+        float finalOffset = 0;
+        if (TType != TargetType.Nexus) {
+            finalOffset = CELL_OFFSET;
+        }
+
         // calculate trajectory
         Vector3 targetPos = new Vector3(
-            TargetObj.transform.position.x + CELL_OFFSET,
-            TargetObj.transform.position.y + CELL_OFFSET,
+            TargetObj.transform.position.x + finalOffset,
+            TargetObj.transform.position.y + finalOffset,
             TargetObj.transform.position.z
             );
         Vector2 dir = (targetPos - this.transform.position).normalized;

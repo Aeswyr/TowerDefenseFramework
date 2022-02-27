@@ -16,10 +16,12 @@ public class NexusButterfly : MonoBehaviour
     private float m_transformX; // x value of transform position if it will occur
     private float m_startY;
     private Nexus.Type m_type;
+    private float m_multGrowth;
 
-    public void SetFields(float odds, Nexus.Type type) {
+    public void SetFields(float odds, Nexus.Type type, float accumulatedGrowth) {
         m_transformOdds = odds;
         m_type = type;
+        m_multGrowth = accumulatedGrowth;
     }
 
     public void ManualAwake() {
@@ -61,7 +63,7 @@ public class NexusButterfly : MonoBehaviour
     }
 
     private void Transform() {
-        // TODO: Settle time
+        // TODO: Settle time and animation
 
         // Transform
         GameObject nexusObj = Instantiate(m_nexusPrefab);
@@ -69,6 +71,7 @@ public class NexusButterfly : MonoBehaviour
         Nexus nexus = nexusObj.GetComponent<Nexus>();
         nexus.SetType(m_type);
         nexus.ManualAwake();
+        nexus.MultGrowth(m_multGrowth);
 
         Destroy(this.gameObject);
     }

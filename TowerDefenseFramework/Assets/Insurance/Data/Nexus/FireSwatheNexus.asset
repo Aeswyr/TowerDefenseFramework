@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: FireSwatheNexus
   m_EditorClassIdentifier: 
   m_type: 1
-  m_growthRate: 1.5
+  m_growthRate: 1
   m_incubationTime: 6
+  m_incubateSpeed: 0
+  m_returnSpeed: 3
+  m_dmgNormalization: 3
   m_color: {r: 0.7169812, g: 0.21238874, b: 0.21238874, a: 1}
