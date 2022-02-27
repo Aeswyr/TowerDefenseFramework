@@ -35,6 +35,8 @@ public class Tower : MonoBehaviour {
     [SerializeField]
     private float projectileDamage;
 
+    private int m_cost;
+
     private float reloadTimer = 0f;
     private List<GameObject> m_targets;
     private State currState;
@@ -172,6 +174,8 @@ public class Tower : MonoBehaviour {
         projectileSoundID = data.ProjectileSoundID;
         projectilePrefab = data.ProjectilePrefab;
         projectileDamage = data.ProjectileDamage;
+
+        m_cost = data.Cost;
     }
 
     private bool CanTarget(GameObject potentialTarget) {

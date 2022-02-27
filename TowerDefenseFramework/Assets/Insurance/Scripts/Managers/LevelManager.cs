@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class LevelManager : MonoBehaviour
 {
+    public static LevelManager instance;
+
     [SerializeField]
     private float p_fire, p_storm, p_flood;
     [SerializeField]
@@ -22,6 +24,8 @@ public class LevelManager : MonoBehaviour
     private TextMeshProUGUI m_periodText;
     [SerializeField]
     private TextMeshProUGUI m_periodTimerText;
+    [SerializeField]
+    private TextMeshProUGUI m_fundsText;
 
     private float p_fireTransform, p_stormTransform, p_floodTransform;
     private float m_quarterTimer;
@@ -30,6 +34,16 @@ public class LevelManager : MonoBehaviour
 
     private int m_quarter;
     private float m_adjustedGrowth;
+    private int m_funds;
+
+    private void Awake() {
+        if (instance == null) {
+            instance = this;
+        }
+        else if (this != instance) {
+            Debug.Log("Warning: multiple LevelManagers in the same scene. Undefined behavior may result.");
+        }
+    }
 
     private void Start() {
         if (p_fire > 0) {
@@ -63,6 +77,8 @@ public class LevelManager : MonoBehaviour
         m_periodText.text = "Period: 1";
         m_periodTimerText.text = m_quarterTime.ToString("F1") + " s";
         m_adjustedGrowth = 1;
+
+        ModifyFunds(80);
     }
 
     private void Update() {
@@ -77,6 +93,9 @@ public class LevelManager : MonoBehaviour
             m_periodText.text = "Period: " + (m_quarter + 1);
             m_adjustedGrowth = 1 + m_quarter * m_growthPerQuarter;
             m_quarterTimer = m_quarterTime;
+
+            // Add funds (Hack)
+            ModifyFunds(30);
         }
         m_periodTimerText.text = m_quarterTimer.ToString("F1") + " s";
 
@@ -105,6 +124,24 @@ public class LevelManager : MonoBehaviour
             nexusB.SetFields(p_stormTransform, Nexus.Type.Storm, m_adjustedGrowth);
             nexusB.ManualAwake();
         }
+    }
+
+    public bool CheckFunds(int cost) {
+        return cost <= m_funds;
+    }
+
+    public bool AttemptPurchase(int cost) {
+        if (cost > m_funds) {
+            return false;
+        }
+
+        ModifyFunds(-cost);
+        return true;
+    }
+
+    private void ModifyFunds(int change) {
+        m_funds += change;
+        m_fundsText.text = "$" + m_funds;
     }
 
 }

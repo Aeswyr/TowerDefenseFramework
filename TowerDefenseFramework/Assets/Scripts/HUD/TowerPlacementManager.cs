@@ -10,12 +10,14 @@ public class TowerPlacementManager : MonoBehaviour
     [SerializeField] private GameObject buttonHolder;
     [SerializeField] private GameObject placementIndicator;
     [SerializeField] private GameObject exitButton;
+
     private Tilemap tilemap;
     private Camera cam;
 
     [SerializeField]
     private Tower.Type[] m_unlockedTowers;
     [SerializeField] private GameObject towerPrefab;
+    [SerializeField] private TowerInfoDisplay towerDisplay;
 
     private TowerData targetTowerData = null;
 
@@ -23,7 +25,7 @@ public class TowerPlacementManager : MonoBehaviour
     void Start()
     {
         foreach (Tower.Type towerType in m_unlockedTowers) {
-            Instantiate(buttonPrefab, buttonHolder.transform).GetComponent<TowerPlacementButton>().SetTower(towerType);
+            Instantiate(buttonPrefab, buttonHolder.transform).GetComponent<TowerPlacementButton>().SetTower(towerType, towerDisplay);
         }
         cam = FindObjectOfType<Camera>();
         tilemap = FindObjectOfType<Tilemap>();
@@ -41,8 +43,14 @@ public class TowerPlacementManager : MonoBehaviour
     }
 
     public void PlaceTower() {
-        if (targetTowerData == null)
+        if (targetTowerData == null) {
             return;
+        }
+
+        // Check funds
+        if (!LevelManager.instance.CheckFunds(targetTowerData.Cost)) {
+            return;
+        }
 
         // TODO: check if a tower already exists on this square
         bool cellIsEmpty = true;
@@ -51,6 +59,8 @@ public class TowerPlacementManager : MonoBehaviour
             GameObject newTowerObj = Instantiate(towerPrefab, tilemap.WorldToCell(cam.ScreenToWorldPoint(Input.mousePosition)), towerPrefab.transform.rotation);
             Tower newTower = newTowerObj.GetComponent<Tower>();
             newTower.SetFields(targetTowerData);
+
+            LevelManager.instance.AttemptPurchase(targetTowerData.Cost);
         }
         else {
             // TODO: handle full cell case
