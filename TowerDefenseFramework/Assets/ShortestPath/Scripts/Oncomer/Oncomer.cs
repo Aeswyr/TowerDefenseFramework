@@ -63,6 +63,15 @@ public class Oncomer : MonoBehaviour {
         MoveThroughPoints();
     }
 
+    private void OnTriggerEnter2D(Collider2D other) {
+        if (other.gameObject.tag == "station") {
+            // TODO: get this number from oncomer data
+            LevelManager.instance.DamageStation(5);
+
+            Destroy(this.gameObject);
+        }
+    }
+
     private void MoveThroughPoints() {
         if (m_waypoints == null) {
             return;
@@ -73,7 +82,8 @@ public class Oncomer : MonoBehaviour {
             MoveToward(currPoint);
         }
         else {
-            // Reached destination
+            // Reached destination (should have been destroyed on collision earlier, however)
+            Debug.Log("Warning: Oncomer did not collide with target");
             Destroy(this.gameObject);
         }
     }

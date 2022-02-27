@@ -26,6 +26,8 @@ public class LevelManager : MonoBehaviour
     private TextMeshProUGUI m_periodTimerText;
     [SerializeField]
     private TextMeshProUGUI m_fundsText;
+    [SerializeField]
+    private Station m_station;
 
     private float p_fireTransform, p_stormTransform, p_floodTransform;
     private float m_quarterTimer;
@@ -43,6 +45,8 @@ public class LevelManager : MonoBehaviour
         else if (this != instance) {
             Debug.Log("Warning: multiple LevelManagers in the same scene. Undefined behavior may result.");
         }
+
+        AudioManager.instance.PlayAudio("lark", true);
     }
 
     private void Start() {
@@ -79,6 +83,8 @@ public class LevelManager : MonoBehaviour
         m_adjustedGrowth = 1;
 
         ModifyFunds(80);
+
+        m_station.InitHealth(200, 0);
     }
 
     private void Update() {
@@ -142,6 +148,10 @@ public class LevelManager : MonoBehaviour
     private void ModifyFunds(int change) {
         m_funds += change;
         m_fundsText.text = "$" + m_funds;
+    }
+
+    public void DamageStation(float dmg) {
+        m_station.ApplyDamage(dmg);
     }
 
 }

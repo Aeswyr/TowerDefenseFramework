@@ -45,6 +45,8 @@ public class Tower : MonoBehaviour {
 
     public GameObject Tracer;
 
+    private AudioData m_audioData;
+
     private const float CELL_OFFSET = 0.5f;
 
     private void OnTriggerEnter2D(Collider2D collider) {
@@ -126,7 +128,8 @@ public class Tower : MonoBehaviour {
     }
 
     private void PlayLaunchSound() {
-        AudioClip clip = GameDB.instance.GetAudioData(projectileSoundID).Clip;
+        AudioClip clip = m_audioData.Clip;
+        m_audioSrc.volume = m_audioData.Volume;
         m_audioSrc.PlayOneShot(clip);
     }
 
@@ -176,6 +179,8 @@ public class Tower : MonoBehaviour {
         projectileDamage = data.ProjectileDamage;
 
         m_cost = data.Cost;
+
+        m_audioData = GameDB.instance.GetAudioData(projectileSoundID);
     }
 
     private bool CanTarget(GameObject potentialTarget) {

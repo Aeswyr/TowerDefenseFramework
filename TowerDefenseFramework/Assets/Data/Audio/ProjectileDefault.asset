@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_id: projectile-default
   m_clip: {fileID: 8300000, guid: d3d27cda42ee67541b8baa859aa9ac98, type: 3}
-  m_volume: 1
+  m_volume: 0.2
   m_pan: 0
