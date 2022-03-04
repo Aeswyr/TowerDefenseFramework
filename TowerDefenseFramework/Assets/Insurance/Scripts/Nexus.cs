@@ -109,7 +109,7 @@ public class Nexus : MonoBehaviour
     }
 
     private void Release() {
-        int numSpawns = (int)m_size;
+        int numSpawns = (int)m_size + 1;
         for (int i = 0; i < numSpawns; ++i) {
 
             GameObject oncomerObj = Instantiate(m_oncomerPrefab);

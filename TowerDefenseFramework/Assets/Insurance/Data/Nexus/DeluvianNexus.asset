@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: DeluvianNexus
   m_EditorClassIdentifier: 
   m_type: 2
-  m_growthRate: 0.15
+  m_growthRate: 0.22
   m_incubationTime: 15
   m_incubateSpeed: 0
   m_returnSpeed: 2
-  m_dmgNormalization: 4
+  m_dmgNormalization: 5
   m_color: {r: 0.18045564, g: 0.46293673, b: 0.6981132, a: 1}

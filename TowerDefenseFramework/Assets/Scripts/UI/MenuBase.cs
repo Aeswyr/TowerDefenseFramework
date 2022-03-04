@@ -33,4 +33,14 @@ public class MenuBase : MonoBehaviour {
             button.interactable = true;
         }
     }
+
+    protected void OpenMenu() {
+        EnableMenu();
+        this.gameObject.SetActive(true);
+    }
+
+    protected void CloseMenu() {
+        this.gameObject.SetActive(false);
+        DisableMenu();
+    }
 }

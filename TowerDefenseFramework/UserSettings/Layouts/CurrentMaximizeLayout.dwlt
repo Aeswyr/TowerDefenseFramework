@@ -224,9 +224,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 
+      m_SelectedIDs: 8c640000
       m_LastClickedID: 0
-      m_ExpandedIDs: 2aedffff60edffffc4eeffff44f4ffff80f4ffff96f5ffff16f8ffff10f9ffff24faffff2efbffff
+      m_ExpandedIDs: 6002ffff7c1effff122dffffc62dffff802ffffff431ffff7439fffff639ffff443affffc63affffd63bffff743dffff083fffffe43fffff5240ffff2c41ffff6647ffffe048ffffca4cfffffa4effffbc4fffff0650ffffe851ffff3655ffff7655ffff8464ffffd866ffff5a67ffff7a73ffffe873ffff7676ffff4a79ffffa679fffff2b3ffff4ab4ffffccb4ffff1eb5ffffb0e8fffffae8fffff2e9ffff66eaffff54ebffff50edffffd2edffffa8eeffff12efffffe2f0ffff04f4ffff18f7ffff74f7fffffcf7ffff2efbffffca890000008a0000ae8c0000c48c0000ca8c0000d48d0000228f0000268f0000388f00003e8f0000649000007a9000008090000080920000969200009c920000489500005e95000064950000d6980000ec980000f2980000089b00001e9b0000f2a30000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -525,9 +525,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 402.88095, y: 285.51328, z: -2.624466}
+    m_Target: {x: 527.3383, y: 284.2062, z: -0.82596385}
     speed: 2
-    m_Value: {x: 402.88095, y: 285.51328, z: -2.624466}
+    m_Value: {x: 527.3383, y: 284.2062, z: -0.82596385}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -578,9 +578,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 324.72183
+    m_Target: 292.39316
     speed: 2
-    m_Value: 324.72183
+    m_Value: 292.39316
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -715,7 +715,7 @@ MonoBehaviour:
   m_LockTracker:
     m_IsLocked: 1
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 2.2000122}
+    scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 9c5f0000
     m_LastClickedID: 24476
     m_ExpandedIDs: 00000000665f0000
@@ -734,7 +734,7 @@ MonoBehaviour:
       m_IsRenaming: 0
       m_OriginalEventType: 11
       m_IsRenamingFilename: 1
-      m_ClientGUIView: {fileID: 10}
+      m_ClientGUIView: {fileID: 0}
     m_SearchString: 
     m_CreateAssetUtility:
       m_EndAction: {fileID: 0}
@@ -771,24 +771,24 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: 
-    m_LastClickedInstanceID: 0
+    m_SelectedInstanceIDs: 8c640000
+    m_LastClickedInstanceID: 25740
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: c6230000e05e00007a5f0000605f000000000000705f0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: 
-      m_OriginalName: 
+      m_Name: Boot
+      m_OriginalName: Boot
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 0
+      m_UserData: 25740
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 11
+      m_OriginalEventType: 0
       m_IsRenamingFilename: 1
       m_ClientGUIView: {fileID: 10}
     m_CreateAssetUtility:
@@ -983,22 +983,22 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Insurance/Scenes
+    - Assets/Insurance/Scripts/UI
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/Insurance/Scenes
+  - Assets/Insurance/Scripts/UI
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Users\levim\OneDrive\Documents\GameDev\Unity Projects\TowerDefenseFramework\TowerDefenseFramework
   m_LockTracker:
     m_IsLocked: 1
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: b85f0000
-    m_LastClickedID: 24504
-    m_ExpandedIDs: 00000000665f0000965f0000
+    m_SelectedIDs: b45f0000
+    m_LastClickedID: 24500
+    m_ExpandedIDs: 00000000665f0000965f0000a65f0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1051,8 +1051,8 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: 7c810000
-    m_LastClickedInstanceID: 33148
+    m_SelectedInstanceIDs: 
+    m_LastClickedInstanceID: 0
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: a0b00000e0610000
     m_RenameOverlay:
@@ -1123,21 +1123,21 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Insurance/Data/Nexus
+    - Assets/Scenes
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/Insurance/Data/Nexus
+  - Assets/Scenes
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Users\levim\OneDrive\Documents\GameDev\Unity Projects\TowerDefenseFramework\TowerDefenseFramework
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 31}
-    m_SelectedIDs: 2c700000
-    m_LastClickedID: 28716
+    scrollPos: {x: 0, y: 94.20001}
+    m_SelectedIDs: 9c5f0000
+    m_LastClickedID: 24476
     m_ExpandedIDs: 00000000665f0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -1232,7 +1232,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 1
   m_Script: {fileID: 12006, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: ConsoleWindow
+  m_Name: InspectorWindow
   m_EditorClassIdentifier: 
   m_Children: []
   m_Position:
@@ -1241,16 +1241,16 @@ MonoBehaviour:
     y: 0
     width: 420
     height: 722.8
-  m_MinSize: {x: 101, y: 121}
-  m_MaxSize: {x: 4001, y: 4021}
-  m_ActualView: {fileID: 19}
+  m_MinSize: {x: 275, y: 100}
+  m_MaxSize: {x: 4000, y: 4000}
+  m_ActualView: {fileID: 17}
   m_Panes:
   - {fileID: 16}
   - {fileID: 17}
   - {fileID: 18}
   - {fileID: 19}
-  m_Selected: 3
-  m_LastSelected: 1
+  m_Selected: 1
+  m_LastSelected: 3
 --- !u!114 &16
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -1285,7 +1285,7 @@ MonoBehaviour:
     m_CachedPref: 160
     m_ControlHash: -371814159
     m_PrefName: Preview_InspectorPreview
-  m_LastInspectedObjectInstanceID: -1
+  m_LastInspectedObjectInstanceID: 25740
   m_LastVerticalScrollValue: 0
   m_GlobalObjectId: 
   m_InspectorMode: 0

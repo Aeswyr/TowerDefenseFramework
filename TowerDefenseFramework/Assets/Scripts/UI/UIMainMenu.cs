@@ -11,14 +11,25 @@ public class UIMainMenu : MenuBase {
     private Button m_newGameButton;
     [SerializeField]
     private Button m_quitButton;
+    [SerializeField]
+    private Button m_aboutButton;
 
     #endregion
 
     #region Unity Callbacks
 
     private void Awake() {
-        m_newGameButton.onClick.AddListener(HandleNewGame);
         m_quitButton.onClick.AddListener(HandleQuit);
+        m_aboutButton.onClick.AddListener(HandleAbout);
+
+        m_newGameButton.interactable = GameManager.instance.HasReadInfo;
+        m_newGameButton.onClick.AddListener(HandleNewGame);
+    }
+
+    private void OnDestroy() {
+        m_newGameButton.onClick.RemoveAllListeners();
+        m_quitButton.onClick.RemoveAllListeners();
+        m_aboutButton.onClick.RemoveAllListeners();
     }
 
     #endregion
@@ -38,6 +49,11 @@ public class UIMainMenu : MenuBase {
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #endif
+    }
+
+    private void HandleAbout() {
+        SceneManager.LoadScene("InfoScreen");
+        AudioManager.instance.PlayOneShot("menu-click-default");
     }
 
     #endregion

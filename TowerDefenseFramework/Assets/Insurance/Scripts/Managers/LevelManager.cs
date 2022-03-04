@@ -7,6 +7,11 @@ public class LevelManager : MonoBehaviour
 {
     public static LevelManager instance;
 
+    enum GamePhase {
+        Insurance, // purchase insurance
+        Main // active gameplay
+    }
+
     [SerializeField]
     private float p_fire, p_storm, p_flood;
     [SerializeField]
@@ -28,6 +33,10 @@ public class LevelManager : MonoBehaviour
     private TextMeshProUGUI m_fundsText;
     [SerializeField]
     private Station m_station;
+    [SerializeField]
+    private GameObject m_insuranceMenu;
+
+    private GamePhase m_phase;
 
     private float p_fireTransform, p_stormTransform, p_floodTransform;
     private float m_quarterTimer;
@@ -45,6 +54,9 @@ public class LevelManager : MonoBehaviour
         else if (this != instance) {
             Debug.Log("Warning: multiple LevelManagers in the same scene. Undefined behavior may result.");
         }
+
+        // Event Handlers
+        EventManager.OnPurchaseInsuranceComplete.AddListener(HandlePurchaseInsuranceComplete);
 
         AudioManager.instance.PlayAudio("lark", true);
     }
@@ -85,6 +97,9 @@ public class LevelManager : MonoBehaviour
         ModifyFunds(80);
 
         m_station.InitHealth(200, 0);
+
+        m_phase = GamePhase.Insurance;
+        m_insuranceMenu.SetActive(true);
     }
 
     private void Update() {
@@ -92,6 +107,19 @@ public class LevelManager : MonoBehaviour
             return;
         }
 
+        switch (m_phase) {
+            case GamePhase.Insurance:
+                UpdateInsurancePhase();
+                break;
+            case GamePhase.Main:
+                UpdateMainPhase();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void UpdateMainPhase() {
         m_quarterTimer -= Time.deltaTime;
         if (m_quarterTimer <= 0) {
             // End Quarter
@@ -102,6 +130,9 @@ public class LevelManager : MonoBehaviour
 
             // Add funds (Hack)
             ModifyFunds(30);
+
+            // Pay for insurance (Hack)
+            ModifyFunds(-5);
         }
         m_periodTimerText.text = m_quarterTimer.ToString("F1") + " s";
 
@@ -132,6 +163,15 @@ public class LevelManager : MonoBehaviour
         }
     }
 
+    private void OnDestroy() {
+        // Event Handlers
+        EventManager.OnPurchaseInsuranceComplete.RemoveListener(HandlePurchaseInsuranceComplete);
+    }
+
+    private void UpdateInsurancePhase() {
+
+    }
+
     public bool CheckFunds(int cost) {
         return cost <= m_funds;
     }
@@ -153,5 +193,13 @@ public class LevelManager : MonoBehaviour
     public void DamageStation(float dmg) {
         m_station.ApplyDamage(dmg);
     }
+
+    #region Event Handlers
+
+    void HandlePurchaseInsuranceComplete() {
+        m_phase = GamePhase.Main;
+    }
+
+    #endregion
 
 }

@@ -6,8 +6,15 @@ public class GameManager : MonoBehaviour {
     public static GameManager instance;
 
     private bool m_isPaused;
+    private bool m_hasReadInfo;
 
     public bool IsPaused { get { return m_isPaused; } }
+    public bool HasReadInfo {
+        get { return m_hasReadInfo; }
+    }
+    public void SetHasReadInfo(bool hasRead) {
+        m_hasReadInfo = hasRead;
+    }
 
     #region Unity Callbacks
 
@@ -21,7 +28,9 @@ public class GameManager : MonoBehaviour {
         }
 
         m_isPaused = false;
+        m_hasReadInfo = false;
     }
 
     #endregion
+
 }

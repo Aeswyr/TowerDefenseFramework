@@ -17,5 +17,5 @@ MonoBehaviour:
   m_incubationTime: 10
   m_incubateSpeed: 0
   m_returnSpeed: 2
-  m_dmgNormalization: 3
+  m_dmgNormalization: 4
   m_color: {r: 0.69803923, g: 0.69803923, b: 0.69803923, a: 1}
