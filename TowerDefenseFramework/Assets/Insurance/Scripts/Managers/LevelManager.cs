@@ -50,6 +50,7 @@ public class LevelManager : MonoBehaviour
     private int m_quarter;
     private float m_adjustedGrowth;
     private int m_funds;
+    private bool m_insured;
 
     private void Awake() {
         if (instance == null) {
@@ -63,6 +64,7 @@ public class LevelManager : MonoBehaviour
         EventManager.OnPurchaseInsuranceComplete.AddListener(HandlePurchaseInsuranceComplete);
 
         AudioManager.instance.PlayAudio("lark", true);
+        m_insured = false;
     }
 
     private void Start() {
@@ -100,9 +102,6 @@ public class LevelManager : MonoBehaviour
 
         ModifyFunds(80);
 
-        m_station.InitHealth(10, 100);
-        //m_station.InitHealth(200, 0);
-
         m_phase = GamePhase.Insurance;
         m_insuranceMenu.SetActive(true);
     }
@@ -138,8 +137,10 @@ public class LevelManager : MonoBehaviour
             // Add funds (Hack)
             ModifyFunds(35);
 
-            // Pay for insurance (Hack)
-            ModifyFunds(-5);
+            if (m_insured) {
+                // Pay for insurance (Hack)
+                ModifyFunds(-5);
+            }
         }
         m_periodTimerText.text = m_quarterTimer.ToString("F1") + " s";
 
@@ -203,11 +204,17 @@ public class LevelManager : MonoBehaviour
 
     #region Event Handlers
 
-    void HandlePurchaseInsuranceComplete() {
+    void HandlePurchaseInsuranceComplete(bool purchased) {
         m_phase = GamePhase.Main;
 
-        // Pay for insurance (Hack)
-        ModifyFunds(-5);
+        m_insured = purchased;
+        if (m_insured) {
+            // Pay for insurance (Hack)
+            ModifyFunds(-5);
+        }
+
+        float insuranceAmt = m_insured ? 150 : 0; // TODO: set this dynamically
+        m_station.InitHealth(50, insuranceAmt);
     }
 
     #endregion

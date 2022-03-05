@@ -104,7 +104,7 @@ public class Nexus : MonoBehaviour
     private void Return() {
         m_state = State.Returning;
 
-        // TODO: move toward nexusHub
+        // move toward nexusHub
         m_returnPos = TilemapManager.instance.GetNexusHubTransform(m_type).position;
     }
 
