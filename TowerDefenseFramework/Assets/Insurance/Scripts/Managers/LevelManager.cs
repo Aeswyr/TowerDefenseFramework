@@ -36,6 +36,10 @@ public class LevelManager : MonoBehaviour
     [SerializeField]
     private GameObject m_insuranceMenu;
 
+    // Debug
+    [SerializeField]
+    private GameObject m_oncomerPrefab;
+
     private GamePhase m_phase;
 
     private float p_fireTransform, p_stormTransform, p_floodTransform;
@@ -96,7 +100,8 @@ public class LevelManager : MonoBehaviour
 
         ModifyFunds(80);
 
-        m_station.InitHealth(200, 0);
+        m_station.InitHealth(10, 100);
+        //m_station.InitHealth(200, 0);
 
         m_phase = GamePhase.Insurance;
         m_insuranceMenu.SetActive(true);
@@ -106,6 +111,8 @@ public class LevelManager : MonoBehaviour
         if (GameManager.instance.IsPaused) {
             return;
         }
+
+        GetDebugInputs();
 
         switch (m_phase) {
             case GamePhase.Insurance:
@@ -205,4 +212,41 @@ public class LevelManager : MonoBehaviour
 
     #endregion
 
+    #region Debug
+
+    private void GetDebugInputs() {
+        if ((Input.GetKeyDown(KeyCode.E) && Input.GetKey(KeyCode.LeftShift))
+            || (Input.GetKey(KeyCode.E) && Input.GetKeyDown(KeyCode.LeftShift))) {
+            // Spawn one of each enemy
+            InstantiateDebugOncomer(Nexus.Type.Deluvian);
+            InstantiateDebugOncomer(Nexus.Type.FireSwathe);
+            InstantiateDebugOncomer(Nexus.Type.Storm);
+        }
+    }
+
+    private void InstantiateDebugOncomer(Nexus.Type nexusType) {
+        GameObject oncomerObj = Instantiate(m_oncomerPrefab);
+        oncomerObj.transform.position = TilemapManager.instance.GetNexusHubTransform(nexusType).position;
+        Oncomer oncomer = oncomerObj.GetComponent<Oncomer>();
+
+        switch (nexusType) {
+            case Nexus.Type.Storm:
+                oncomer.OncomerData = GameDB.instance.GetOncomerData(Oncomer.Type.Tempest);
+                break;
+            case Nexus.Type.Deluvian:
+                oncomer.OncomerData = GameDB.instance.GetOncomerData(Oncomer.Type.Flood);
+                break;
+            case Nexus.Type.FireSwathe:
+                oncomer.OncomerData = GameDB.instance.GetOncomerData(Oncomer.Type.Wildfire);
+                break;
+            default:
+                Debug.Log("Unknown type of nexus. Unable to spawn oncomer.");
+                Destroy(oncomerObj);
+                break;
+        }
+
+        oncomer.ManualAwake();
+    }
+
+    #endregion
 }

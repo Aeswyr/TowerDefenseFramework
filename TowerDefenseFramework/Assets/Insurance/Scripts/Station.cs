@@ -6,13 +6,13 @@ using UnityEngine;
 public class Station : MonoBehaviour
 {
     [SerializeField]
-    private HealthBar m_healthBar;
+    private HealthManager m_healthManager;
 
     public void ApplyDamage(float dmg) {
-        m_healthBar.ModifyHealth(-dmg);
+        m_healthManager.ModifyHealth(-dmg);
     }
 
     public void InitHealth(float startBase, float startInsurance) {
-        m_healthBar.InitFields(startBase, startInsurance);
+        m_healthManager.InitFields(startBase, startInsurance);
     }
 }
