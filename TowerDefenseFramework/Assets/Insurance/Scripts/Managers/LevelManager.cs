@@ -129,7 +129,7 @@ public class LevelManager : MonoBehaviour
             m_quarterTimer = m_quarterTime;
 
             // Add funds (Hack)
-            ModifyFunds(30);
+            ModifyFunds(35);
 
             // Pay for insurance (Hack)
             ModifyFunds(-5);
@@ -198,6 +198,9 @@ public class LevelManager : MonoBehaviour
 
     void HandlePurchaseInsuranceComplete() {
         m_phase = GamePhase.Main;
+
+        // Pay for insurance (Hack)
+        ModifyFunds(-5);
     }
 
     #endregion

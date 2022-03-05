@@ -52,10 +52,13 @@ public class TowerPlacementManager : MonoBehaviour
             return;
         }
 
-        // TODO: check if a tower already exists on this square
-        bool cellIsEmpty = true;
+        // get the potential placement position
+        Vector3 potentialTowerPos = cam.ScreenToWorldPoint(Input.mousePosition);
 
-        if (cellIsEmpty) {
+        // TODO: check if a tower already exists on this square
+        bool validCell = TilemapManager.instance.IsValidPlacement(potentialTowerPos);
+
+        if (validCell) {
             GameObject newTowerObj = Instantiate(towerPrefab, tilemap.WorldToCell(cam.ScreenToWorldPoint(Input.mousePosition)), towerPrefab.transform.rotation);
             Tower newTower = newTowerObj.GetComponent<Tower>();
             newTower.SetFields(targetTowerData);

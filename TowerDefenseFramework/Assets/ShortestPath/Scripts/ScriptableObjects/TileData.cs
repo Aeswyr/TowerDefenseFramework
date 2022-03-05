@@ -28,9 +28,14 @@ public class TileData : ScriptableObject
 
     [SerializeField]
     private TileData.WalkType m_walkType;
+    [SerializeField]
+    private bool m_towerPlaceable = false;
 
     public TileData.WalkType GetWalkType() {
         return m_walkType;
+    }
+    public bool GetTowerPlaceable() {
+        return m_towerPlaceable;
     }
 
 }

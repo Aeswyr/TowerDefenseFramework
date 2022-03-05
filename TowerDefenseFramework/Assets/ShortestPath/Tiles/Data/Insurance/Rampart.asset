@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 82614cbfefb619d419cf772c59718c20, type: 3}
-  m_Name: Walkable
+  m_Name: Rampart
   m_EditorClassIdentifier: 
   Tiles:
-  - {fileID: 11400000, guid: e6a22dfe68d7fd14eaf33ca12bb0a812, type: 2}
-  m_walkType: 0
-  m_towerPlaceable: 0
+  - {fileID: 11400000, guid: 8e8564e9c814eaa478dc8fdc0540493c, type: 2}
+  m_walkType: 1
+  m_towerPlaceable: 1

@@ -15,3 +15,4 @@ MonoBehaviour:
   Tiles:
   - {fileID: 11400000, guid: 5ad40705c900609468686c83eec55c76, type: 2}
   m_walkType: 6
+  m_towerPlaceable: 0

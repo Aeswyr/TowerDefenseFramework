@@ -28,6 +28,8 @@ public class TilemapManager : MonoBehaviour {
     [SerializeField]
     private Destination m_destination;
 
+    private LayerMask m_towerMask;
+
     private void Awake() {
         if (instance == null) {
             instance = this;
@@ -47,6 +49,8 @@ public class TilemapManager : MonoBehaviour {
         if (m_map == null) {
             Debug.Log("No Tilemap assigned. Shortest paths cannot be calculated.");
         }
+
+        m_towerMask = 1 << LayerMask.NameToLayer("Tower"); // weird layerMask bit magic
     }
 
     public List<Vector2> CalculatePath(List<TileData.WalkType> canWalkOn, Vector2 startPos, bool movesDiagonal) {
@@ -419,15 +423,15 @@ public class TilemapManager : MonoBehaviour {
 
     public float GetRandomX() {
         int margin = 1;
-        float min = (m_map.localBounds.center - m_map.localBounds.extents).x + 1;
-        float max = (m_map.localBounds.center + m_map.localBounds.extents).x - 1;
+        float min = (m_map.localBounds.center - m_map.localBounds.extents).x + margin;
+        float max = (m_map.localBounds.center + m_map.localBounds.extents).x - margin;
         return UnityEngine.Random.Range(min, max);
     }
 
     public float GetRandomY() {
-        int margin = 1;
-        float min = (m_map.localBounds.center - m_map.localBounds.extents).y + 3;
-        float max = (m_map.localBounds.center + m_map.localBounds.extents).y - 3;
+        int margin = 3;
+        float min = (m_map.localBounds.center - m_map.localBounds.extents).y + margin;
+        float max = (m_map.localBounds.center + m_map.localBounds.extents).y - margin;
         float givenY = UnityEngine.Random.Range(min, max);
         return givenY;
     }
@@ -442,5 +446,27 @@ public class TilemapManager : MonoBehaviour {
                 return m_stormNexusHub;
             default: return m_deluvianNexusHub;
         }
+    }
+
+    public bool IsValidPlacement(Vector3 towerPos) {
+        Vector3Int towerGridPos = m_map.WorldToCell(towerPos);
+        TileBase currTile = m_map.GetTile(towerGridPos);
+
+        // check if cell allows tower placement
+        bool canPlace = m_tileDataDict[currTile].GetTowerPlaceable();
+        if (!canPlace) {
+            return false;
+        }
+
+        // check if another tower already exists
+        return !TowerExists(towerPos);
+    }
+
+    private bool TowerExists(Vector3 gridPos) {
+        // raycast for a tower
+        Collider2D collider = Physics2D.OverlapPoint(gridPos, m_towerMask);
+
+        // return true if a tower was detected, false otherwise
+        return collider != null;
     }
 }

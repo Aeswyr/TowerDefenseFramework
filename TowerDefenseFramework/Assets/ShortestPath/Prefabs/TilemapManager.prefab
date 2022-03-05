@@ -150,6 +150,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 67d7511e32caa314b93fc1fd1b1ec113, type: 2}
   - {fileID: 11400000, guid: fc39fb55351c273429c95dbff8183ca2, type: 2}
   - {fileID: 11400000, guid: 463bb6b3406a6244ab41f2c362d4273a, type: 2}
+  - {fileID: 11400000, guid: 524b8fffc13eebe4ab6cd88ceba4bb08, type: 2}
   m_deluvianNexusHub: {fileID: 6379879930379335711}
   m_fireSwatheNexusHub: {fileID: 8331703305851621980}
   m_stormNexusHub: {fileID: 2607914037738769969}

@@ -3523,6 +3523,18 @@ PrefabInstance:
       propertyPath: Tracer
       value: 
       objectReference: {fileID: 6213430191266403413, guid: 955b4046bb0bf7246b6a49d2be5630df, type: 3}
+    - target: {fileID: 4267734552468271424, guid: 825cb965d5d531d4ab9bf044dc1b9b9a, type: 3}
+      propertyPath: m_oncomerTargetTypes.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4267734552468271424, guid: 825cb965d5d531d4ab9bf044dc1b9b9a, type: 3}
+      propertyPath: m_oncomerTargetTypes.Array.data[0]
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4267734552468271424, guid: 825cb965d5d531d4ab9bf044dc1b9b9a, type: 3}
+      propertyPath: m_oncomerTargetTypes.Array.data[1]
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 4267734552468271425, guid: 825cb965d5d531d4ab9bf044dc1b9b9a, type: 3}
       propertyPath: m_Name
       value: Tower

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(CircleCollider2D))]
+[RequireComponent(typeof(BoxCollider2D))]
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(AudioSource))]
 public class Tower : MonoBehaviour {
@@ -35,12 +35,14 @@ public class Tower : MonoBehaviour {
     [SerializeField]
     private float projectileDamage;
 
+    [SerializeField]
+    private CircleCollider2D m_radiusCollider;
+
     private int m_cost;
 
     private float reloadTimer = 0f;
     private List<GameObject> m_targets;
     private State currState;
-    private CircleCollider2D m_collider;
     private AudioSource m_audioSrc;
 
     public GameObject Tracer;
@@ -49,7 +51,8 @@ public class Tower : MonoBehaviour {
 
     private const float CELL_OFFSET = 0.5f;
 
-    private void OnTriggerEnter2D(Collider2D collider) {
+    // Handles triggers of this tower's radius collider
+    public void HandleTriggerEnter2D(Collider2D collider) {
         // when an intruder enters this tower's range, add it to the list of targets if it is targetable by the tower
         if (collider.gameObject.tag == "target") {
             if (CanTarget(collider.gameObject)) {
@@ -58,8 +61,8 @@ public class Tower : MonoBehaviour {
         }
     }
 
-    private void OnTriggerExit2D(Collider2D collider) {
-        // when an intruder enters this tower's range, add it to the list of targets
+    public void HandleTriggerExit2D(Collider2D collider) {
+        // when an intruder exits this tower's range, remove it from the list of targets
         if (collider.gameObject.tag == "target") {
             m_targets.Remove(collider.gameObject);
         }
@@ -68,8 +71,7 @@ public class Tower : MonoBehaviour {
     private void Awake() {
         m_targets = new List<GameObject>();
         currState = State.Armed;
-        m_collider = GetComponent<CircleCollider2D>();
-        m_collider.radius = this.radius;
+        m_radiusCollider.radius = this.radius;
         m_audioSrc = this.GetComponent<AudioSource>();
     }
 
