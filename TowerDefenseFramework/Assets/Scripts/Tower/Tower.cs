@@ -137,6 +137,9 @@ public class Tower : MonoBehaviour {
 
     // Note: currently gets the target which first entered the tower's radius
     private GameObject getClosestTarget(Vector3 Position) {
+        // clear enemies which have been destroyed
+        m_targets = m_targets.FindAll(t => t != null);
+
         if (m_targets.Count == 0) {
             return null;
         }
