@@ -25,6 +25,8 @@ public class TilemapManager : MonoBehaviour {
     [SerializeField]
     private Destination m_destination;
 
+    private LayerMask m_towerMask;
+
     private void Awake() {
         if (instance == null) {
             instance = this;
@@ -44,6 +46,8 @@ public class TilemapManager : MonoBehaviour {
         if (m_map == null) {
             Debug.Log("No Tilemap assigned. Shortest paths cannot be calculated.");
         }
+
+        m_towerMask = 1 << LayerMask.NameToLayer("Tower"); // weird layerMask bit magic
     }
 
     public List<Vector2> CalculatePath(List<TileData.WalkType> canWalkOn, Vector2 startPos) {
@@ -303,5 +307,27 @@ public class TilemapManager : MonoBehaviour {
         }
 
         return convertedPoints;
+    }
+
+    public bool IsValidPlacement(Vector3 towerPos) {
+        Vector3Int towerGridPos = m_map.WorldToCell(towerPos);
+        TileBase currTile = m_map.GetTile(towerGridPos);
+
+        // check if cell allows tower placement
+        bool canPlace = m_tileDataDict[currTile].GetTowerPlaceable();
+        if (!canPlace) {
+            return false;
+        }
+
+        // check if another tower already exists
+        return !TowerExists(towerPos);
+    }
+
+    private bool TowerExists(Vector3 gridPos) {
+        // raycast for a tower
+        Collider2D collider = Physics2D.OverlapPoint(gridPos, m_towerMask);
+
+        // return true if a tower was detected, false otherwise
+        return collider != null;
     }
 }

@@ -39,10 +39,13 @@ public class TowerPlacementManager : MonoBehaviour
         if (targetTower == null)
             return;
 
-        // TODO: check if a tower already exists on this square
-        bool cellIsEmpty = true;
+        // get the potential placement position
+        Vector3 potentialTowerPos = cam.ScreenToWorldPoint(Input.mousePosition);
 
-        if (cellIsEmpty) {
+        // TODO: check if a tower already exists on this square
+        bool validCell = TilemapManager.instance.IsValidPlacement(potentialTowerPos);
+
+        if (validCell) {
             Instantiate(targetTower, tilemap.WorldToCell(cam.ScreenToWorldPoint(Input.mousePosition)), targetTower.transform.rotation);
         }
         else {
