@@ -14,7 +14,6 @@ public class RadiusCollider : MonoBehaviour {
     }
 
     private void OnTriggerEnter2D(Collider2D collider) {
-        Debug.Log("trigger enter");
         m_parentTower.HandleTriggerEnter2D(collider);
     }
 

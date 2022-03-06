@@ -5,26 +5,49 @@ using UnityEngine;
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(BoxCollider2D))]
 public class Oncomer : MonoBehaviour {
+    public enum Type {
+        // Framework
+        Spider,
+        Salamander
+    }
+
     [SerializeField]
     private bool m_debugPath = false;
     [SerializeField]
     private GameObject m_debugPrefab;
     [SerializeField]
     private GameObject m_debugHolder;
+    [SerializeField]
+    private Type m_type; // only serialized for manual spawning
 
     private float m_maxHealth; // or equivalent measurement of Oncomer trait that is modified by towers
     private float m_currHealth; // or equivalent measurement of Oncomer trait that is modified by towers
     private List<TileData.WalkType> m_canWalkOn;
     private List<Vector2> m_waypoints;
     private float m_speed;
+    private bool m_movesDiagonal;
     private int m_currWaypointIndex;
 
-    [SerializeField]
-    private OncomerData m_oncomerData;
+    public OncomerData OncomerData {
+        get; set;
+    }
 
     private static float WAYPOINT_BUFFER = 0.05f;
 
-    private void Start() {
+    private void Awake() {
+        if (m_type == Type.Spider || m_type == Type.Salamander) {
+            // Framework Case
+            Debug.Log("Framework spawning");
+            this.OncomerData = GameDB.instance.GetOncomerData(m_type);
+
+            ApplyOncomerData();
+
+            CalculatePath();
+        }
+    }
+
+    // Used by Nexus when instantiating
+    public void ManualAwake() {
         ApplyOncomerData();
 
         CalculatePath();
@@ -32,6 +55,11 @@ public class Oncomer : MonoBehaviour {
 
     private void Update() {
         MoveThroughPoints();
+    }
+
+    private void OnTriggerEnter2D(Collider2D other) {
+        // TODO: check if collider belongs to the destination object
+        // if (other.gameObject.tag == "") { Destroy(this.gameObject); } // also apply damage
     }
 
     private void MoveThroughPoints() {
@@ -42,6 +70,11 @@ public class Oncomer : MonoBehaviour {
         if (m_currWaypointIndex < m_waypoints.Count) {
             Vector2 currPoint = m_waypoints[m_currWaypointIndex];
             MoveToward(currPoint);
+        }
+        else {
+            // Reached destination (should have been destroyed on collision earlier, however)
+            Debug.Log("Warning: Oncomer did not collide with target");
+            Destroy(this.gameObject);
         }
     }
 
@@ -63,16 +96,18 @@ public class Oncomer : MonoBehaviour {
     }
 
     private void ApplyOncomerData() {
-        this.GetComponent<SpriteRenderer>().sprite = m_oncomerData.Sprite;
-        m_canWalkOn = m_oncomerData.CanWalkOn;
-        m_speed = m_oncomerData.Speed;
-        m_maxHealth = m_oncomerData.MaxHealth;
+        m_type = this.OncomerData.Type;
+        GetComponent<SpriteRenderer>().sprite = this.OncomerData.Sprite;
+        m_canWalkOn = this.OncomerData.CanWalkOn;
+        m_speed = this.OncomerData.Speed;
+        m_maxHealth = this.OncomerData.MaxHealth;
         m_currHealth = m_maxHealth;
+        m_movesDiagonal = this.OncomerData.MovesDiagonal;
     }
 
     private void CalculatePath() {
         m_currWaypointIndex = 0;
-        List<Vector2> tryWaypoints = TilemapManager.instance.CalculatePath(m_canWalkOn, this.transform.position);
+        List<Vector2> tryWaypoints = TilemapManager.instance.CalculatePath(m_canWalkOn, this.transform.position, m_movesDiagonal);
 
         if (tryWaypoints == null) {
             Debug.Log("No possible path!");
@@ -94,14 +129,16 @@ public class Oncomer : MonoBehaviour {
 
     public void ApplyDamage(float damage) {
         m_currHealth -= damage;
-        Debug.Log("Target was hit by a projectile of damage " + damage + "!");
 
         if (m_currHealth <= 0) {
             // Handle removal of enemy
             Destroy(this.gameObject);
-            Debug.Log("Target was destroyed!");
         }
     }
 
     #endregion
+
+    public Type GetOncomerType() {
+        return m_type;
+    }
 }
