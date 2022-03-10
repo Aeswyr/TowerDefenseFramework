@@ -52,6 +52,7 @@ public class HealthManager : MonoBehaviour
                 m_currInsuranceHealth = 0;
 
                 // trigger death
+                EventManager.OnDeath.Invoke();
             }
         }
 

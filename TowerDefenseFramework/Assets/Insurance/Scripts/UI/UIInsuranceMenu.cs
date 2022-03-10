@@ -18,6 +18,10 @@ public class UIInsuranceMenu : MenuBase
         m_refuseButton.onClick.RemoveAllListeners();
     }
 
+    public void Open() {
+        base.OpenMenu();
+    }
+
     void HandlePurchase() {
         base.CloseMenu();
         EventManager.OnPurchaseInsuranceComplete.Invoke(true);

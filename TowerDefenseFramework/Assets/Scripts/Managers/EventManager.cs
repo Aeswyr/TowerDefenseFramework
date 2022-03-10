@@ -6,6 +6,7 @@ public class EventManager : MonoBehaviour {
 
     // Define game events below
     public static UnityEvent<bool> OnPurchaseInsuranceComplete;
+    public static UnityEvent OnDeath;
 
     private void OnEnable() {
         if (instance == null) {
@@ -17,5 +18,6 @@ public class EventManager : MonoBehaviour {
         }
 
         OnPurchaseInsuranceComplete = new UnityEvent<bool>();
+        OnDeath = new UnityEvent();
     }
 }

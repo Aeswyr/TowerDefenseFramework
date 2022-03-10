@@ -34,7 +34,9 @@ public class LevelManager : MonoBehaviour
     [SerializeField]
     private Station m_station;
     [SerializeField]
-    private GameObject m_insuranceMenu;
+    private UIInsuranceMenu m_insuranceMenu;
+    [SerializeField]
+    private UIDeathMenu m_deathMenu;
 
     // Debug
     [SerializeField]
@@ -62,6 +64,7 @@ public class LevelManager : MonoBehaviour
 
         // Event Handlers
         EventManager.OnPurchaseInsuranceComplete.AddListener(HandlePurchaseInsuranceComplete);
+        EventManager.OnDeath.AddListener(HandleDeath);
 
         AudioManager.instance.PlayAudio("lark", true);
         m_insured = false;
@@ -103,7 +106,7 @@ public class LevelManager : MonoBehaviour
         ModifyFunds(80);
 
         m_phase = GamePhase.Insurance;
-        m_insuranceMenu.SetActive(true);
+        m_insuranceMenu.Open();
     }
 
     private void Update() {
@@ -215,6 +218,10 @@ public class LevelManager : MonoBehaviour
 
         float insuranceAmt = m_insured ? 150 : 0; // TODO: set this dynamically
         m_station.InitHealth(50, insuranceAmt);
+    }
+
+    void HandleDeath() {
+        m_deathMenu.Open();
     }
 
     #endregion
