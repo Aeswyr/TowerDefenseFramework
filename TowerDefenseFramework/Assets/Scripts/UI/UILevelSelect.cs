@@ -1,15 +1,13 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using PhNarwahl;
 
-public class UIMainMenu : MenuBase {
+public class UILevelSelect : MenuBase {
     #region Editor
 
-    [SerializeField]
-    private Button m_newGameButton;
     [SerializeField]
     private Button m_quitButton;
 
@@ -18,17 +16,19 @@ public class UIMainMenu : MenuBase {
     #region Unity Callbacks
 
     private void Awake() {
-        m_newGameButton.onClick.AddListener(HandleNewGame);
-        m_quitButton.onClick.AddListener(HandleQuit);
+        foreach(Button button in MenuButtons) {
+            //TODO Figure out how to pass in level number
+            button.onClick.AddListener(HandleLevelSelection);
+        }
     }
 
     #endregion
 
     #region ButtonHandlers
 
-    private void HandleNewGame() {
+    private void HandleLevelSelection() {
         SetupLevelData();
-        SceneManager.LoadScene("LevelSelect"); // change to whichever scene is your next
+        SceneManager.LoadScene("SampleScene"); // change to whichever scene is your next
         AudioManager.instance.PlayOneShot("menu-click-default");
     }
 

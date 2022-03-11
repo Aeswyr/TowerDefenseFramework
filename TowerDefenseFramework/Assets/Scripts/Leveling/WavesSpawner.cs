@@ -2,42 +2,46 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WavesSpawner : MonoBehaviour {
+namespace PhNarwahl {
+    public class WavesSpawner : MonoBehaviour {
 
-    public Transform enemyprefab;
+        public Transform enemyprefab;
 
-    public Transform spawnPoint;
+        public Transform spawnPoint;
 
-    public float timeBetweenWaves = 5f;
-    private float countdown = 2f;
+        private float countdown = 2f;
+        private int waveNumber = 1;
 
-    private int waveNumber = 1;
-
-    void Update ()
-    {
-        if (countdown<= 0f)
+        void Update ()
         {
-            SpawnWave();
-            countdown = timeBetweenWaves;
+            if (countdown <= 0f)
+            {
+                SpawnWave();
+                countdown = LevelData.timeBetweenWaves;
+            }
+
+            countdown -= Time.deltaTime; 
+        }
+        void SpawnWave()
+        {
+            if(waveNumber > LevelData.totalWaves) {
+                Debug.Log("No more waves");
+                return;
+            }
+            for (int i = 0; i < waveNumber; i++)
+            {
+                spawnEnemy ();
+
+            }
+            waveNumber++;
+
+            Debug.Log("Wave Incoming");
         }
 
-        countdown -= Time.deltaTime; 
-    }
-    void SpawnWave()
-    {
-        for (int i = 0; i < waveNumber; i++)
+        void spawnEnemy ()
         {
-            spawnEnemy ();
-
+            Instantiate(enemyprefab, spawnPoint.position, spawnPoint.rotation);
         }
-        waveNumber++;
 
-        Debug.Log("Wave Incoming");
     }
-
-    void spawnEnemy ()
-    {
-        Instantiate(enemyprefab, spawnPoint.position, spawnPoint.rotation);
-    }
-
 }
