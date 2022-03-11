@@ -439,6 +439,12 @@ MonoBehaviour:
   m_audioData:
   - {fileID: 11400000, guid: c3ef06f8ce51a32448d32e091d3bf29b, type: 2}
   - {fileID: 11400000, guid: 7477728708acd5d4aa5712141ad949ca, type: 2}
+  m_oncomerData:
+  - {fileID: 11400000, guid: c9a4b75fbabd09a45a6556ebfe91f106, type: 2}
+  - {fileID: 11400000, guid: 32588d602bba26644b5046ed73390c65, type: 2}
+  m_towerData:
+  - {fileID: 11400000, guid: 7328814f41cecdf4f920e23a0ec9856b, type: 2}
+  - {fileID: 11400000, guid: c46f6510252b25840b3b06af9a35abf5, type: 2}
 --- !u!1 &1933579263
 GameObject:
   m_ObjectHideFlags: 0

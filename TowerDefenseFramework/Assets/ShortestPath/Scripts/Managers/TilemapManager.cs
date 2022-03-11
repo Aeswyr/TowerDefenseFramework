@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,6 +24,8 @@ public class TilemapManager : MonoBehaviour {
     [SerializeField]
     private Destination m_destination;
 
+    private LayerMask m_towerMask;
+
     private void Awake() {
         if (instance == null) {
             instance = this;
@@ -35,7 +36,7 @@ public class TilemapManager : MonoBehaviour {
 
         m_tileDataDict = new Dictionary<TileBase, TileData>();
 
-        foreach(TileData tileData in m_tileDataList) {
+        foreach (TileData tileData in m_tileDataList) {
             foreach (var tile in tileData.Tiles) {
                 m_tileDataDict.Add(tile, tileData);
             }
@@ -44,9 +45,11 @@ public class TilemapManager : MonoBehaviour {
         if (m_map == null) {
             Debug.Log("No Tilemap assigned. Shortest paths cannot be calculated.");
         }
+
+        m_towerMask = 1 << LayerMask.NameToLayer("Tower"); // weird layerMask bit magic
     }
 
-    public List<Vector2> CalculatePath(List<TileData.WalkType> canWalkOn, Vector2 startPos) {
+    public List<Vector2> CalculatePath(List<TileData.WalkType> canWalkOn, Vector2 startPos, bool movesDiagonal) {
 
         // canWalkOn : the types of terrain the given oncomer can walk through
         int[,] mapArray = ConvertMapToArray(canWalkOn);
@@ -68,7 +71,8 @@ public class TilemapManager : MonoBehaviour {
             startArrPos,
             new Vector2Int(endArrPos.x, endArrPos.y),
             ref currWaypoints,
-            ref shortestWaypoints
+            ref shortestWaypoints,
+            movesDiagonal
             );
 
 
@@ -80,7 +84,7 @@ public class TilemapManager : MonoBehaviour {
     }
 
     // returns true if end path was reached (or could be on shorter path), somewhere down the recursion, false otherwise
-    private bool CalculatePathHelper(int[,] mapArray, Vector2Int startPos, Vector2Int endPos, ref List<Vector2> currWaypoints, ref List<Vector2> shortestWaypoints) {
+    private bool CalculatePathHelper(int[,] mapArray, Vector2Int startPos, Vector2Int endPos, ref List<Vector2> currWaypoints, ref List<Vector2> shortestWaypoints, bool movesDiagonal) {
         if (startPos.x == endPos.x && startPos.y == endPos.y) {
             // base case: found a path to the end
             if (shortestWaypoints == null) {
@@ -121,9 +125,9 @@ public class TilemapManager : MonoBehaviour {
                     new Vector2Int(startPos.x, startPos.y + 1),
                     endPos,
                     ref currWaypoints,
-                    ref shortestWaypoints
-                    ))
-                    {
+                    ref shortestWaypoints,
+                    movesDiagonal
+                    )) {
                     foundPath = true;
                 }
             }
@@ -136,7 +140,8 @@ public class TilemapManager : MonoBehaviour {
                         new Vector2Int(startPos.x - 1, startPos.y),
                         endPos,
                         ref currWaypoints,
-                        ref shortestWaypoints
+                        ref shortestWaypoints,
+                        movesDiagonal
                         )) {
                         foundPath = true;
                     }
@@ -149,7 +154,8 @@ public class TilemapManager : MonoBehaviour {
                        new Vector2Int(startPos.x + 1, startPos.y),
                        endPos,
                        ref currWaypoints,
-                       ref shortestWaypoints
+                       ref shortestWaypoints,
+                       movesDiagonal
                        )) {
                         foundPath = true;
                     }
@@ -163,7 +169,8 @@ public class TilemapManager : MonoBehaviour {
                        new Vector2Int(startPos.x + 1, startPos.y),
                        endPos,
                        ref currWaypoints,
-                       ref shortestWaypoints
+                       ref shortestWaypoints,
+                       movesDiagonal
                        )) {
                         foundPath = true;
                     }
@@ -176,7 +183,8 @@ public class TilemapManager : MonoBehaviour {
                         new Vector2Int(startPos.x - 1, startPos.y),
                         endPos,
                         ref currWaypoints,
-                        ref shortestWaypoints
+                        ref shortestWaypoints,
+                        movesDiagonal
                         )) {
                         foundPath = true;
                     }
@@ -190,11 +198,105 @@ public class TilemapManager : MonoBehaviour {
                    new Vector2Int(startPos.x, startPos.y - 1),
                    endPos,
                    ref currWaypoints,
-                   ref shortestWaypoints
+                   ref shortestWaypoints,
+                   movesDiagonal
                    )) {
                     foundPath = true;
                 }
             }
+
+            #region Diagonal
+            if (movesDiagonal) {
+
+                if ((startPos - endPos).x > 0) {
+                    // Recurse on the bottom-right cell
+                    if (CanMove(startPos.y + 1, startPos.x + 1, mapArray)) {
+                        if (CalculatePathHelper(
+                            mapArray,
+                            new Vector2Int(startPos.x + 1, startPos.y + 1),
+                            endPos,
+                            ref currWaypoints,
+                            ref shortestWaypoints,
+                            movesDiagonal
+                            )) {
+                            foundPath = true;
+                        }
+                    }
+
+                    // Recurse on the bottom-left cell
+                    if (CanMove(startPos.y + 1, startPos.x - 1, mapArray)) {
+                        if (CalculatePathHelper(
+                           mapArray,
+                           new Vector2Int(startPos.x - 1, startPos.y + 1),
+                           endPos,
+                           ref currWaypoints,
+                           ref shortestWaypoints,
+                           movesDiagonal
+                           )) {
+                            foundPath = true;
+                        }
+                    }
+                }
+                else {
+                    // Recurse on the bottom-left cell
+                    if (CanMove(startPos.y + 1, startPos.x - 1, mapArray)) {
+                        if (CalculatePathHelper(
+                           mapArray,
+                           new Vector2Int(startPos.x - 1, startPos.y + 1),
+                           endPos,
+                           ref currWaypoints,
+                           ref shortestWaypoints,
+                           movesDiagonal
+                           )) {
+                            foundPath = true;
+                        }
+                    }
+
+                    // Recurse on the bottom-right cell
+                    if (CanMove(startPos.y + 1, startPos.x + 1, mapArray)) {
+                        if (CalculatePathHelper(
+                            mapArray,
+                            new Vector2Int(startPos.x + 1, startPos.y + 1),
+                            endPos,
+                            ref currWaypoints,
+                            ref shortestWaypoints,
+                            movesDiagonal
+                            )) {
+                            foundPath = true;
+                        }
+                    }
+                }
+
+                // Recurse on the top-right cell
+                if (CanMove(startPos.y - 1, startPos.x + 1, mapArray)) {
+                    if (CalculatePathHelper(
+                       mapArray,
+                       new Vector2Int(startPos.x + 1, startPos.y - 1),
+                       endPos,
+                       ref currWaypoints,
+                       ref shortestWaypoints,
+                       movesDiagonal
+                       )) {
+                        foundPath = true;
+                    }
+                }
+
+                // Recurse on the top-left cell
+                if (CanMove(startPos.y - 1, startPos.x - 1, mapArray)) {
+                    if (CalculatePathHelper(
+                        mapArray,
+                        new Vector2Int(startPos.x - 1, startPos.y - 1),
+                        endPos,
+                        ref currWaypoints,
+                        ref shortestWaypoints,
+                        movesDiagonal
+                        )) {
+                        foundPath = true;
+                    }
+                }
+            }
+
+            #endregion
 
             // Backtrack
             if (foundPath) {
@@ -229,8 +331,8 @@ public class TilemapManager : MonoBehaviour {
         int[,] arr = new int[mapY, mapX];
 
         // for each tile in the tilemap, in the array place a:
-            // 0 for tiles the given Oncomer can move through
-            // 2 for tiles the given Oncomer cannot move through
+        // 0 for tiles the given Oncomer can move through
+        // 2 for tiles the given Oncomer cannot move through
         // (1 is reserved for marking a cell as "visited" in the shortest path algorithm)
 
         int rowIndex = 0;
@@ -269,8 +371,8 @@ public class TilemapManager : MonoBehaviour {
             rowIndex++;
         }
 
-        /* For debugging the array
-
+        //For debugging the array
+        /*
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
         for (int i = 0; i < mapY; i++) {
             for (int j = 0; j < mapX; j++) {
@@ -280,8 +382,8 @@ public class TilemapManager : MonoBehaviour {
             sb.AppendLine();
         }
         Debug.Log(sb.ToString());
-
         */
+
 
         return arr;
     }
@@ -303,5 +405,27 @@ public class TilemapManager : MonoBehaviour {
         }
 
         return convertedPoints;
+    }
+
+    public bool IsValidPlacement(Vector3 towerPos) {
+        Vector3Int towerGridPos = m_map.WorldToCell(towerPos);
+        TileBase currTile = m_map.GetTile(towerGridPos);
+
+        // check if cell allows tower placement
+        bool canPlace = m_tileDataDict[currTile].GetTowerPlaceable();
+        if (!canPlace) {
+            return false;
+        }
+
+        // check if another tower already exists
+        return !TowerExists(towerPos);
+    }
+
+    private bool TowerExists(Vector3 gridPos) {
+        // raycast for a tower
+        Collider2D collider = Physics2D.OverlapPoint(gridPos, m_towerMask);
+
+        // return true if a tower was detected, false otherwise
+        return collider != null;
     }
 }

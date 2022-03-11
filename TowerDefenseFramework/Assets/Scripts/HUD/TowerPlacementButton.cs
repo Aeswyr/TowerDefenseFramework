@@ -1,24 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class TowerPlacementButton : MonoBehaviour
-{
+[RequireComponent(typeof(Button))]
+public class TowerPlacementButton : MonoBehaviour {
     [SerializeField] private Image image;
-    private GameObject tower;
+    [SerializeField]
+    private Tower.Type towerType;
     private TowerPlacementManager manager;
+    private Button m_button;
+
     void Awake() {
         manager = transform.parent.parent.GetComponent<TowerPlacementManager>();
+        m_button = this.GetComponent<Button>();
     }
 
-    // Start is called before the first frame update
-    public void SetTower(GameObject tower) {
-        this.tower = tower;
-        image.sprite = tower.GetComponent<SpriteRenderer>().sprite;
+    public void SetTower(Tower.Type type) {
+        TowerData data = GameDB.instance.GetTowerData(type);
+        towerType = data.Type;
+        image.sprite = data.Sprite;
     }
 
     public void SetPlacable() {
-        manager.SetPlacable(tower);
+        manager.SetPlacable(towerType);
     }
 }

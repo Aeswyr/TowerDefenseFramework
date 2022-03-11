@@ -4,46 +4,55 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 
-public class TowerPlacementManager : MonoBehaviour
-{
+public class TowerPlacementManager : MonoBehaviour {
     [SerializeField] private GameObject buttonPrefab;
     [SerializeField] private GameObject buttonHolder;
     [SerializeField] private GameObject placementIndicator;
     [SerializeField] private GameObject exitButton;
+
     private Tilemap tilemap;
     private Camera cam;
-    [SerializeField] private GameObject[] towers;
-    private GameObject targetTower = null;
+
+    [SerializeField]
+    private Tower.Type[] m_unlockedTowers;
+    [SerializeField] private GameObject towerPrefab;
+
+    private TowerData targetTowerData = null;
 
     // Start is called before the first frame update
-    void Start()
-    {
-        foreach (var twr in towers) {
-            Instantiate(buttonPrefab, buttonHolder.transform).GetComponent<TowerPlacementButton>().SetTower(twr);
+    void Start() {
+        foreach (Tower.Type towerType in m_unlockedTowers) {
+            Instantiate(buttonPrefab, buttonHolder.transform).GetComponent<TowerPlacementButton>().SetTower(towerType);
         }
         cam = FindObjectOfType<Camera>();
         tilemap = FindObjectOfType<Tilemap>();
+        targetTowerData = null;
     }
 
     // Update is called once per frame
-    void FixedUpdate()
-    {
-        if (targetTower != null) {
+    void FixedUpdate() {
+        if (targetTowerData != null) {
             Vector3 currPos = cam.WorldToScreenPoint(tilemap.WorldToCell(cam.ScreenToWorldPoint(Input.mousePosition)));
             placementIndicator.transform.position = currPos;
-            
+
         }
     }
 
     public void PlaceTower() {
-        if (targetTower == null)
+        if (targetTowerData == null) {
             return;
+        }
+
+        // get the potential placement position
+        Vector3 potentialTowerPos = cam.ScreenToWorldPoint(Input.mousePosition);
 
         // TODO: check if a tower already exists on this square
-        bool cellIsEmpty = true;
+        bool validCell = TilemapManager.instance.IsValidPlacement(potentialTowerPos);
 
-        if (cellIsEmpty) {
-            Instantiate(targetTower, tilemap.WorldToCell(cam.ScreenToWorldPoint(Input.mousePosition)), targetTower.transform.rotation);
+        if (validCell) {
+            GameObject newTowerObj = Instantiate(towerPrefab, tilemap.WorldToCell(cam.ScreenToWorldPoint(Input.mousePosition)), towerPrefab.transform.rotation);
+            Tower newTower = newTowerObj.GetComponent<Tower>();
+            newTower.SetFields(targetTowerData);
         }
         else {
             // TODO: handle full cell case
@@ -51,15 +60,15 @@ public class TowerPlacementManager : MonoBehaviour
 
     }
 
-    public void SetPlacable(GameObject tower) {
-        targetTower = tower;
+    public void SetPlacable(Tower.Type towerType) {
+        targetTowerData = GameDB.instance.GetTowerData(towerType);
         placementIndicator.SetActive(true);
         exitButton.SetActive(true);
-        placementIndicator.GetComponent<Image>().sprite = tower.GetComponent<SpriteRenderer>().sprite;
+        placementIndicator.GetComponent<Image>().sprite = targetTowerData.Sprite;
     }
 
     public void RevokePlacable() {
-        targetTower = null;
+        targetTowerData = null;
         placementIndicator.SetActive(false);
         exitButton.SetActive(false);
     }
