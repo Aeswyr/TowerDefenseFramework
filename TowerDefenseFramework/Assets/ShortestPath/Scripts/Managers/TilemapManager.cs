@@ -42,9 +42,7 @@ public class TilemapManager : MonoBehaviour {
         }
 
         m_towerMask = 1 << LayerMask.NameToLayer("Tower"); // weird layerMask bit magic
-    }
 
-    private void Start() {
         // if loading your levels through the TilemapManager using direct reference
         if (m_inputMapTextAsset != null) {
             LoadGridFromArray(m_inputMapTextAsset);
