@@ -10,10 +10,6 @@ public class TilemapManager : MonoBehaviour {
 
     #region TileData
 
-    [SerializeField]
-    private List<TileData> m_tileDataList;
-
-    [SerializeField]
     private Dictionary<TileBase, TileData> m_tileDataDict;
 
     [SerializeField]
@@ -38,13 +34,7 @@ public class TilemapManager : MonoBehaviour {
             Debug.Log("Warning! You have multiple TilemapManagers simultaneously. This may result in unexpected behavior.");
         }
 
-        m_tileDataDict = new Dictionary<TileBase, TileData>();
-
-        foreach(TileData tileData in m_tileDataList) {
-            foreach (var tile in tileData.Tiles) {
-                m_tileDataDict.Add(tile, tileData);
-            }
-        }
+        m_tileDataDict = GameDB.instance.GetTileDataDict();
 
         if (m_map == null) {
             Debug.Log("No Tilemap assigned. Shortest paths cannot be calculated.");
