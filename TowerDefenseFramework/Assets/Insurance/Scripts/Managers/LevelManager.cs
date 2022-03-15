@@ -16,6 +16,8 @@ public class LevelManager : MonoBehaviour
     private float p_fire, p_storm, p_flood;
     [SerializeField]
     private int n_butterflies;
+    [SerializeField]
+    private TextAsset m_gridArrayTA;
 
     [SerializeField]
     private GameObject m_butterflyPrefab;
@@ -71,6 +73,9 @@ public class LevelManager : MonoBehaviour
     }
 
     private void Start() {
+        // generate grid
+        TilemapManager.instance.LoadGridFromArray(m_gridArrayTA);
+
         if (p_fire > 0) {
             p_fireTransform = 1 - Mathf.Pow((1-p_fire), 1.0f/n_butterflies);
         }
