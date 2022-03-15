@@ -1,4 +1,9 @@
-Instructions for saving and loading maps:
+I. Saving and loading maps within the MapGen scene
+II. Loading maps while the game is running
+
+--------------------------------------------------------------------
+
+I. Instructions for saving and loading maps within the MapGen Scene:
 
 SETUP:
 - Open the scene "MapGen"
@@ -22,3 +27,9 @@ LOADING:
 - RIGHT CLICK on the component header which reads "Map Generator (Script)"
 - At the bottom of this drop-down you will see "Load Grid from Array". Click on this.
 - The tiles which correspond to your input text should appear in your scene!
+
+--------------------------------------------------------------------
+
+II. Instructions for loading maps while the game is running
+- Obtain your current level's TextAsset (.txt) file. How you manage your level files is up to you.
+- Call TilemapManager.instance.LoadGridFromArray(inputFile.txt). Your map should now be loaded!

@@ -74,7 +74,9 @@ public class LevelManager : MonoBehaviour
 
     private void Start() {
         // generate grid
-        TilemapManager.instance.LoadGridFromArray(m_gridArrayTA);
+        if (m_gridArrayTA != null) {
+            TilemapManager.instance.LoadGridFromArray(m_gridArrayTA);
+        }
 
         if (p_fire > 0) {
             p_fireTransform = 1 - Mathf.Pow((1-p_fire), 1.0f/n_butterflies);
