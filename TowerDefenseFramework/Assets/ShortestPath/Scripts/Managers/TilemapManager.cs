@@ -9,20 +9,21 @@ public class TilemapManager : MonoBehaviour {
 
     #region TileData
 
-    [SerializeField]
-    private List<TileData> m_tileDataList;
-
-    [SerializeField]
     private Dictionary<TileBase, TileData> m_tileDataDict;
 
     #endregion
 
-    //  TODO: dynamically load this for each level
     [SerializeField]
     private Tilemap m_map;
 
+    // this is one way you might obtain your level's TextAsset (.txt) file,
+    // but how you manage your level assets is up to you
+    [SerializeField]
+    private TextAsset m_inputMapTextAsset;
+
     [SerializeField]
     private Destination m_destination;
+
 
     private LayerMask m_towerMask;
 
@@ -34,19 +35,20 @@ public class TilemapManager : MonoBehaviour {
             Debug.Log("Warning! You have multiple TilemapManagers simultaneously. This may result in unexpected behavior.");
         }
 
-        m_tileDataDict = new Dictionary<TileBase, TileData>();
-
-        foreach (TileData tileData in m_tileDataList) {
-            foreach (var tile in tileData.Tiles) {
-                m_tileDataDict.Add(tile, tileData);
-            }
-        }
+        m_tileDataDict = GameDB.instance.GetTileDataDict();
 
         if (m_map == null) {
             Debug.Log("No Tilemap assigned. Shortest paths cannot be calculated.");
         }
 
         m_towerMask = 1 << LayerMask.NameToLayer("Tower"); // weird layerMask bit magic
+    }
+
+    private void Start() {
+        // if loading your levels through the TilemapManager using direct reference
+        if (m_inputMapTextAsset != null) {
+            LoadGridFromArray(m_inputMapTextAsset);
+        }
     }
 
     public List<Vector2> CalculatePath(List<TileData.WalkType> canWalkOn, Vector2 startPos, bool movesDiagonal) {
@@ -428,4 +430,68 @@ public class TilemapManager : MonoBehaviour {
         // return true if a tower was detected, false otherwise
         return collider != null;
     }
+
+    #region Grid Loading
+
+    public void LoadGridFromArray(TextAsset inputTA) {
+        if (inputTA == null) {
+            Debug.Log("Failed to load grid from array: input text is null");
+            return;
+        }
+
+        m_map.ClearAllTiles();
+        m_map.CompressBounds();
+
+        List<string> inputStrings = TextIO.TextAssetToList(inputTA, '|');
+
+        LoadStringsIntoGrid(inputStrings);
+
+        Debug.Log("successfully loaded grid from array");
+    }
+
+    private void LoadStringsIntoGrid(List<string> inputStrings) {
+        List<TileData> tileDataList = GameDB.instance.GetTileDataList();
+
+        // first two strings are mapX, mapY, adjustX, adjustY
+        int mapX = int.Parse(inputStrings[0]);
+        int mapY = int.Parse(inputStrings[1]);
+        int adjustX = int.Parse(inputStrings[2]);
+        int adjustY = int.Parse(inputStrings[3]);
+
+        // load in
+        int inputListIndex = 4;
+        int rowIndex = 0;
+        int colIndex = 0;
+        for (int row = 0; row < mapY; ++row) {
+            for (int col = 0; col < mapX; ++col) {
+                // get tile and data
+                string dataTileStr = inputStrings[inputListIndex];
+                inputListIndex++; // increment for future loops
+                int breakIndex = dataTileStr.IndexOf('.');
+                int dataIndex = int.Parse(dataTileStr.Substring(0, breakIndex));
+                int tileIndex = int.Parse(dataTileStr.Substring(breakIndex + 1));
+
+                if (dataIndex == -1 || tileIndex == -1) {
+                    // tile is empty; leave empty
+                    continue;
+                }
+
+                TileBase tile = tileDataList[dataIndex].Tiles[tileIndex];
+
+                // calculate adjusted position on grid
+                Vector3Int gridPos = new Vector3Int(col - adjustX, -(row - adjustY), 0);
+
+                // set tile
+                m_map.SetTile(gridPos, tile);
+
+                colIndex++;
+            }
+            colIndex = 0;
+            rowIndex++;
+        }
+
+        return;
+    }
+
+    #endregion // Grid Loading
 }

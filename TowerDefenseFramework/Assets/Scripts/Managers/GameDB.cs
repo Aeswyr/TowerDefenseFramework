@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class GameDB : MonoBehaviour {
     public static GameDB instance;
@@ -18,6 +19,10 @@ public class GameDB : MonoBehaviour {
     [SerializeField]
     private TowerData[] m_towerData;
 
+    [SerializeField]
+    private List<TileData> m_tileDataList;
+
+    private Dictionary<TileBase, TileData> m_tileDataDict;
 
     #endregion
 
@@ -75,6 +80,10 @@ public class GameDB : MonoBehaviour {
         }
     }
 
+    public Dictionary<TileBase, TileData> GetTileDataDict() {
+        return m_tileDataDict;
+    }
+
     #region Unity Callbacks
 
     private void OnEnable() {
@@ -83,7 +92,26 @@ public class GameDB : MonoBehaviour {
         }
         else if (instance != this) {
             Destroy(this.gameObject);
+            return;
         }
+
+        m_tileDataDict = ConstructTileDataDict();
+    }
+
+    public Dictionary<TileBase, TileData> ConstructTileDataDict() {
+        Dictionary<TileBase, TileData> dict = new Dictionary<TileBase, TileData>();
+
+        foreach (TileData tileData in m_tileDataList) {
+            foreach (var tile in tileData.Tiles) {
+                dict.Add(tile, tileData);
+            }
+        }
+
+        return dict;
+    }
+
+    public List<TileData> GetTileDataList() {
+        return m_tileDataList;
     }
 
     #endregion
