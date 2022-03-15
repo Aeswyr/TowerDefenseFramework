@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using System.IO;
+using System.Collections.Generic;
 
 public class TextIO {
     public static void WriteString(string path, string contents) {
@@ -11,10 +12,17 @@ public class TextIO {
         //Re-import the file to update the reference in the editor
         AssetDatabase.ImportAsset(path);
     }
-    public static void ReadString(string path) {
+    public static string ReadString(string path) {
         //Read the text from directly from the test.txt file
         StreamReader reader = new StreamReader(path);
+        string inputStr = reader.ReadToEnd();
         //Debug.Log(reader.ReadToEnd());
         reader.Close();
+
+        return inputStr;
+    }
+
+    public static List<string> TextAssetToList(TextAsset ta, char delim) {
+        return new List<string>(ta.text.Split(delim));
     }
 }

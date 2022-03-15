@@ -29,9 +29,15 @@ public class MapGenerator : MonoBehaviour {
         m_tileDataList = m_gameDB.GetTileDataList();
         m_tileDataDict = m_gameDB.ConstructTileDataDict();
 
-        string mapArrayStr = GridToArray();
+        m_map.CompressBounds();
+        int mapX = m_map.size.x;
+        int mapY = m_map.size.y;
+        int adjustX = -m_map.cellBounds.min.x;
+        int adjustY = m_map.cellBounds.max.y - 1;
+        string mapArrayStr = mapX + "|" + mapY + "|" + adjustX + "|" + adjustY + "|\n";
+        mapArrayStr += GridToArray();
 
-        TextIO.WriteString(m_basePath + m_outputFileName, mapArrayStr);
+        TextIO.WriteString(m_basePath + m_outputFileName + ".txt", mapArrayStr);
 
         Debug.Log("Conversion was successful! Output file: " + m_outputFileName);
     }
@@ -43,10 +49,17 @@ public class MapGenerator : MonoBehaviour {
             return;
         }
 
+        m_map.ClearAllTiles();
+        m_map.CompressBounds();
+
+        m_tileDataList = m_gameDB.GetTileDataList();
+        m_tileDataDict = m_gameDB.ConstructTileDataDict();
+
         Debug.Log("Input file: " + m_inputTxt.name + ". Loading Grid from Array...");
 
+        List<string> inputStrings = TextIO.TextAssetToList(m_inputTxt, '|');
 
-
+        LoadStringsIntoGrid(inputStrings);
 
         Debug.Log("Load was successful!");
     }
@@ -134,6 +147,48 @@ public class MapGenerator : MonoBehaviour {
         }
 
         return -1;
+    }
+
+    private void LoadStringsIntoGrid(List<string> inputStrings) {
+        // first two strings are mapX, mapY, adjustX, adjustY
+        int mapX = int.Parse(inputStrings[0]);
+        int mapY = int.Parse(inputStrings[1]);
+        int adjustX = int.Parse(inputStrings[2]);
+        int adjustY = int.Parse(inputStrings[3]);
+
+        // load in
+        int inputListIndex = 4;
+        int rowIndex = 0;
+        int colIndex = 0;
+        for (int row = 0; row < mapY; ++row) {
+            for (int col = 0; col < mapX; ++col) {
+                // get tile and data
+                string dataTileStr = inputStrings[inputListIndex];
+                inputListIndex++; // increment for future loops
+                int breakIndex = dataTileStr.IndexOf('.');
+                int dataIndex = int.Parse(dataTileStr.Substring(0, breakIndex));
+                int tileIndex = int.Parse(dataTileStr.Substring(breakIndex + 1));
+
+                if (dataIndex == -1 || tileIndex == -1) {
+                    // tile is empty; leave empty
+                    continue;
+                }
+
+                TileBase tile = m_tileDataList[dataIndex].Tiles[tileIndex];
+
+                // calculate adjusted position on grid
+                Vector3Int gridPos = new Vector3Int(col - adjustX, -(row - adjustY), 0);
+
+                // set tile
+                m_map.SetTile(gridPos, tile);
+
+                colIndex++;
+            }
+            colIndex = 0;
+            rowIndex++;
+        }
+
+        return;
     }
 
     #endregion
