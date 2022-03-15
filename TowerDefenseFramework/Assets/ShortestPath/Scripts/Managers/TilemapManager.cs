@@ -366,8 +366,12 @@ public class TilemapManager : MonoBehaviour {
             rowIndex++;
         }
 
-        //For debugging the array
-        /*
+        // DebugArray(mapX, mapY, arr);        
+
+        return arr;
+    }
+
+    private void DebugArray(int mapX, int mapY, int[,] arr) {
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
         for (int i = 0; i < mapY; i++) {
             for (int j = 0; j < mapX; j++) {
@@ -377,10 +381,6 @@ public class TilemapManager : MonoBehaviour {
             sb.AppendLine();
         }
         Debug.Log(sb.ToString());
-        */
-        
-
-        return arr;
     }
 
     private List<Vector2> ConvertArrayPointsToMap(List<Vector2> waypoints) {

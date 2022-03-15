@@ -150,5 +150,9 @@ public class GameDB : MonoBehaviour {
         return dict;
     }
 
+    public List<TileData> GetTileDataList() {
+        return m_tileDataList;
+    }
+
     #endregion
 }

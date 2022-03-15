@@ -3,24 +3,38 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class MapGenerator : MonoBehaviour
-{
+public class MapGenerator : MonoBehaviour {
     [SerializeField]
     private GameDB m_gameDB;
+    [SerializeField]
+    private Tilemap m_map;
 
+    private List<TileData> m_tileDataList;
     private Dictionary<TileBase, TileData> m_tileDataDict;
+
+    [SerializeField]
+    private string m_basePath;
 
     [SerializeField]
     private string m_outputFileName;
 
-    [ContextMenu("Convert Grid to Array")]
-    private void ConvertGridToArray() {
-        Debug.Log("Converting");
-        m_tileDataDict = m_gameDB.ConstructTileDataDict();
-    }
-
     [SerializeField]
     private TextAsset m_inputTxt;
+
+    private const string INVALID_TILE_KEY = "-1.0"; // key for invalid tile
+
+    [ContextMenu("Convert Grid to Array")]
+    private void ConvertGridToArray() {
+        Debug.Log("Beginning Conversion from Grid to Array...");
+        m_tileDataList = m_gameDB.GetTileDataList();
+        m_tileDataDict = m_gameDB.ConstructTileDataDict();
+
+        string mapArrayStr = GridToArray();
+
+        TextIO.WriteString(m_basePath + m_outputFileName, mapArrayStr);
+
+        Debug.Log("Conversion was successful! Output file: " + m_outputFileName);
+    }
 
     [ContextMenu("Load Grid from Array")]
     private void LoadGridFromArray() {
@@ -29,7 +43,99 @@ public class MapGenerator : MonoBehaviour
             return;
         }
 
-        Debug.Log("Loading: " + m_inputTxt.text);
+        Debug.Log("Input file: " + m_inputTxt.name + ". Loading Grid from Array...");
+
+
+
+
+        Debug.Log("Load was successful!");
     }
+
+    #region Helper Methods
+
+    private string GridToArray() {
+        m_map.CompressBounds(); // avoids tricky debugging issue with lopsided maps
+
+        int mapX = m_map.size.x;
+        int mapY = m_map.size.y;
+
+        string[,] arr = new string[mapY, mapX];
+
+        // for each tile in the tilemap, in the array place a key (e.g. "2.1")
+        // that corresponds to the entry in the TileData list and index of the exact tile
+
+        int rowIndex = 0;
+        int colIndex = 0;
+        for (int row = m_map.cellBounds.max.y - 1; row > m_map.cellBounds.min.y - 1; --row) {
+            for (int col = m_map.cellBounds.min.x; col < m_map.cellBounds.max.x; ++col) {
+
+                Vector3Int gridPos = new Vector3Int(col, row, 0);
+                TileBase currTile = m_map.GetTile(gridPos);
+
+                if (currTile == null) {
+                    arr[rowIndex, colIndex] = INVALID_TILE_KEY;
+                    colIndex++;
+                    continue;
+                }
+
+                if (!m_tileDataDict.ContainsKey(currTile)) {
+                    arr[rowIndex, colIndex] = INVALID_TILE_KEY;
+                    colIndex++;
+                    continue;
+                }
+
+                int dataIndex = -1; // index of data within TileData List
+                int tileIndex = -1; // tile index within data
+
+                // get tiledata index
+                int tileDataListSize = m_tileDataList.Count;
+                for (int i = 0; i < tileDataListSize; ++i) {
+                    TileData data = m_tileDataList[i];
+                    int arrIndex = ArrIndexOf(data.Tiles, currTile);
+                    if (arrIndex != -1) {
+                        // found tile
+                        dataIndex = i;
+                        tileIndex = arrIndex;
+                        break;
+                    }
+                }
+
+                if (dataIndex == -1 || tileIndex == -1) {
+                    Debug.Log("Error: either missing data or tile information at (row: " + row + ", col: " + col + ")");
+                }
+
+                arr[rowIndex, colIndex] = dataIndex + "." + tileIndex;
+
+                colIndex++;
+            }
+            colIndex = 0;
+            rowIndex++;
+        }
+
+        // convert arr to string
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        for (int i = 0; i < mapY; i++) {
+            for (int j = 0; j < mapX; j++) {
+                sb.Append(arr[i, j]);
+                sb.Append('|');
+            }
+            sb.AppendLine();
+        }
+
+        return sb.ToString();
+    }
+
+    private int ArrIndexOf(TileBase[] arr, TileBase tile) {
+        int arrSize = arr.Length;
+        for (int i = 0; i < arrSize; ++i) {
+            if (arr[i] == tile) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    #endregion
 
 }
