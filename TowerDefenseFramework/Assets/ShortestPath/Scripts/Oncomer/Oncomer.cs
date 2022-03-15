@@ -34,7 +34,7 @@ public class Oncomer : MonoBehaviour {
 
     private static float WAYPOINT_BUFFER = 0.05f;
 
-    private void Awake() {
+    private void Start() {
         if (m_type == Type.Spider || m_type == Type.Salamander) {
             // Framework Case
             Debug.Log("Framework spawning");
