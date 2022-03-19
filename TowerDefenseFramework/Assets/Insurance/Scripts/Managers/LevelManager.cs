@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class LevelManager : MonoBehaviour
-{
+public class LevelManager : MonoBehaviour {
     public static LevelManager instance;
 
     enum GamePhase {
@@ -38,10 +37,20 @@ public class LevelManager : MonoBehaviour
     [SerializeField]
     private UIDeathMenu m_deathMenu;
 
-    // Insurance
+    #region Editor Coverage
+
     [SerializeField]
     private UIInsuranceMenu m_insuranceMenu;
+
+    // the coverage available in the level
+    public List<UIInsuranceMenu.Coverage> m_availableCoverages;
+    private Dictionary<UIInsuranceMenu.InsuranceType, UIInsuranceMenu.Coverage> m_availableCoverageMap;
+
+    // the coverage the player chooses to buy
     private List<UIInsuranceMenu.InsuranceType> m_insuranceSelections;
+    private Dictionary<UIInsuranceMenu.InsuranceType, UIInsuranceMenu.Coverage> m_currCoverageDict;
+
+    #endregion // Editor Coverage
 
     // Debug
     [SerializeField]
@@ -84,7 +93,7 @@ public class LevelManager : MonoBehaviour
         }
 
         if (p_fire > 0) {
-            p_fireTransform = 1 - Mathf.Pow((1-p_fire), 1.0f/n_butterflies);
+            p_fireTransform = 1 - Mathf.Pow((1 - p_fire), 1.0f / n_butterflies);
         }
         else {
             p_fireTransform = 0;
@@ -213,12 +222,25 @@ public class LevelManager : MonoBehaviour
         m_fundsText.text = "$" + m_funds;
     }
 
-    public void DamageStation(float dmg) {
-        m_station.ApplyDamage(dmg);
+    public void DamageStation(float dmg, Oncomer.Type type) {
+        m_station.ApplyDamage(dmg, type);
     }
 
-    public void SetInsuranceSelections(List<UIInsuranceMenu.InsuranceType> selections) {
-        m_insuranceSelections = selections;
+    public void SetInsuranceSelections(List<UIInsuranceMenu.Coverage> insuranceSelections) {
+        if (m_currCoverageDict == null) {
+            m_currCoverageDict = new Dictionary<UIInsuranceMenu.InsuranceType, UIInsuranceMenu.Coverage>();
+        }
+        else {
+            m_currCoverageDict.Clear();
+        }
+
+        foreach(UIInsuranceMenu.Coverage coverage in insuranceSelections) {
+            m_currCoverageDict.Add(coverage.Type, coverage);
+        }
+    }
+
+    public Dictionary<UIInsuranceMenu.InsuranceType, UIInsuranceMenu.Coverage> GetInsuranceSelections() {
+        return m_currCoverageDict;
     }
 
     #region Event Handlers
@@ -227,7 +249,7 @@ public class LevelManager : MonoBehaviour
         m_phase = GamePhase.Main;
 
         // TODO: define insurance costs dynamically
-        m_insured = m_insuranceSelections.Count > 0;
+        m_insured = m_currCoverageDict.Count > 0;
         if (m_insured) {
             // Pay for insurance (Hack)
             ModifyFunds(-2 * m_insuranceSelections.Count);
@@ -277,6 +299,28 @@ public class LevelManager : MonoBehaviour
         }
 
         oncomer.ManualAwake();
+    }
+
+    #endregion
+
+    #region Coverage
+
+    public UIInsuranceMenu.Coverage GetCoverage(UIInsuranceMenu.InsuranceType type) {
+        // initialize the map if it does not exist
+        if (instance.m_availableCoverageMap == null) {
+            instance.m_availableCoverageMap = new Dictionary<UIInsuranceMenu.InsuranceType, UIInsuranceMenu.Coverage>();
+            foreach (UIInsuranceMenu.Coverage c in instance.m_availableCoverages) {
+                instance.m_availableCoverageMap.Add(c.Type, c);
+            }
+        }
+        if (instance.m_availableCoverageMap.ContainsKey(type)) {
+            return instance.m_availableCoverageMap[type];
+        }
+        else {
+            throw new KeyNotFoundException(string.Format("No Coverage " +
+                "with type `{0}' is in the level database of available coverages", type
+            ));
+        }
     }
 
     #endregion

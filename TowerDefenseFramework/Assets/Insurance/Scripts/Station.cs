@@ -8,8 +8,8 @@ public class Station : MonoBehaviour
     [SerializeField]
     private HealthManager m_healthManager;
 
-    public void ApplyDamage(float dmg) {
-        m_healthManager.ModifyHealth(-dmg);
+    public void ApplyDamage(float dmg, Oncomer.Type type) {
+        m_healthManager.ModifyHealth(-dmg, type);
     }
 
     public void InitHealth(float startBase, float startInsurance) {

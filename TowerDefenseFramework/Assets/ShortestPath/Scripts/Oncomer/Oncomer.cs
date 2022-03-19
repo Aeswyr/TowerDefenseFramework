@@ -31,6 +31,7 @@ public class Oncomer : MonoBehaviour {
     private List<TileData.WalkType> m_canWalkOn;
     private List<Vector2> m_waypoints;
     private float m_speed;
+    private float m_dmg;
     private bool m_movesDiagonal;
     private int m_currWaypointIndex;
 
@@ -66,7 +67,7 @@ public class Oncomer : MonoBehaviour {
     private void OnTriggerEnter2D(Collider2D other) {
         if (other.gameObject.tag == "station") {
             // TODO: get this number from oncomer data
-            LevelManager.instance.DamageStation(5);
+            LevelManager.instance.DamageStation(m_dmg, m_type);
 
             Destroy(this.gameObject);
         }
@@ -110,6 +111,7 @@ public class Oncomer : MonoBehaviour {
         GetComponent<SpriteRenderer>().sprite = this.OncomerData.Sprite;
         m_canWalkOn = this.OncomerData.CanWalkOn;
         m_speed = this.OncomerData.Speed;
+        m_dmg = this.OncomerData.Dmg;
         m_maxHealth = this.OncomerData.MaxHealth;
         m_currHealth = m_maxHealth;
         m_movesDiagonal = this.OncomerData.MovesDiagonal;

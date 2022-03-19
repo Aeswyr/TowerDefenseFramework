@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,7 +9,23 @@ public class UIInsuranceMenu : MenuBase {
         Flood,
         Fire,
         Storm,
-        Umbrella
+        Umbrella,
+        None
+    }
+
+    [Serializable]
+    public struct Coverage {
+        public InsuranceType Type;
+        public float Premium;
+        public float Deductible;
+        public float MaxCoverage;
+
+        public Coverage(InsuranceType type, float premium, float deductible, float maxCoverage) {
+            Type = type;
+            Premium = premium;
+            Deductible = deductible;
+            MaxCoverage = maxCoverage;
+        }
     }
 
     [SerializeField] private Button m_selectFloodButton;
@@ -20,11 +37,11 @@ public class UIInsuranceMenu : MenuBase {
 
     [SerializeField] private Button m_confirmButton;
 
-    private List<InsuranceType> m_insuranceSelections;
+    private List<Coverage> m_insuranceSelections;
 
     void OnEnable() {
         if (m_insuranceSelections == null) {
-            m_insuranceSelections = new List<InsuranceType>();
+            m_insuranceSelections = new List<Coverage>();
         }
         if (m_selectButtons == null) {
             m_selectButtons = new List<Button>();
@@ -60,35 +77,47 @@ public class UIInsuranceMenu : MenuBase {
 
     #region Button Handlers
 
-    void HandleSelect(InsuranceType type) {
-        if (m_insuranceSelections.Contains(type)) {
-            m_insuranceSelections.Remove(type);
+    void HandleSelect(Coverage coverage) {
+        if (m_insuranceSelections.Contains(coverage)) {
+            m_insuranceSelections.Remove(coverage);
+
+            // check if umbrella insurance is still valid,
+            if (m_insuranceSelections.Count == 1
+                && m_insuranceSelections.Contains(LevelManager.instance.GetCoverage(InsuranceType.Umbrella))) {
+                m_insuranceSelections.Clear();
+                UpdateSelectColor(m_selectUmbrellaButton);
+            }
         }
         else {
-            m_insuranceSelections.Add(type);
+            m_insuranceSelections.Add(coverage);
         }
     }
 
     void HandleSelectFlood() {
-        HandleSelect(InsuranceType.Flood);
+        HandleSelect(LevelManager.instance.GetCoverage(InsuranceType.Flood));
 
         // TODO: open reporting checklist
     }
 
     void HandleSelectFire() {
-        HandleSelect(InsuranceType.Fire);
+        HandleSelect(LevelManager.instance.GetCoverage(InsuranceType.Fire));
 
         // TODO: open reporting checklist
     }
 
     void HandleSelectStorm() {
-        HandleSelect(InsuranceType.Storm);
+        HandleSelect(LevelManager.instance.GetCoverage(InsuranceType.Storm));
 
         // TODO: open reporting checklist
     }
 
     void HandleSelectUmbrella() {
-        HandleSelect(InsuranceType.Umbrella);
+        if (m_insuranceSelections.Count < 1) {
+            UpdateSelectColor(m_selectUmbrellaButton);
+        }
+        else {
+            HandleSelect(LevelManager.instance.GetCoverage(InsuranceType.Umbrella));
+        }
 
         // TODO: open reporting checklist
     }
