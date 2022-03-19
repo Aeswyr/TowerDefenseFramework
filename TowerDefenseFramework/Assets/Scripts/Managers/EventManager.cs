@@ -5,7 +5,7 @@ public class EventManager : MonoBehaviour {
     public static EventManager instance;
 
     // Define game events below
-    public static UnityEvent<bool> OnPurchaseInsuranceComplete;
+    public static UnityEvent OnPurchaseInsuranceComplete;
     public static UnityEvent OnDeath;
 
     private void OnEnable() {
@@ -17,7 +17,7 @@ public class EventManager : MonoBehaviour {
             Destroy(this.gameObject);
         }
 
-        OnPurchaseInsuranceComplete = new UnityEvent<bool>();
+        OnPurchaseInsuranceComplete = new UnityEvent();
         OnDeath = new UnityEvent();
     }
 }

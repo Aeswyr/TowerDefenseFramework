@@ -36,9 +36,12 @@ public class LevelManager : MonoBehaviour
     [SerializeField]
     private Station m_station;
     [SerializeField]
-    private UIInsuranceMenu m_insuranceMenu;
-    [SerializeField]
     private UIDeathMenu m_deathMenu;
+
+    // Insurance
+    [SerializeField]
+    private UIInsuranceMenu m_insuranceMenu;
+    private List<UIInsuranceMenu.InsuranceType> m_insuranceSelections;
 
     // Debug
     [SerializeField]
@@ -70,6 +73,8 @@ public class LevelManager : MonoBehaviour
 
         AudioManager.instance.PlayAudio("lark", true);
         m_insured = false;
+
+        m_insuranceSelections = new List<UIInsuranceMenu.InsuranceType>();
     }
 
     private void Start() {
@@ -212,15 +217,20 @@ public class LevelManager : MonoBehaviour
         m_station.ApplyDamage(dmg);
     }
 
+    public void SetInsuranceSelections(List<UIInsuranceMenu.InsuranceType> selections) {
+        m_insuranceSelections = selections;
+    }
+
     #region Event Handlers
 
-    void HandlePurchaseInsuranceComplete(bool purchased) {
+    void HandlePurchaseInsuranceComplete() {
         m_phase = GamePhase.Main;
 
-        m_insured = purchased;
+        // TODO: define insurance costs dynamically
+        m_insured = m_insuranceSelections.Count > 0;
         if (m_insured) {
             // Pay for insurance (Hack)
-            ModifyFunds(-5);
+            ModifyFunds(-2 * m_insuranceSelections.Count);
         }
 
         float insuranceAmt = m_insured ? 150 : 0; // TODO: set this dynamically
