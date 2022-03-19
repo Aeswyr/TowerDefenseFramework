@@ -9,21 +9,51 @@ public class HealthManager : MonoBehaviour {
     [SerializeField]
     private Slider m_baseSlider;
     [SerializeField]
-    private Slider m_insuranceSlider;
+    private Slider m_floodInsuranceSlider;
+    [SerializeField]
+    private Slider m_fireInsuranceSlider;
+    [SerializeField]
+    private Slider m_stormInsuranceSlider;
+    [SerializeField]
+    private Slider m_umbrellaInsuranceSlider;
 
-    private float m_currBaseHealth, m_totalBaseHealth;
-    private float m_currInsuranceHealth, m_totalInsuranceHealth;
+    #region Health Grouping
+
+    struct HealthGroup {
+        public float Base;
+        public float Flood;
+        public float Fire;
+        public float Storm;
+        public float Umbrella;
+    }
+    struct AllHealth {
+        public HealthGroup Curr;
+        public HealthGroup Total;
+    }
+
+    private AllHealth m_allHealth;
+
+    #endregion // Health Grouping
+
     private float m_totalWidth;
     private float m_baseLeftAnchorOffset;
 
     private Dictionary<UIInsuranceMenu.InsuranceType, UIInsuranceMenu.Coverage> m_currCoveragesDict;
 
-    public void InitFields(float startBaseHealth, float startInsuranceHealth) {
-        m_currBaseHealth = m_totalBaseHealth = startBaseHealth;
-        m_currInsuranceHealth = m_totalInsuranceHealth = startInsuranceHealth;
+    public void InitFields(float startBaseHealth, float startFloodHealth, float startFireHealth, float startStormHealth, float startUmbrellaHealth) {
+        m_allHealth = new AllHealth();
 
-        m_baseSlider.value = m_currBaseHealth > 0 ? 1 : 0;
-        m_insuranceSlider.value = m_currInsuranceHealth > 0 ? 1 : 0;
+        m_allHealth.Curr.Base = m_allHealth.Total.Base = startBaseHealth;
+        m_allHealth.Curr.Flood = m_allHealth.Total.Flood = startFloodHealth;
+        m_allHealth.Curr.Fire = m_allHealth.Total.Fire = startFireHealth;
+        m_allHealth.Curr.Storm = m_allHealth.Total.Storm = startStormHealth;
+        m_allHealth.Curr.Umbrella = m_allHealth.Total.Umbrella = startUmbrellaHealth;
+
+        m_baseSlider.value = m_allHealth.Curr.Base > 0 ? 1 : 0;
+        m_floodInsuranceSlider.value = m_allHealth.Curr.Flood > 0 ? 1 : 0;
+        m_fireInsuranceSlider.value = m_allHealth.Curr.Fire > 0 ? 1 : 0;
+        m_stormInsuranceSlider.value = m_allHealth.Curr.Storm > 0 ? 1 : 0;
+        m_umbrellaInsuranceSlider.value = m_allHealth.Curr.Umbrella > 0 ? 1 : 0;
 
         //float totalHealth = startBaseHealth + startInsuranceHealth;
         //m_insuranceSlider.value = m_currInsuranceHealth / totalHealth;
@@ -38,8 +68,11 @@ public class HealthManager : MonoBehaviour {
         }
 
         // Update sliders
-        m_baseSlider.value = m_currBaseHealth / m_totalBaseHealth;
-        m_insuranceSlider.value = m_currInsuranceHealth / m_totalInsuranceHealth;
+        m_baseSlider.value = m_allHealth.Curr.Base / m_allHealth.Total.Base;
+        m_floodInsuranceSlider.value = m_allHealth.Curr.Flood / m_allHealth.Total.Flood;
+        m_fireInsuranceSlider.value = m_allHealth.Curr.Fire / m_allHealth.Total.Fire;
+        m_stormInsuranceSlider.value = m_allHealth.Curr.Storm / m_allHealth.Total.Storm;
+        m_umbrellaInsuranceSlider.value = m_allHealth.Curr.Umbrella / m_allHealth.Total.Umbrella;
     }
 
     #region Helper Methods
@@ -91,29 +124,31 @@ public class HealthManager : MonoBehaviour {
             dmg += TryCoverDamage(fullDmg, insuranceType);
             if (DEBUGGING) { Debug.Log("Remaining damage: " + dmg); }
             if (dmg <= 0) { return; }
-        }
 
-        if (DEBUGGING) { Debug.Log("Checking for umbrella insurance..."); }
+            // UMBRELLA insurance
 
-        if (m_currCoveragesDict.ContainsKey(UIInsuranceMenu.InsuranceType.Umbrella)) {
-            if (DEBUGGING) { Debug.Log("Has umbrella insurance"); }
-            UIInsuranceMenu.Coverage umbrellaCoverage = m_currCoveragesDict[UIInsuranceMenu.InsuranceType.Umbrella];
+            if (DEBUGGING) { Debug.Log("Checking for umbrella insurance..."); }
 
-            // apply umbrella deductible to base health
-            if (DEBUGGING) { Debug.Log("Applying deductible of value " + umbrellaCoverage.Deductible); }
-            float deductibleAmt = Mathf.Min(umbrellaCoverage.Deductible, dmg);
-            dmg -= deductibleAmt;
-            dmg += TryCoverDamage(deductibleAmt, UIInsuranceMenu.InsuranceType.None);
-            if (DEBUGGING) { Debug.Log("Remaining damage: " + dmg); }
-            if (dmg <= 0) { return; }
+            if (m_currCoveragesDict.ContainsKey(UIInsuranceMenu.InsuranceType.Umbrella)) {
+                if (DEBUGGING) { Debug.Log("Has umbrella insurance"); }
+                UIInsuranceMenu.Coverage umbrellaCoverage = m_currCoveragesDict[UIInsuranceMenu.InsuranceType.Umbrella];
 
-            // apply rest to umbrella insurance
-            if (DEBUGGING) { Debug.Log("applying remaining " + dmg + " dmg to insurance of type Umbrella"); }
-            fullDmg = dmg;
-            dmg = 0;
-            dmg += TryCoverDamage(fullDmg, UIInsuranceMenu.InsuranceType.Umbrella);
-            if (DEBUGGING) { Debug.Log("Remaining damage: " + dmg); }
-            if (dmg <= 0) { return; }
+                // apply umbrella deductible to base health
+                if (DEBUGGING) { Debug.Log("Applying deductible of value " + umbrellaCoverage.Deductible); }
+                deductibleAmt = Mathf.Min(umbrellaCoverage.Deductible, dmg);
+                dmg -= deductibleAmt;
+                dmg += TryCoverDamage(deductibleAmt, UIInsuranceMenu.InsuranceType.None);
+                if (DEBUGGING) { Debug.Log("Remaining damage: " + dmg); }
+                if (dmg <= 0) { return; }
+
+                // apply rest to umbrella insurance
+                if (DEBUGGING) { Debug.Log("applying remaining " + dmg + " dmg to insurance of type Umbrella"); }
+                fullDmg = dmg;
+                dmg = 0;
+                dmg += TryCoverDamage(fullDmg, UIInsuranceMenu.InsuranceType.Umbrella);
+                if (DEBUGGING) { Debug.Log("Remaining damage: " + dmg); }
+                if (dmg <= 0) { return; }
+            }
         }
 
         // apply remainder to base health
@@ -132,49 +167,46 @@ public class HealthManager : MonoBehaviour {
         float remainder = 0;
         switch (insuranceType) {
             case UIInsuranceMenu.InsuranceType.Fire:
-                // TODO: assign to fire-specific insurance
-                m_currInsuranceHealth -= dmg;
-                if (m_currInsuranceHealth < 0) {
+                m_allHealth.Curr.Fire -= dmg;
+                if (m_allHealth.Curr.Fire < 0) {
                     // store remainder
-                    remainder = -m_currInsuranceHealth;
+                    remainder = -m_allHealth.Curr.Fire;
                     // set insurance health to 0
-                    m_currInsuranceHealth = 0;
+                    m_allHealth.Curr.Fire = 0;
                 }
                 break;
             case UIInsuranceMenu.InsuranceType.Flood:
-                // TODO: assign to flood-specific insurance
-                m_currInsuranceHealth -= dmg;
-                if (m_currInsuranceHealth < 0) {
+                m_allHealth.Curr.Flood -= dmg;
+                if (m_allHealth.Curr.Flood < 0) {
                     // store remainder
-                    remainder = -m_currInsuranceHealth;
+                    remainder = -m_allHealth.Curr.Flood;
                     // set insurance health to 0
-                    m_currInsuranceHealth = 0;
+                    m_allHealth.Curr.Flood = 0;
                 }
                 break;
             case UIInsuranceMenu.InsuranceType.Storm:
-                // TODO: assign to storm-specific insurance
-                m_currInsuranceHealth -= dmg;
-                if (m_currInsuranceHealth < 0) {
+                m_allHealth.Curr.Storm -= dmg;
+                if (m_allHealth.Curr.Storm < 0) {
                     // store remainder
-                    remainder = -m_currInsuranceHealth;
+                    remainder = -m_allHealth.Curr.Storm;
                     // set insurance health to 0
-                    m_currInsuranceHealth = 0;
+                    m_allHealth.Curr.Storm = 0;
                 }
                 break;
             case UIInsuranceMenu.InsuranceType.Umbrella:
-                m_currInsuranceHealth -= dmg;
-                if (m_currInsuranceHealth < 0) {
+                m_allHealth.Curr.Umbrella -= dmg;
+                if (m_allHealth.Curr.Umbrella < 0) {
                     // store remainder
-                    remainder = -m_currInsuranceHealth;
+                    remainder = -m_allHealth.Curr.Umbrella;
                     // set insurance health to 0
-                    m_currInsuranceHealth = 0;
+                    m_allHealth.Curr.Umbrella = 0;
                 }
                 break;
             case UIInsuranceMenu.InsuranceType.None:
-                m_currBaseHealth -= dmg;
-                if (m_currBaseHealth <= 0) {
+                m_allHealth.Curr.Base -= dmg;
+                if (m_allHealth.Curr.Base <= 0) {
                     // set base health to 0
-                    m_currBaseHealth = 0;
+                    m_allHealth.Curr.Base = 0;
 
                     // no coverage left means death.
                     EventManager.OnDeath.Invoke();

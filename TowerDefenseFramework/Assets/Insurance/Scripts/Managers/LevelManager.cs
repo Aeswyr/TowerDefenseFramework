@@ -255,8 +255,16 @@ public class LevelManager : MonoBehaviour {
             ModifyFunds(-2 * m_insuranceSelections.Count);
         }
 
-        float insuranceAmt = m_insured ? 150 : 0; // TODO: set this dynamically
-        m_station.InitHealth(50, insuranceAmt);
+        float floodInsuranceAmt = m_currCoverageDict.ContainsKey(UIInsuranceMenu.InsuranceType.Flood) ?
+            m_currCoverageDict[UIInsuranceMenu.InsuranceType.Flood].MaxCoverage : 0;
+        float fireInsuranceAmt = m_currCoverageDict.ContainsKey(UIInsuranceMenu.InsuranceType.Fire) ?
+            m_currCoverageDict[UIInsuranceMenu.InsuranceType.Fire].MaxCoverage : 0;
+        float stormInsuranceAmt = m_currCoverageDict.ContainsKey(UIInsuranceMenu.InsuranceType.Storm) ?
+            m_currCoverageDict[UIInsuranceMenu.InsuranceType.Storm].MaxCoverage : 0;
+        float umbrellaInsuranceAmt = m_currCoverageDict.ContainsKey(UIInsuranceMenu.InsuranceType.Umbrella) ?
+    m_currCoverageDict[UIInsuranceMenu.InsuranceType.Umbrella].MaxCoverage : 0;
+
+        m_station.InitHealth(50, floodInsuranceAmt, fireInsuranceAmt, stormInsuranceAmt, umbrellaInsuranceAmt);
     }
 
     void HandleDeath() {

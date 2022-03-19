@@ -12,7 +12,7 @@ public class Station : MonoBehaviour
         m_healthManager.ModifyHealth(-dmg, type);
     }
 
-    public void InitHealth(float startBase, float startInsurance) {
-        m_healthManager.InitFields(startBase, startInsurance);
+    public void InitHealth(float startBase, float startFlood, float startFire, float startStorm, float startUmbrella) {
+        m_healthManager.InitFields(startBase, startFlood, startFire, startStorm, startUmbrella);
     }
 }
