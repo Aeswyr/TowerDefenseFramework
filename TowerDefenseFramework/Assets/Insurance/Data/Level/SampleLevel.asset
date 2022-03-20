@@ -25,18 +25,22 @@ MonoBehaviour:
   stationPos: {x: 0, y: 5}
   m_availableCoverages:
   - Type: 0
+    Title: Flood Insurance
     Premium: 2
     Deductible: 1
     MaxCoverage: 80
   - Type: 1
+    Title: Fire Insurance
     Premium: 2
     Deductible: 1
     MaxCoverage: 80
   - Type: 2
+    Title: Storm Insurance
     Premium: 2
     Deductible: 1
     MaxCoverage: 80
   - Type: 3
+    Title: Umbrella Insurance
     Premium: 2
     Deductible: 1
     MaxCoverage: 150

@@ -109,6 +109,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a007856161475214a8790a62ca52c553, type: 2}
   m_levelData:
   - {fileID: 11400000, guid: e53b75bd86fa4d040a1ca78f985a6214, type: 2}
+  - {fileID: 11400000, guid: dd8b557e41b5503419fc1aff40e48d29, type: 2}
   m_deluvianNexusColor: {r: 0.18039216, g: 0.4627451, b: 0.69803923, a: 1}
   m_fireSwatheNexusColor: {r: 0.7176471, g: 0.21176471, b: 0.21176471, a: 1}
   m_stormNexusColor: {r: 0.69803923, g: 0.69803923, b: 0.69803923, a: 1}

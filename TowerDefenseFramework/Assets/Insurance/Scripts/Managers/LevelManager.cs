@@ -34,6 +34,8 @@ public class LevelManager : MonoBehaviour {
     [SerializeField]
     private TextMeshProUGUI m_periodTimerText;
     [SerializeField]
+    private TextMeshProUGUI m_fundsPerPeriodText;
+    [SerializeField]
     private TextMeshProUGUI m_fundsText;
     [SerializeField]
     private Station m_station;
@@ -150,6 +152,7 @@ public class LevelManager : MonoBehaviour {
         m_quarter = 0;
         m_periodText.text = "Period: 1";
         m_periodTimerText.text = m_quarterTime.ToString("F1") + " s";
+        m_fundsPerPeriodText.text = "+$" + m_quarterFunds + " per period";
         m_adjustedGrowth = 1;
     }
 
@@ -349,6 +352,10 @@ public class LevelManager : MonoBehaviour {
                 "with type `{0}' is in the level database of available coverages", type
             ));
         }
+    }
+
+    public List<UIInsuranceMenu.Coverage> GetAvailableCoverages() {
+        return m_availableCoverages;
     }
 
     #endregion
