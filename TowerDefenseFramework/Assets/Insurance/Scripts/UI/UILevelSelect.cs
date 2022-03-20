@@ -6,6 +6,9 @@ using UnityEngine.UI;
 
 public class UILevelSelect : MonoBehaviour {
     [SerializeField]
+    private Button m_returnButton;
+
+    [SerializeField]
     private float m_colSpacing;
     [SerializeField]
     private float m_rowSpacing;
@@ -23,10 +26,14 @@ public class UILevelSelect : MonoBehaviour {
     private List<LevelData> m_levels;
 
     private void OnEnable() {
+        m_returnButton.onClick.AddListener(HandleReturn);
+
         GenerateButtons();
     }
 
     private void OnDisable() {
+        m_returnButton.onClick.RemoveAllListeners();
+
         Cleanup();
     }
 
@@ -80,5 +87,9 @@ public class UILevelSelect : MonoBehaviour {
     private void PrepareLevel(string levelID) {
         GameManager.instance.CurrLevelID = levelID;
         SceneManager.LoadScene("WaitingRoom");
+    }
+
+    private void HandleReturn() {
+        SceneManager.LoadScene("MainMenu");
     }
 }

@@ -22,6 +22,7 @@ public class UIWaitingRoom : MonoBehaviour
     }
 
     private void HandleContinue() {
+        GameManager.instance.IsPaused = false;
         SceneManager.LoadScene("LevelHolder");
     }
 }

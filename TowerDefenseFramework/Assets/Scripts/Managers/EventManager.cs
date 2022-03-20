@@ -7,6 +7,8 @@ public class EventManager : MonoBehaviour {
     // Define game events below
     public static UnityEvent OnPurchaseInsuranceComplete;
     public static UnityEvent OnDeath;
+    public static UnityEvent OnLevelComplete;
+    public static UnityEvent OnLevelQuit;
 
     private void OnEnable() {
         if (instance == null) {
@@ -19,5 +21,7 @@ public class EventManager : MonoBehaviour {
 
         OnPurchaseInsuranceComplete = new UnityEvent();
         OnDeath = new UnityEvent();
+        OnLevelComplete = new UnityEvent();
+        OnLevelQuit = new UnityEvent();
     }
 }

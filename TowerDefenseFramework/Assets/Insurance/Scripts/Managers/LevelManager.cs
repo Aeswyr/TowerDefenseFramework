@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour {
     public static LevelManager instance;
@@ -13,14 +14,17 @@ public class LevelManager : MonoBehaviour {
 
     #region Level Data
 
-    private float p_fire, p_storm, p_flood;
+    private LevelData m_levelData;
+    private float p_fire, p_storm, p_flood, p_severe;
     private int n_butterflies;
     private TextAsset m_gridArrayTA;
     private int m_startFunds;
-    private int m_quarterFunds;
-    private float m_quarterTime;
-    private float m_growthPerQuarter;
+    private int m_numPeriods;
+    private int m_periodFunds;
+    private float m_periodTime;
+    private float m_growthPerPeriod;
     private List<UIInsuranceMenu.Coverage> m_availableCoverages;
+    private Nexus.SevereEffects m_severeEffects;
 
     #endregion // Level Data
 
@@ -38,9 +42,13 @@ public class LevelManager : MonoBehaviour {
     [SerializeField]
     private TextMeshProUGUI m_fundsText;
     [SerializeField]
-    private Station m_station;
+    private Transform m_deluvianNexusHub, m_fireSwatheNexusHub, m_stormNexusHub;
     [SerializeField]
     private UIDeathMenu m_deathMenu;
+    [SerializeField]
+    private UILevelCompleteMenu m_levelCompleteMenu;
+    [SerializeField]
+    private UIQuitMenu m_quitMenu;
 
     #region Editor Coverage
 
@@ -56,18 +64,27 @@ public class LevelManager : MonoBehaviour {
 
     #endregion // Editor Coverage
 
-    // Debug
     [SerializeField]
     private GameObject m_oncomerPrefab;
+    [SerializeField]
+    private GameObject m_stationPrefab;
+    [SerializeField]
+    private Transform m_stationHolder;
+    [SerializeField]
+    private Destination m_destination;
+    [SerializeField]
+    private HealthManager m_healthManager;
+
+    private Station m_station;
 
     private GamePhase m_phase;
 
     private float p_fireTransform, p_stormTransform, p_floodTransform;
-    private float m_quarterTimer;
+    private float m_periodTimer;
     private float m_butterflyTime;
     private float m_butterflyTimer;
 
-    private int m_quarter;
+    private int m_period;
     private float m_adjustedGrowth;
     private int m_funds;
 
@@ -82,6 +99,7 @@ public class LevelManager : MonoBehaviour {
         // Event Handlers
         EventManager.OnPurchaseInsuranceComplete.AddListener(HandlePurchaseInsuranceComplete);
         EventManager.OnDeath.AddListener(HandleDeath);
+        EventManager.OnLevelComplete.AddListener(HandleLevelComplete);
 
         AudioManager.instance.PlayAudio("lark", true);
 
@@ -109,16 +127,30 @@ public class LevelManager : MonoBehaviour {
     }
 
     private void LoadLevelData(LevelData data) {
+        m_levelData = data;
         p_fire = data.PFire;
         p_storm = data.PStorm;
         p_flood = data.PFlood;
+        p_severe = data.PSevere;
         n_butterflies = data.NumButterflies;
         m_startFunds = data.StartFunds;
-        m_quarterFunds = data.QuarterFunds;
+        m_periodFunds = data.PeriodFunds;
         m_gridArrayTA = data.GridArrayTA;
-        m_quarterTime = data.QuarterTime;
-        m_growthPerQuarter = data.QuarterGrowth;
+        m_numPeriods = data.NumPeriods;
+        m_periodTime = data.PeriodTime;
+        m_growthPerPeriod = data.PeriodGrowth;
         m_availableCoverages = data.AvailableCoverages;
+        m_severeEffects = data.SevereEffects;
+
+        // Instantiate Station
+        m_stationHolder.transform.position = data.StationPos;
+        m_destination.transform.position = data.StationPos;
+        m_station = Instantiate(m_stationPrefab, m_stationHolder).GetComponent<Station>();
+
+        // Move nexuses
+        m_fireSwatheNexusHub.transform.position = data.NexusHubsPos[0];
+        m_stormNexusHub.transform.position = data.NexusHubsPos[1];
+        m_deluvianNexusHub.transform.position = data.NexusHubsPos[2];
     }
 
     private void SetupText() {
@@ -141,27 +173,29 @@ public class LevelManager : MonoBehaviour {
             p_floodTransform = 0;
         }
 
-        m_quarterTimer = m_quarterTime;
-        m_butterflyTime = m_quarterTime / n_butterflies;
+        m_periodTimer = m_periodTime;
+        m_butterflyTime = m_periodTime / n_butterflies;
         m_butterflyTimer = m_butterflyTime;
 
         m_forecastTexts[0].text = "Hurricane: " + (p_storm * 100) + "%";
         m_forecastTexts[1].text = "Wildfire: " + (p_fire * 100) + "%";
         m_forecastTexts[2].text = "Flood: " + (p_flood * 100) + "%";
 
-        m_quarter = 0;
+        m_period = 0;
         m_periodText.text = "Period: 1";
-        m_periodTimerText.text = m_quarterTime.ToString("F1") + " s";
-        m_fundsPerPeriodText.text = "+$" + m_quarterFunds + " per period";
+        m_periodTimerText.text = m_periodTime.ToString("F1") + " s";
+        m_fundsPerPeriodText.text = "+$" + m_periodFunds + " per period";
         m_adjustedGrowth = 1;
     }
 
     private void Update() {
+        GetDebugInputs();
+
         if (GameManager.instance.IsPaused) {
             return;
         }
 
-        GetDebugInputs();
+        GetLevelInputs();
 
         switch (m_phase) {
             case GamePhase.Insurance:
@@ -176,47 +210,62 @@ public class LevelManager : MonoBehaviour {
     }
 
     private void UpdateMainPhase() {
-        m_quarterTimer -= Time.deltaTime;
-        if (m_quarterTimer <= 0) {
-            // End Quarter
-            m_quarter++;
-            m_periodText.text = "Period: " + (m_quarter + 1);
-            m_adjustedGrowth = 1 + m_quarter * m_growthPerQuarter;
-            m_quarterTimer = m_quarterTime;
+        m_periodTimer -= Time.deltaTime;
+        if (m_periodTimer <= 0) {
+            // End Period
+            m_period++;
+            if (m_period >= m_numPeriods) {
+                // End level
+                EventManager.OnLevelComplete.Invoke();
+                return;
+            }
+
+            m_periodText.text = "Period: " + (m_period + 1);
+            m_adjustedGrowth = 1 + m_period * m_growthPerPeriod;
+            m_periodTimer = m_periodTime;
 
             // Add funds
-            ModifyFunds(m_quarterFunds);
+            ModifyFunds(m_periodFunds);
 
             foreach (UIInsuranceMenu.InsuranceType key in m_currCoverageDict.Keys) {
                 ModifyFunds(-(int)m_currCoverageDict[key].Premium);
             }
         }
-        m_periodTimerText.text = m_quarterTimer.ToString("F1") + " s";
+        m_periodTimerText.text = m_periodTimer.ToString("F1") + " s";
 
         m_butterflyTimer -= Time.deltaTime;
         if (m_butterflyTimer <= 0) {
             m_butterflyTimer = m_butterflyTime;
 
+            GameObject butterfly;
+            NexusButterfly nexusB;
+
             // fire
-            GameObject butterfly = Instantiate(m_butterflyPrefab);
-            NexusButterfly nexusB = butterfly.GetComponent<NexusButterfly>();
-            nexusB.GetComponent<SpriteRenderer>().color = GameDB.instance.GetNexusColor(Nexus.Type.FireSwathe);
-            nexusB.SetFields(p_fireTransform, Nexus.Type.FireSwathe, m_adjustedGrowth);
-            nexusB.ManualAwake();
+            if (p_fire > 0) {
+                butterfly = Instantiate(m_butterflyPrefab);
+                nexusB = butterfly.GetComponent<NexusButterfly>();
+                nexusB.GetComponent<SpriteRenderer>().color = GameDB.instance.GetNexusColor(Nexus.Type.FireSwathe);
+                nexusB.SetFields(p_fireTransform, p_severe, Nexus.Type.FireSwathe, m_adjustedGrowth);
+                nexusB.ManualAwake();
+            }
 
             // flood
-            butterfly = Instantiate(m_butterflyPrefab);
-            nexusB = butterfly.GetComponent<NexusButterfly>();
-            nexusB.GetComponent<SpriteRenderer>().color = GameDB.instance.GetNexusColor(Nexus.Type.Deluvian);
-            nexusB.SetFields(p_floodTransform, Nexus.Type.Deluvian, m_adjustedGrowth);
-            nexusB.ManualAwake();
+            if (p_flood > 0) {
+                butterfly = Instantiate(m_butterflyPrefab);
+                nexusB = butterfly.GetComponent<NexusButterfly>();
+                nexusB.GetComponent<SpriteRenderer>().color = GameDB.instance.GetNexusColor(Nexus.Type.Deluvian);
+                nexusB.SetFields(p_floodTransform, p_severe, Nexus.Type.Deluvian, m_adjustedGrowth);
+                nexusB.ManualAwake();
+            }
 
             // tempest
-            butterfly = Instantiate(m_butterflyPrefab);
-            nexusB = butterfly.GetComponent<NexusButterfly>();
-            nexusB.GetComponent<SpriteRenderer>().color = GameDB.instance.GetNexusColor(Nexus.Type.Storm);
-            nexusB.SetFields(p_stormTransform, Nexus.Type.Storm, m_adjustedGrowth);
-            nexusB.ManualAwake();
+            if (p_storm > 0) {
+                butterfly = Instantiate(m_butterflyPrefab);
+                nexusB = butterfly.GetComponent<NexusButterfly>();
+                nexusB.GetComponent<SpriteRenderer>().color = GameDB.instance.GetNexusColor(Nexus.Type.Storm);
+                nexusB.SetFields(p_stormTransform, p_severe, Nexus.Type.Storm, m_adjustedGrowth);
+                nexusB.ManualAwake();
+            }
         }
     }
 
@@ -287,14 +336,29 @@ public class LevelManager : MonoBehaviour {
         float umbrellaInsuranceAmt = m_currCoverageDict.ContainsKey(UIInsuranceMenu.InsuranceType.Umbrella) ?
     m_currCoverageDict[UIInsuranceMenu.InsuranceType.Umbrella].MaxCoverage : 0;
 
-        m_station.InitHealth(50, floodInsuranceAmt, fireInsuranceAmt, stormInsuranceAmt, umbrellaInsuranceAmt);
+        m_station.InitHealth(m_healthManager, m_levelData.StartHealth, floodInsuranceAmt, fireInsuranceAmt, stormInsuranceAmt, umbrellaInsuranceAmt);
     }
 
     void HandleDeath() {
         m_deathMenu.Open();
     }
 
+    void HandleLevelComplete() {
+        // display level complete UI
+        m_levelCompleteMenu.Open();
+
+        // pause game
+        GameManager.instance.IsPaused = true;
+    }
+
     #endregion
+
+    private void GetLevelInputs() {
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            // open up quit menu
+            m_quitMenu.Open();
+        }
+    }
 
     #region Debug
 
@@ -302,9 +366,18 @@ public class LevelManager : MonoBehaviour {
         if ((Input.GetKeyDown(KeyCode.E) && Input.GetKey(KeyCode.LeftShift))
             || (Input.GetKey(KeyCode.E) && Input.GetKeyDown(KeyCode.LeftShift))) {
             // Spawn one of each enemy
-            InstantiateDebugOncomer(Nexus.Type.Deluvian);
-            InstantiateDebugOncomer(Nexus.Type.FireSwathe);
-            InstantiateDebugOncomer(Nexus.Type.Storm);
+
+            if (p_flood > 0) { InstantiateDebugOncomer(Nexus.Type.Deluvian); }
+            if (p_fire > 0) { InstantiateDebugOncomer(Nexus.Type.FireSwathe); }
+            if (p_storm > 0) { InstantiateDebugOncomer(Nexus.Type.Storm); }
+        }
+
+        if ((Input.GetKeyDown(KeyCode.P) && Input.GetKey(KeyCode.LeftShift))
+        || (Input.GetKey(KeyCode.P) && Input.GetKeyDown(KeyCode.LeftShift))) {
+            // Toggle Pause
+
+            GameManager.instance.IsPaused = !(GameManager.instance.IsPaused);
+            Debug.Log("toggling: " + GameManager.instance.IsPaused);
         }
     }
 
@@ -359,4 +432,8 @@ public class LevelManager : MonoBehaviour {
     }
 
     #endregion
+
+    public Nexus.SevereEffects GetSevereEffects() {
+        return m_severeEffects;
+    }
 }

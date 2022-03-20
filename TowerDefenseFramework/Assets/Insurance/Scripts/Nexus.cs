@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,6 +28,13 @@ public class Nexus : MonoBehaviour
     private GameObject m_oncomerPrefab;
     [SerializeField]
     private float m_dmgNormalization;
+
+    private bool m_severe;
+
+    [Serializable]
+    public struct SevereEffects {
+        public float GrowthMult;
+    }
 
     private float m_baseGrowthRate;
     private float m_incubationTime;
@@ -71,8 +79,9 @@ public class Nexus : MonoBehaviour
         }
     }
 
-    public void SetType(Nexus.Type type) {
+    public void SetType(Nexus.Type type, bool severe) {
         m_type = type;
+        m_severe = severe;
     }
 
     public void ManualAwake() {
@@ -85,6 +94,11 @@ public class Nexus : MonoBehaviour
         m_size = 1;
 
         m_state = State.Incubating;
+
+        if (m_severe) {
+            SevereEffects effects = LevelManager.instance.GetSevereEffects();
+            ApplySevereEffects(effects);
+        }
     }
 
     public void MultGrowth(float multGrowth) {
@@ -99,6 +113,10 @@ public class Nexus : MonoBehaviour
         m_incubateSpeed = data.IncubateSpeed;
         m_sr.color = data.Color;
         m_dmgNormalization = data.DmgNormalization;
+    }
+
+    private void ApplySevereEffects(SevereEffects effects) {
+        m_baseGrowthRate *= effects.GrowthMult;
     }
 
     private void Return() {

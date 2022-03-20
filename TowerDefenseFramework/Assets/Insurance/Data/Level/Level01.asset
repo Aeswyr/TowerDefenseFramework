@@ -16,11 +16,20 @@ MonoBehaviour:
   p_fire: 0
   p_storm: 0
   p_flood: 0.3
+  p_severe: 0
   numButterflies: 5
   gridArrayTA: {fileID: 4900000, guid: 20d963fe76a473146a57d8483527491f, type: 3}
   startFunds: 50
-  quarterFunds: 20
-  quarterTime: 20
-  growthPerQuarter: 0.5
-  stationPos: {x: 0, y: 5}
+  numPeriods: 4
+  periodFunds: 20
+  periodTime: 20
+  growthPerPeriod: 0.5
+  startHealth: 50
+  nexusHubsPos:
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 4.5, y: 4.5}
+  stationPos: {x: 0.5, y: -3.5}
   m_availableCoverages: []
+  severeEffects:
+    GrowthMult: 0

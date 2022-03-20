@@ -104,16 +104,13 @@ public class UIInsuranceMenu : MenuBase {
     #region Button Handlers
 
     void HandleSelect(Coverage coverage) {
-        Debug.Log("selecting coverage of type " + coverage.Type);
         if (m_insuranceSelections.Contains(coverage)) {
-            Debug.Log("removing");
             m_insuranceSelections.Remove(coverage);
 
             // check if umbrella insurance is still valid,
             if (m_selectUmbrellaButton != null 
                 && m_insuranceSelections.Count == 1
                 && m_insuranceSelections.Contains(LevelManager.instance.GetCoverage(InsuranceType.Umbrella))) {
-                Debug.Log("umbrella not valid");
                 m_insuranceSelections.Clear();
                 UpdateSelectColor(m_selectUmbrellaButton);
             }

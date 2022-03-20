@@ -61,6 +61,10 @@ public class Oncomer : MonoBehaviour {
     }
 
     private void Update() {
+        if (GameManager.instance.IsPaused) {
+            return;
+        }
+
         MoveThroughPoints();
     }
 

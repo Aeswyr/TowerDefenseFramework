@@ -20,6 +20,15 @@ public class NetworkPreserver : MonoBehaviour
         foreach(GameObject obj in m_toPreserve) {
             DontDestroyOnLoad(obj);
         }
+
+        EventManager.OnLevelQuit.AddListener(HandleLevelComplete);
+        EventManager.OnLevelComplete.AddListener(HandleLevelComplete);
     }
 
+    private void HandleLevelComplete() {
+        // Release the preserved
+        foreach (GameObject obj in m_toPreserve) {
+            Destroy(obj);
+        }
+    }
 }

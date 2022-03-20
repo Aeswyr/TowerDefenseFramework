@@ -4,11 +4,9 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour {
     public static GameManager instance;
-
-    private bool m_isPaused;
     private bool m_hasReadInfo;
 
-    public bool IsPaused { get { return m_isPaused; } }
+    public bool IsPaused { get; set; }
     public bool HasReadInfo {
         get { return m_hasReadInfo; }
     }
@@ -31,7 +29,7 @@ public class GameManager : MonoBehaviour {
             Destroy(this.gameObject);
         }
 
-        m_isPaused = false;
+        IsPaused = false;
         m_hasReadInfo = false;
         CurrLevelID = "sample01";
     }
