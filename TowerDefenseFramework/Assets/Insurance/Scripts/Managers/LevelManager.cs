@@ -17,6 +17,7 @@ public class LevelManager : MonoBehaviour {
     private int n_butterflies;
     private TextAsset m_gridArrayTA;
     private int m_startFunds;
+    private int m_quarterFunds;
     private float m_quarterTime;
     private float m_growthPerQuarter;
     private List<UIInsuranceMenu.Coverage> m_availableCoverages;
@@ -67,7 +68,6 @@ public class LevelManager : MonoBehaviour {
     private int m_quarter;
     private float m_adjustedGrowth;
     private int m_funds;
-    private bool m_insured;
 
     private void Awake() {
         if (instance == null) {
@@ -82,7 +82,6 @@ public class LevelManager : MonoBehaviour {
         EventManager.OnDeath.AddListener(HandleDeath);
 
         AudioManager.instance.PlayAudio("lark", true);
-        m_insured = false;
 
         m_insuranceSelections = new List<UIInsuranceMenu.InsuranceType>();
     }
@@ -113,6 +112,7 @@ public class LevelManager : MonoBehaviour {
         p_flood = data.PFlood;
         n_butterflies = data.NumButterflies;
         m_startFunds = data.StartFunds;
+        m_quarterFunds = data.QuarterFunds;
         m_gridArrayTA = data.GridArrayTA;
         m_quarterTime = data.QuarterTime;
         m_growthPerQuarter = data.QuarterGrowth;
@@ -181,12 +181,11 @@ public class LevelManager : MonoBehaviour {
             m_adjustedGrowth = 1 + m_quarter * m_growthPerQuarter;
             m_quarterTimer = m_quarterTime;
 
-            // Add funds (Hack)
-            ModifyFunds(35);
+            // Add funds
+            ModifyFunds(m_quarterFunds);
 
-            if (m_insured) {
-                // Pay for insurance (Hack)
-                ModifyFunds(-5);
+            foreach (UIInsuranceMenu.InsuranceType key in m_currCoverageDict.Keys) {
+                ModifyFunds(-(int)m_currCoverageDict[key].Premium);
             }
         }
         m_periodTimerText.text = m_quarterTimer.ToString("F1") + " s";
@@ -271,11 +270,9 @@ public class LevelManager : MonoBehaviour {
     void HandlePurchaseInsuranceComplete() {
         m_phase = GamePhase.Main;
 
-        // TODO: define insurance costs dynamically
-        m_insured = m_currCoverageDict.Count > 0;
-        if (m_insured) {
-            // Pay for insurance (Hack)
-            ModifyFunds(-2 * m_insuranceSelections.Count);
+        // Pay for insurance 
+        foreach (UIInsuranceMenu.InsuranceType key in m_currCoverageDict.Keys) {
+            ModifyFunds(-(int)m_currCoverageDict[key].Premium);
         }
 
         float floodInsuranceAmt = m_currCoverageDict.ContainsKey(UIInsuranceMenu.InsuranceType.Flood) ?

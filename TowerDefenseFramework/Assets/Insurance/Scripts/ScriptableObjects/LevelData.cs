@@ -4,6 +4,7 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewLevelData", menuName = "Insurance/LevelData")]
 public class LevelData : ScriptableObject {
+
     [SerializeField] private string levelID;
     [SerializeField] private float p_fire;
     [SerializeField] private float p_storm;
@@ -11,6 +12,7 @@ public class LevelData : ScriptableObject {
     [SerializeField] private int numButterflies;
     [SerializeField] private TextAsset gridArrayTA;
     [SerializeField] private int startFunds;
+    [SerializeField] private int quarterFunds;
     [SerializeField] private float quarterTime;
     [SerializeField] private float growthPerQuarter;
 
@@ -38,6 +40,9 @@ public class LevelData : ScriptableObject {
     }
     public int StartFunds {
         get { return startFunds; }
+    }
+    public int QuarterFunds {
+        get { return quarterFunds; }
     }
     public float QuarterTime {
         get { return quarterTime; }

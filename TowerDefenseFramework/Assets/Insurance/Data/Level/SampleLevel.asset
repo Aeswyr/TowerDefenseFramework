@@ -19,6 +19,7 @@ MonoBehaviour:
   numButterflies: 5
   gridArrayTA: {fileID: 4900000, guid: dcd04d79c4e9601419dade7dcaf845ac, type: 3}
   startFunds: 80
+  quarterFunds: 35
   quarterTime: 30
   growthPerQuarter: 0.5
   stationPos: {x: 0, y: 5}

@@ -18,12 +18,15 @@ EditorBuildSettings:
     path: Assets/Insurance/Scenes/InfoScreen.unity
     guid: fcca310febf917c42a10a8664970ce9e
   - enabled: 1
-    path: Assets/Insurance/Scenes/InsuranceSample.unity
-    guid: eb7f1cf28929e7841914ab243a7eed4b
-  - enabled: 1
-    path: Assets/Scenes/Samples/SampleScene.unity
-    guid: d9eba3bfc92cc2843a355dda331c01ad
+    path: Assets/Insurance/Scenes/LevelSelect.unity
+    guid: 6125f4abccc14eb41a5a2d23f6cf0946
   - enabled: 1
     path: Assets/Insurance/Scenes/Network/WaitingRoom.unity
     guid: affc0e592b263684b9f6e09695c3d266
+  - enabled: 1
+    path: Assets/Insurance/Scenes/LevelHolder.unity
+    guid: eb7f1cf28929e7841914ab243a7eed4b
+  - enabled: 0
+    path: Assets/Scenes/Samples/SampleScene.unity
+    guid: d9eba3bfc92cc2843a355dda331c01ad
   m_configObjects: {}

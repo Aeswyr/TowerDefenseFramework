@@ -22,6 +22,6 @@ public class UIWaitingRoom : MonoBehaviour
     }
 
     private void HandleContinue() {
-        SceneManager.LoadScene("InsuranceSample");
+        SceneManager.LoadScene("LevelHolder");
     }
 }
