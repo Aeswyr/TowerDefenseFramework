@@ -11,19 +11,21 @@ public class LevelManager : MonoBehaviour {
         Main // active gameplay
     }
 
-    [SerializeField]
+    #region Level Data
+
     private float p_fire, p_storm, p_flood;
-    [SerializeField]
     private int n_butterflies;
-    [SerializeField]
     private TextAsset m_gridArrayTA;
+    private int m_startFunds;
+    private float m_quarterTime;
+    private float m_growthPerQuarter;
+    private List<UIInsuranceMenu.Coverage> m_availableCoverages;
+
+    #endregion // Level Data
+
 
     [SerializeField]
     private GameObject m_butterflyPrefab;
-    [SerializeField]
-    private float m_quarterTime;
-    [SerializeField]
-    private float m_growthPerQuarter;
     [SerializeField]
     private TextMeshProUGUI[] m_forecastTexts;
     [SerializeField]
@@ -43,7 +45,6 @@ public class LevelManager : MonoBehaviour {
     private UIInsuranceMenu m_insuranceMenu;
 
     // the coverage available in the level
-    public List<UIInsuranceMenu.Coverage> m_availableCoverages;
     private Dictionary<UIInsuranceMenu.InsuranceType, UIInsuranceMenu.Coverage> m_availableCoverageMap;
 
     // the coverage the player chooses to buy
@@ -87,11 +88,38 @@ public class LevelManager : MonoBehaviour {
     }
 
     private void Start() {
+        // Load LevelData
+        LoadLevelData(GameDB.instance.GetLevelData(GameManager.instance.CurrLevelID));
+
         // generate grid
         if (m_gridArrayTA != null) {
             TilemapManager.instance.LoadGridFromArray(m_gridArrayTA);
         }
 
+        // set up text
+        SetupText();
+
+        // assign initial funds
+        ModifyFunds(m_startFunds);
+
+        // begin level at insurance phase
+        m_phase = GamePhase.Insurance;
+        m_insuranceMenu.Open();
+    }
+
+    private void LoadLevelData(LevelData data) {
+        p_fire = data.PFire;
+        p_storm = data.PStorm;
+        p_flood = data.PFlood;
+        n_butterflies = data.NumButterflies;
+        m_startFunds = data.StartFunds;
+        m_gridArrayTA = data.GridArrayTA;
+        m_quarterTime = data.QuarterTime;
+        m_growthPerQuarter = data.QuarterGrowth;
+        m_availableCoverages = data.AvailableCoverages;
+    }
+
+    private void SetupText() {
         if (p_fire > 0) {
             p_fireTransform = 1 - Mathf.Pow((1 - p_fire), 1.0f / n_butterflies);
         }
@@ -123,11 +151,6 @@ public class LevelManager : MonoBehaviour {
         m_periodText.text = "Period: 1";
         m_periodTimerText.text = m_quarterTime.ToString("F1") + " s";
         m_adjustedGrowth = 1;
-
-        ModifyFunds(80);
-
-        m_phase = GamePhase.Insurance;
-        m_insuranceMenu.Open();
     }
 
     private void Update() {
@@ -234,7 +257,7 @@ public class LevelManager : MonoBehaviour {
             m_currCoverageDict.Clear();
         }
 
-        foreach(UIInsuranceMenu.Coverage coverage in insuranceSelections) {
+        foreach (UIInsuranceMenu.Coverage coverage in insuranceSelections) {
             m_currCoverageDict.Add(coverage.Type, coverage);
         }
     }

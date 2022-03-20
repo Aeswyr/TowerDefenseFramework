@@ -16,6 +16,10 @@ public class GameManager : MonoBehaviour {
         m_hasReadInfo = hasRead;
     }
 
+    public string CurrLevelID {
+        get; set;
+    }
+
     #region Unity Callbacks
 
     private void OnEnable() {
@@ -29,6 +33,7 @@ public class GameManager : MonoBehaviour {
 
         m_isPaused = false;
         m_hasReadInfo = false;
+        CurrLevelID = "sample01";
     }
 
     #endregion

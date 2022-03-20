@@ -10,6 +10,7 @@ public class GameDB : MonoBehaviour {
     private Dictionary<Nexus.Type, NexusData> m_nexusMap;
     private Dictionary<Oncomer.Type, OncomerData> m_oncomerMap;
     private Dictionary<Tower.Type, TowerData> m_towerMap;
+    private Dictionary<string, LevelData> m_levelMap;
 
     #region Editor
 
@@ -22,6 +23,8 @@ public class GameDB : MonoBehaviour {
     [SerializeField]
     private TowerData[] m_towerData;
     [SerializeField]
+    private LevelData[] m_levelData;
+    [SerializeField]
     private Color m_deluvianNexusColor;
     [SerializeField]
     private Color m_fireSwatheNexusColor;
@@ -33,7 +36,7 @@ public class GameDB : MonoBehaviour {
 
     private Dictionary<TileBase, TileData> m_tileDataDict;
 
-    #endregion
+    #endregion // Editor
 
     public AudioData GetAudioData(string id) {
         // initialize the map if it does not exist
@@ -117,6 +120,24 @@ public class GameDB : MonoBehaviour {
                 return m_stormNexusColor;
             default:
                 return m_stormNexusColor;
+        }
+    }
+
+    public LevelData GetLevelData(string id) {
+        // initialize the map if it does not exist
+        if (instance.m_levelMap == null) {
+            instance.m_levelMap = new Dictionary<string, LevelData>();
+            foreach (LevelData data in instance.m_levelData) {
+                instance.m_levelMap.Add(data.ID, data);
+            }
+        }
+        if (instance.m_levelMap.ContainsKey(id)) {
+            return instance.m_levelMap[id];
+        }
+        else {
+            throw new KeyNotFoundException(string.Format("No Level " +
+                "with id `{0}' is in the database", id
+            ));
         }
     }
 

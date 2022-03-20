@@ -11296,14 +11296,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e6fe35325fd30c4a9f4eb6094945a32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  p_fire: 0.7
-  p_storm: 0.75
-  p_flood: 0.6
-  n_butterflies: 5
-  m_gridArrayTA: {fileID: 4900000, guid: dcd04d79c4e9601419dade7dcaf845ac, type: 3}
+  m_startData: {fileID: 11400000, guid: e53b75bd86fa4d040a1ca78f985a6214, type: 2}
   m_butterflyPrefab: {fileID: 6420807316193670844, guid: 15c55339bef422245b74be3ec2872973, type: 3}
-  m_quarterTime: 30
-  m_growthPerQuarter: 0.5
   m_forecastTexts:
   - {fileID: 335250700}
   - {fileID: 766910101}
@@ -11314,23 +11308,6 @@ MonoBehaviour:
   m_station: {fileID: 922897484}
   m_deathMenu: {fileID: 1624180348}
   m_insuranceMenu: {fileID: 573463840}
-  m_availableCoverages:
-  - Type: 0
-    Premium: 2
-    Deductible: 1
-    MaxCoverage: 80
-  - Type: 1
-    Premium: 2
-    Deductible: 1
-    MaxCoverage: 80
-  - Type: 2
-    Premium: 2
-    Deductible: 1
-    MaxCoverage: 80
-  - Type: 3
-    Premium: 2
-    Deductible: 1
-    MaxCoverage: 150
   m_oncomerPrefab: {fileID: 683611376501781135, guid: 240b5e31597a8bf47b04e592f075fd54, type: 3}
 --- !u!224 &6805610381303765545
 RectTransform:

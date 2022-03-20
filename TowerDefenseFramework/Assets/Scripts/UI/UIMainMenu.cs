@@ -39,6 +39,7 @@ public class UIMainMenu : MenuBase {
     private void HandleNewGame() {
         //SceneManager.LoadScene("SampleScene");
         //SceneManager.LoadScene("InsuranceSample");
+        GameManager.instance.CurrLevelID = "sample01";
         SceneManager.LoadScene("WaitingRoom"); // change to whichever scene is your next
         AudioManager.instance.PlayOneShot("menu-click-default");
     }
