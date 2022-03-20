@@ -44,7 +44,6 @@ public class Oncomer : MonoBehaviour {
     private void Awake() {
         if (m_type == Type.Spider || m_type == Type.Salamander) {
             // Framework Case
-            Debug.Log("Framework spawning");
             this.OncomerData = GameDB.instance.GetOncomerData(m_type);
 
             ApplyOncomerData();

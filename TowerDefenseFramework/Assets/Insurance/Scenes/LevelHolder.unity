@@ -5164,7 +5164,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c695b8443259f0440aa8e4d775e8ded3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DEBUGGING: 1
+  DEBUGGING: 0
   m_baseSlider: {fileID: 35471562}
   m_floodInsuranceSlider: {fileID: 799302611}
   m_fireInsuranceSlider: {fileID: 1557688100}

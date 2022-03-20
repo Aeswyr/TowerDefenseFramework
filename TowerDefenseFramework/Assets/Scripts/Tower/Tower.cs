@@ -76,6 +76,10 @@ public class Tower : MonoBehaviour {
     }
 
     void FixedUpdate() {
+        if (GameManager.instance.IsPaused) {
+            return;
+        }
+
         // perform actions according to tower's state
         switch (currState) {
             case State.Reloading:

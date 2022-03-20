@@ -377,7 +377,6 @@ public class LevelManager : MonoBehaviour {
             // Toggle Pause
 
             GameManager.instance.IsPaused = !(GameManager.instance.IsPaused);
-            Debug.Log("toggling: " + GameManager.instance.IsPaused);
         }
     }
 
