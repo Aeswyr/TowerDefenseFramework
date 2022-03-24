@@ -9,7 +9,8 @@ public class LevelManager : MonoBehaviour {
 
     enum GamePhase {
         Insurance, // purchase insurance
-        Main // active gameplay
+        Main, // active gameplay
+        Limbo // no more incoming waves
     }
 
     #region Level Data
@@ -88,6 +89,8 @@ public class LevelManager : MonoBehaviour {
     private float m_adjustedGrowth;
     private int m_funds;
 
+    private int m_numOncomers;
+
     private void Awake() {
         if (instance == null) {
             instance = this;
@@ -104,12 +107,13 @@ public class LevelManager : MonoBehaviour {
         AudioManager.instance.PlayAudio("lark", true);
 
         m_insuranceSelections = new List<UIInsuranceMenu.InsuranceType>();
+        m_numOncomers = 0;
+
+        // Load LevelData
+        LoadLevelData(GameDB.instance.GetLevelData(GameManager.instance.CurrLevelID));
     }
 
     private void Start() {
-        // Load LevelData
-        LoadLevelData(GameDB.instance.GetLevelData(GameManager.instance.CurrLevelID));
-
         // generate grid
         if (m_gridArrayTA != null) {
             TilemapManager.instance.LoadGridFromArray(m_gridArrayTA);
@@ -204,6 +208,9 @@ public class LevelManager : MonoBehaviour {
             case GamePhase.Main:
                 UpdateMainPhase();
                 break;
+            case GamePhase.Limbo:
+                UpdateLimboPhase();
+                break;
             default:
                 break;
         }
@@ -211,12 +218,20 @@ public class LevelManager : MonoBehaviour {
 
     private void UpdateMainPhase() {
         m_periodTimer -= Time.deltaTime;
+
         if (m_periodTimer <= 0) {
             // End Period
             m_period++;
+
+            // Add funds
+            ModifyFunds(m_periodFunds);
+
             if (m_period >= m_numPeriods) {
-                // End level
-                EventManager.OnLevelComplete.Invoke();
+                m_phase = GamePhase.Limbo;
+                UpdateLimboPhase();
+                m_periodText.text = "In Limbo";
+                m_periodTimerText.text = "Indefinite";
+                m_fundsPerPeriodText.text = "";
                 return;
             }
 
@@ -224,15 +239,35 @@ public class LevelManager : MonoBehaviour {
             m_adjustedGrowth = 1 + m_period * m_growthPerPeriod;
             m_periodTimer = m_periodTime;
 
-            // Add funds
-            ModifyFunds(m_periodFunds);
-
             foreach (UIInsuranceMenu.InsuranceType key in m_currCoverageDict.Keys) {
                 ModifyFunds(-(int)m_currCoverageDict[key].Premium);
             }
         }
         m_periodTimerText.text = m_periodTimer.ToString("F1") + " s";
 
+        GenerateButterflies();
+    }
+
+    private void UpdateLimboPhase() {
+        // after last period, wait for all oncomers to be destroyed
+        if (m_numOncomers <= 0) {
+            // End level
+            EventManager.OnLevelComplete.Invoke();
+            return;
+        }
+    }
+
+    private void CheckEndLevel() {
+        if (m_period >= m_numPeriods) {
+            // End level
+            if (m_numOncomers <= 0) {
+                EventManager.OnLevelComplete.Invoke();
+            }
+            return;
+        }
+    }
+
+    private void GenerateButterflies() {
         m_butterflyTimer -= Time.deltaTime;
         if (m_butterflyTimer <= 0) {
             m_butterflyTimer = m_butterflyTime;
@@ -341,6 +376,9 @@ public class LevelManager : MonoBehaviour {
 
     void HandleDeath() {
         m_deathMenu.Open();
+
+        // pause game
+        GameManager.instance.IsPaused = true;
     }
 
     void HandleLevelComplete() {
@@ -435,4 +473,27 @@ public class LevelManager : MonoBehaviour {
     public Nexus.SevereEffects GetSevereEffects() {
         return m_severeEffects;
     }
+
+    public void RegisterOncomer() {
+        m_numOncomers++;
+    }
+
+    public void RemoveOncomer() {
+        m_numOncomers--;
+    }
+
+    #region SevereWeatherTrigger
+
+    public string GetCurrLevelID() {
+        return m_levelData.ID;
+    }
+
+    public bool TriggerConditionsMet(TutorialManager.SevereWeatherTrigger trigger) {
+        if (m_period == trigger.Period - 1 && m_periodTimer <= trigger.Time) {
+            return true;
+        }
+        return false;
+    }
+
+    #endregion // SevereWeatherTrigger
 }

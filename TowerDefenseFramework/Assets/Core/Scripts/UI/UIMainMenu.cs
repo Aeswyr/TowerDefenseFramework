@@ -22,7 +22,7 @@ public class UIMainMenu : MenuBase {
         m_quitButton.onClick.AddListener(HandleQuit);
         m_aboutButton.onClick.AddListener(HandleAbout);
 
-        m_newGameButton.interactable = GameManager.instance.HasReadInfo;
+        //m_newGameButton.interactable = GameManager.instance.HasReadInfo;
         m_newGameButton.onClick.AddListener(HandleNewGame);
     }
 

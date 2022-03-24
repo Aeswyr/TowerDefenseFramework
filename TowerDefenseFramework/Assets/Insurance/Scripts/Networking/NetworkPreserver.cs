@@ -22,6 +22,7 @@ public class NetworkPreserver : MonoBehaviour
         }
 
         EventManager.OnLevelQuit.AddListener(HandleLevelComplete);
+        EventManager.OnDeath.AddListener(HandleLevelComplete);
         EventManager.OnLevelComplete.AddListener(HandleLevelComplete);
     }
 

@@ -10,7 +10,9 @@ public class TextIO {
         writer.WriteLine(contents);
         writer.Close();
         //Re-import the file to update the reference in the editor
+#if UNITY_EDITOR
         AssetDatabase.ImportAsset(path);
+#endif
     }
     public static string ReadString(string path) {
         //Read the text from directly from the test.txt file

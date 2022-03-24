@@ -29,12 +29,17 @@ public class Nexus : MonoBehaviour
     [SerializeField]
     private float m_dmgNormalization;
 
-    private bool m_severe;
+    private bool m_isSevere;
 
     [Serializable]
     public struct SevereEffects {
+        public float BaseSize;
         public float GrowthMult;
+        public float HealthBonusMult;
+        public float DamageBonusMult;
     }
+
+    private SevereEffects m_severeEffects;
 
     private float m_baseGrowthRate;
     private float m_incubationTime;
@@ -81,7 +86,7 @@ public class Nexus : MonoBehaviour
 
     public void SetType(Nexus.Type type, bool severe) {
         m_type = type;
-        m_severe = severe;
+        m_isSevere = severe;
     }
 
     public void ManualAwake() {
@@ -95,7 +100,7 @@ public class Nexus : MonoBehaviour
 
         m_state = State.Incubating;
 
-        if (m_severe) {
+        if (m_isSevere) {
             SevereEffects effects = LevelManager.instance.GetSevereEffects();
             ApplySevereEffects(effects);
         }
@@ -116,7 +121,9 @@ public class Nexus : MonoBehaviour
     }
 
     private void ApplySevereEffects(SevereEffects effects) {
+        m_size += effects.BaseSize;
         m_baseGrowthRate *= effects.GrowthMult;
+        m_severeEffects = effects;
     }
 
     private void Return() {
@@ -128,10 +135,16 @@ public class Nexus : MonoBehaviour
 
     private void Release() {
         int numSpawns = (int)m_size + 1;
+
+        SpriteRenderer sr = this.GetComponent<SpriteRenderer>();
+        float leftBound = -sr.bounds.extents.x;
+        float width = sr.bounds.extents.x * 2;
+        float step = width / numSpawns;
+
         for (int i = 0; i < numSpawns; ++i) {
 
             GameObject oncomerObj = Instantiate(m_oncomerPrefab);
-            Vector3 spawnSpread = new Vector3(-0.4f + .2f * i, 0, 0);
+            Vector3 spawnSpread = new Vector3(leftBound + step * i, 0, 0);
             oncomerObj.transform.position = this.transform.position + spawnSpread;
             Oncomer oncomer = oncomerObj.GetComponent<Oncomer>();
 
@@ -152,7 +165,12 @@ public class Nexus : MonoBehaviour
                     break;
             }
 
-            oncomer.ManualAwake();
+            if (m_isSevere) {
+                oncomer.ManualAwake(m_severeEffects);
+            }
+            else {
+                oncomer.ManualAwake();
+            }
         }
 
         Destroy(this.gameObject);

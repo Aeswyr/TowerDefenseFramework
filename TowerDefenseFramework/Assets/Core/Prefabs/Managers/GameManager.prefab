@@ -108,8 +108,15 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ce26112a3f4f31544899d637ae51c61d, type: 2}
   - {fileID: 11400000, guid: a007856161475214a8790a62ca52c553, type: 2}
   m_levelData:
-  - {fileID: 11400000, guid: e53b75bd86fa4d040a1ca78f985a6214, type: 2}
   - {fileID: 11400000, guid: dd8b557e41b5503419fc1aff40e48d29, type: 2}
+  - {fileID: 11400000, guid: aaa7302fdf45b0d458f9aebe0c5eb1c3, type: 2}
+  - {fileID: 11400000, guid: 78eb04d62b059cb4288f2db34557dbca, type: 2}
+  - {fileID: 11400000, guid: c65c9411b7534824d98a2bb3959e9f01, type: 2}
+  - {fileID: 11400000, guid: 3cb29af2177e0664087d6df52c57c5ef, type: 2}
+  - {fileID: 11400000, guid: 54f0ace9126bc244aa0911a5dee3a32b, type: 2}
+  - {fileID: 11400000, guid: 3824d20615a02ad459d4e44cd408e9e7, type: 2}
+  - {fileID: 11400000, guid: 5b20bb209a111a2419d78738ba1cefeb, type: 2}
+  - {fileID: 11400000, guid: e53b75bd86fa4d040a1ca78f985a6214, type: 2}
   m_deluvianNexusColor: {r: 0.18039216, g: 0.4627451, b: 0.69803923, a: 1}
   m_fireSwatheNexusColor: {r: 0.7176471, g: 0.21176471, b: 0.21176471, a: 1}
   m_stormNexusColor: {r: 0.69803923, g: 0.69803923, b: 0.69803923, a: 1}

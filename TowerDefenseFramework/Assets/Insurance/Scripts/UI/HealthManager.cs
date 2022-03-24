@@ -211,8 +211,6 @@ public class HealthManager : MonoBehaviour {
                     // no coverage left means death.
                     EventManager.OnDeath.Invoke();
 
-                    Debug.Log("Station destroyed");
-
                     // no remainder because level is lost
                 }
                 break;
@@ -220,7 +218,6 @@ public class HealthManager : MonoBehaviour {
                 break;
         }
 
-        Debug.Log("Remainder: " + remainder);
         return remainder;
     }
 

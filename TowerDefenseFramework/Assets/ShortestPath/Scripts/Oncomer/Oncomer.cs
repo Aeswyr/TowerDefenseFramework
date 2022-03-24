@@ -57,7 +57,20 @@ public class Oncomer : MonoBehaviour {
         ApplyOncomerData();
 
         CalculatePath();
+
+        LevelManager.instance.RegisterOncomer();
     }
+
+    public void ManualAwake(Nexus.SevereEffects severeEffects) {
+        ApplyOncomerData();
+
+        ApplySevereEffects(severeEffects);
+
+        CalculatePath();
+
+        LevelManager.instance.RegisterOncomer();
+    }
+
 
     private void Update() {
         if (GameManager.instance.IsPaused) {
@@ -74,6 +87,10 @@ public class Oncomer : MonoBehaviour {
 
             Destroy(this.gameObject);
         }
+    }
+
+    private void OnDestroy() {
+        LevelManager.instance.RemoveOncomer();
     }
 
     private void MoveThroughPoints() {
@@ -118,6 +135,12 @@ public class Oncomer : MonoBehaviour {
         m_maxHealth = this.OncomerData.MaxHealth;
         m_currHealth = m_maxHealth;
         m_movesDiagonal = this.OncomerData.MovesDiagonal;
+    }
+
+    private void ApplySevereEffects(Nexus.SevereEffects effects) {
+        m_maxHealth *= (1 + effects.HealthBonusMult);
+        m_currHealth = m_maxHealth;
+        m_dmg *= (1 + effects.DamageBonusMult);
     }
 
     private void CalculatePath() {
