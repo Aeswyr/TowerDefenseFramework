@@ -13,20 +13,36 @@ MonoBehaviour:
   m_Name: Level05
   m_EditorClassIdentifier: 
   levelID: level05
-  p_fire: 0
+  p_fire: 0.75
   p_storm: 0
-  p_flood: 0
-  p_severe: 0
-  numButterflies: 0
-  gridArrayTA: {fileID: 0}
-  startFunds: 0
-  numPeriods: 0
-  periodFunds: 0
-  periodTime: 0
-  growthPerPeriod: 0
-  startHealth: 0
-  nexusHubsPos: []
-  stationPos: {x: 0, y: 0}
-  m_availableCoverages: []
+  p_flood: 0.45
+  p_severe: 0.05
+  numButterflies: 5
+  gridArrayTA: {fileID: 4900000, guid: 7d64f2c2a079f2f4682872ccaf1c2b17, type: 3}
+  startFunds: 50
+  numPeriods: 6
+  periodFunds: 25
+  periodTime: 20
+  growthPerPeriod: 0.5
+  startHealth: 50
+  nexusHubsPos:
+  - {x: -4.5, y: 6.5}
+  - {x: 0, y: 0}
+  - {x: -4.5, y: -5.5}
+  stationPos: {x: 3.5, y: -4.5}
+  m_availableCoverages:
+  - Type: 0
+    Title: Flood Insurance
+    Premium: 4
+    Deductible: 1
+    MaxCoverage: 80
+  - Type: 1
+    Title: Fire Insurance
+    Premium: 7
+    Deductible: 1
+    MaxCoverage: 80
   severeEffects:
-    GrowthMult: 0
+    BaseSize: 8
+    GrowthMult: 4
+    HealthBonusMult: 2
+    DamageBonusMult: 3
