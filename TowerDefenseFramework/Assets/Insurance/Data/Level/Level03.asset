@@ -37,7 +37,7 @@ MonoBehaviour:
     Deductible: 1
     MaxCoverage: 80
   severeEffects:
-    BaseSize: 8
-    GrowthMult: 4
-    HealthBonusMult: 2
+    BaseSize: 7
+    GrowthMult: 3
+    HealthBonusMult: 3
     DamageBonusMult: 3

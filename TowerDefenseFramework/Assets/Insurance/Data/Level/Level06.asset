@@ -33,12 +33,17 @@ MonoBehaviour:
   m_availableCoverages:
   - Type: 0
     Title: Flood Insurance
-    Premium: 8
+    Premium: 4
     Deductible: 1
     MaxCoverage: 80
   - Type: 1
     Title: Fire Insurance
-    Premium: 7
+    Premium: 5
+    Deductible: 1
+    MaxCoverage: 80
+  - Type: 2
+    Title: Umbrella Insurance
+    Premium: 4
     Deductible: 1
     MaxCoverage: 80
   - Type: 3
