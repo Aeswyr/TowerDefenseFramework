@@ -65,17 +65,24 @@ public class UIInsuranceMenu : MenuBase {
         if (m_buttonObjs != null) {
             Cleanup();
         }
-        GenerateButtons();
 
         if (m_insuranceSelections == null) {
             m_insuranceSelections = new List<Coverage>();
         }
+        else {
+            m_insuranceSelections.Clear();
+        }
+
+        GenerateButtons();
+
         if (m_selectButtons == null) {
             m_selectButtons = new List<Button>();
-
-            foreach(GameObject buttonObj in m_buttonObjs) {
-                m_selectButtons.Add(buttonObj.GetComponent<Button>());
-            }
+        }
+        else {
+            m_selectButtons.Clear();
+        }
+        foreach (GameObject buttonObj in m_buttonObjs) {
+            m_selectButtons.Add(buttonObj.GetComponent<Button>());
         }
 
         m_confirmButton.onClick.AddListener(HandleConfirm);
@@ -107,6 +114,7 @@ public class UIInsuranceMenu : MenuBase {
 
     void HandleSelect(Coverage coverage) {
         if (m_insuranceSelections.Contains(coverage)) {
+
             m_insuranceSelections.Remove(coverage);
 
             // check if umbrella insurance is still valid,
@@ -164,7 +172,9 @@ public class UIInsuranceMenu : MenuBase {
         if (m_buttonObjs == null) {
             m_buttonObjs = new List<GameObject>();
         }
-        Cleanup();
+        else {
+            Cleanup();
+        }
 
         List<Coverage> coverages = InsuranceManager.Instance.GetAvailableCoverages();
 
@@ -182,6 +192,12 @@ public class UIInsuranceMenu : MenuBase {
             Button insuranceButton = insuranceButtonObj.GetComponent<Button>();
             insuranceButton.onClick.AddListener(delegate { HandleSelect(coverage); });
             insuranceButtonObj.GetComponent<InsuranceButton>().SetText(coverage.Title, ("" + coverage.Premium), ("" + coverage.Deductible));
+
+            // set green if already selected from previous round
+            if (InsuranceManager.Instance.CoverageIsActive(coverage)) {
+                m_insuranceSelections.Add(coverage);
+                UpdateSelectColor(insuranceButton);
+            }
 
             // save to buttons
             m_buttonObjs.Add(insuranceButtonObj);

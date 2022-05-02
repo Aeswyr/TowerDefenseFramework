@@ -3299,7 +3299,8 @@ MonoBehaviour:
   - {fileID: 1343159038}
   - {fileID: 1452031356}
   - {fileID: 1244507207}
-  m_disableButtons: []
+  m_disableButtons:
+  - {fileID: 358576867}
   m_colSpacing: 0
   m_rowSpacing: 60
   m_numCols: 1
@@ -5397,6 +5398,10 @@ PrefabInstance:
     - target: {fileID: 1752870327939059247, guid: 24eef356f782df947b2ac7c61cd9aa6b, type: 3}
       propertyPath: m_Name
       value: InsuranceSlider
+      objectReference: {fileID: 0}
+    - target: {fileID: 7494774907748218980, guid: 24eef356f782df947b2ac7c61cd9aa6b, type: 3}
+      propertyPath: m_type
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 24eef356f782df947b2ac7c61cd9aa6b, type: 3}
@@ -8836,6 +8841,10 @@ PrefabInstance:
     - target: {fileID: 6082192324543132770, guid: 24eef356f782df947b2ac7c61cd9aa6b, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7494774907748218980, guid: 24eef356f782df947b2ac7c61cd9aa6b, type: 3}
+      propertyPath: m_type
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 24eef356f782df947b2ac7c61cd9aa6b, type: 3}
@@ -13259,6 +13268,10 @@ PrefabInstance:
     - target: {fileID: 1752870327939059247, guid: 24eef356f782df947b2ac7c61cd9aa6b, type: 3}
       propertyPath: m_Name
       value: InsuranceSlider
+      objectReference: {fileID: 0}
+    - target: {fileID: 7494774907748218980, guid: 24eef356f782df947b2ac7c61cd9aa6b, type: 3}
+      propertyPath: m_type
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 24eef356f782df947b2ac7c61cd9aa6b, type: 3}

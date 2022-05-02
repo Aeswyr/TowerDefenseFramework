@@ -25,9 +25,10 @@ public class InsuranceManager : MonoBehaviour
     private Dictionary<UIInsuranceMenu.InsuranceType, UIInsuranceMenu.Coverage> m_availableCoverageMap;
 
     // the coverage the player chooses to buy
-    private List<UIInsuranceMenu.InsuranceType> m_insuranceSelections;
     private Dictionary<UIInsuranceMenu.InsuranceType, UIInsuranceMenu.Coverage> m_currCoverageDict;
 
+    private float m_timerTime;
+    private InsuranceSlider[] m_allSliders;
 
     private void Awake() {
         if (Instance == null) {
@@ -38,12 +39,48 @@ public class InsuranceManager : MonoBehaviour
             return;
         }
 
-        m_insuranceSelections = new List<UIInsuranceMenu.InsuranceType>();
-
         m_optionsButton.onClick.AddListener(HandleOptions);
+
+        m_allSliders = new InsuranceSlider[4] {
+            m_floodInsuranceSlider,
+            m_fireInsuranceSlider,
+            m_stormInsuranceSlider,
+            m_umbrellaInsuranceSlider
+        };
 
         // Event Handlers
         EventManager.OnPurchaseInsuranceComplete.AddListener(HandlePurchaseInsuranceComplete);
+    }
+
+    private void Start() {
+        m_timerTime = LevelManager.instance.GetPeriodTime();
+
+    }
+
+    private void Update() {
+        if (GameManager.instance.IsPaused) {
+            return;
+        }
+
+        foreach(InsuranceSlider iSlider in m_allSliders) {
+            if (m_currCoverageDict.ContainsKey(iSlider.Type)) {
+                iSlider.Timer.Tick();
+                if (iSlider.Timer.TimeRemaining <= 0) {
+                    // remove coverage from list
+                    m_currCoverageDict.Remove(iSlider.Type);
+
+                    iSlider.Slider.value = 0;
+
+                    // TODO: auto-renew if applicable
+                }
+            }
+            else if (iSlider.Timer.TimeRemaining != 0) {
+                // insurance was in effect, but has since been canceled
+                iSlider.Timer.Cancel();
+
+                iSlider.Slider.value = 0;
+            }
+        }
     }
 
 
@@ -70,10 +107,19 @@ public class InsuranceManager : MonoBehaviour
             // check radial timer
             if (GetSliderByType(key).Timer.TimeRemaining == 0) {
                 // insurance is new
-                // LevelManager.instance.AttemptPurchase((int)m_currCoverageDict[key].Premium);
+                if (LevelManager.instance.AttemptPurchase((int)m_currCoverageDict[key].Premium)) {
+                    InsuranceSlider slider = GetSliderByType(key);
+                    // start timer
+                    slider.Timer.Activate(m_timerTime);
 
-                // TODO: start timer
-                // GetSliderByType(key).Timer.StartTimer();
+                    InitSliderHelper(slider, key);
+
+                    // reset insurance-level health
+                    HealthManager.Instance.ResetHealth(key);
+                }
+                else {
+                    Debug.Log("not enough funds!");
+                }
             }
             else {
                 // still in effect, so no payment
@@ -153,6 +199,14 @@ public class InsuranceManager : MonoBehaviour
             default:
                 return null;
         }
+    }
+
+    public bool CoverageIsActive(UIInsuranceMenu.Coverage coverage) {
+        if (m_currCoverageDict == null) {
+            return false;
+        }
+
+        return m_currCoverageDict.ContainsKey(coverage.Type);
     }
 
     #region Event Handlers

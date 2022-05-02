@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class HealthManager : MonoBehaviour {
+    public static HealthManager Instance;
+
     [SerializeField] bool DEBUGGING = false;
 
     [SerializeField]
@@ -31,6 +33,16 @@ public class HealthManager : MonoBehaviour {
     private float m_baseLeftAnchorOffset;
 
     private Dictionary<UIInsuranceMenu.InsuranceType, UIInsuranceMenu.Coverage> m_currCoveragesDict;
+
+    private void Awake() {
+        if (Instance == null) {
+            Instance = this;
+        }
+        else if (this != Instance) {
+            Destroy(this.gameObject);
+            return;
+        }
+    }
 
     public void InitFields(float startBaseHealth, float startFloodHealth, float startFireHealth, float startStormHealth, float startUmbrellaHealth) {
         m_allHealth = new AllHealth();
@@ -61,6 +73,25 @@ public class HealthManager : MonoBehaviour {
         float stormVal = m_allHealth.Curr.Storm / m_allHealth.Total.Storm;
         float umbrellaVal = m_allHealth.Curr.Umbrella / m_allHealth.Total.Umbrella;
         InsuranceManager.Instance.ModifyInsuranceHealth(floodVal, fireVal, stormVal, umbrellaVal);
+    }
+
+    public void ResetHealth(UIInsuranceMenu.InsuranceType type) {
+        switch (type) {
+            case UIInsuranceMenu.InsuranceType.Flood:
+                m_allHealth.Curr.Flood = m_allHealth.Total.Flood;
+                break;
+            case UIInsuranceMenu.InsuranceType.Fire:
+                m_allHealth.Curr.Fire = m_allHealth.Total.Fire;
+                break;
+            case UIInsuranceMenu.InsuranceType.Storm:
+                m_allHealth.Curr.Storm = m_allHealth.Total.Storm;
+                break;
+            case UIInsuranceMenu.InsuranceType.Umbrella:
+                m_allHealth.Curr.Umbrella = m_allHealth.Total.Umbrella;
+                break;
+            default:
+                break;
+        }
     }
 
     #region Helper Methods

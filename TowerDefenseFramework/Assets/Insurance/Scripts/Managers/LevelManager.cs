@@ -228,7 +228,7 @@ public class LevelManager : MonoBehaviour
             m_adjustedGrowth = 1 + m_period * m_growthPerPeriod;
             m_periodTimer = m_periodTime;
 
-            InsuranceManager.Instance.PayForAllCoverages();
+            // InsuranceManager.Instance.PayForAllCoverages();
         }
         m_periodTimerText.text = m_periodTimer.ToString("F1") + " s";
 
@@ -322,11 +322,15 @@ public class LevelManager : MonoBehaviour
         m_station.ApplyDamage(dmg, type);
     }
 
+    public float GetPeriodTime() {
+        return m_periodTime;
+    }
+
     #region Event Handlers
 
     void HandlePurchaseInsuranceComplete() {
         if (m_phase == GamePhase.Insurance) {
-            InsuranceManager.Instance.PayForAllCoverages();
+            // InsuranceManager.Instance.PayForAllCoverages();
             m_phase = GamePhase.Main;
 
             float floodInsuranceAmt = InsuranceManager.Instance.GetInsuranceAmount(UIInsuranceMenu.InsuranceType.Flood);
