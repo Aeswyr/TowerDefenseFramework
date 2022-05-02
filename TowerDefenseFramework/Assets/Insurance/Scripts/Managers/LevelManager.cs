@@ -4,10 +4,12 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class LevelManager : MonoBehaviour {
+public class LevelManager : MonoBehaviour
+{
     public static LevelManager instance;
 
-    enum GamePhase {
+    enum GamePhase
+    {
         Insurance, // purchase insurance
         Main, // active gameplay
         Limbo // no more incoming waves
@@ -51,19 +53,7 @@ public class LevelManager : MonoBehaviour {
     [SerializeField]
     private UIQuitMenu m_quitMenu;
 
-    #region Editor Coverage
 
-    [SerializeField]
-    private UIInsuranceMenu m_insuranceMenu;
-
-    // the coverage available in the level
-    private Dictionary<UIInsuranceMenu.InsuranceType, UIInsuranceMenu.Coverage> m_availableCoverageMap;
-
-    // the coverage the player chooses to buy
-    private List<UIInsuranceMenu.InsuranceType> m_insuranceSelections;
-    private Dictionary<UIInsuranceMenu.InsuranceType, UIInsuranceMenu.Coverage> m_currCoverageDict;
-
-    #endregion // Editor Coverage
 
     [SerializeField]
     private GameObject m_oncomerPrefab;
@@ -106,7 +96,6 @@ public class LevelManager : MonoBehaviour {
 
         AudioManager.instance.PlayAudio("lark", true);
 
-        m_insuranceSelections = new List<UIInsuranceMenu.InsuranceType>();
         m_numOncomers = 0;
 
         // Load LevelData
@@ -127,7 +116,7 @@ public class LevelManager : MonoBehaviour {
 
         // begin level at insurance phase
         m_phase = GamePhase.Insurance;
-        m_insuranceMenu.Open();
+        InsuranceManager.Instance.OpenOptionsMenu();
     }
 
     private void LoadLevelData(LevelData data) {
@@ -143,7 +132,7 @@ public class LevelManager : MonoBehaviour {
         m_numPeriods = data.NumPeriods;
         m_periodTime = data.PeriodTime;
         m_growthPerPeriod = data.PeriodGrowth;
-        m_availableCoverages = data.AvailableCoverages;
+        InsuranceManager.Instance.SetAvailableCoverages(data.AvailableCoverages);
         m_severeEffects = data.SevereEffects;
 
         // Instantiate Station
@@ -239,9 +228,7 @@ public class LevelManager : MonoBehaviour {
             m_adjustedGrowth = 1 + m_period * m_growthPerPeriod;
             m_periodTimer = m_periodTime;
 
-            foreach (UIInsuranceMenu.InsuranceType key in m_currCoverageDict.Keys) {
-                ModifyFunds(-(int)m_currCoverageDict[key].Premium);
-            }
+            InsuranceManager.Instance.PayForAllCoverages();
         }
         m_periodTimerText.text = m_periodTimer.ToString("F1") + " s";
 
@@ -335,43 +322,20 @@ public class LevelManager : MonoBehaviour {
         m_station.ApplyDamage(dmg, type);
     }
 
-    public void SetInsuranceSelections(List<UIInsuranceMenu.Coverage> insuranceSelections) {
-        if (m_currCoverageDict == null) {
-            m_currCoverageDict = new Dictionary<UIInsuranceMenu.InsuranceType, UIInsuranceMenu.Coverage>();
-        }
-        else {
-            m_currCoverageDict.Clear();
-        }
-
-        foreach (UIInsuranceMenu.Coverage coverage in insuranceSelections) {
-            m_currCoverageDict.Add(coverage.Type, coverage);
-        }
-    }
-
-    public Dictionary<UIInsuranceMenu.InsuranceType, UIInsuranceMenu.Coverage> GetInsuranceSelections() {
-        return m_currCoverageDict;
-    }
-
     #region Event Handlers
 
     void HandlePurchaseInsuranceComplete() {
-        m_phase = GamePhase.Main;
+        if (m_phase == GamePhase.Insurance) {
+            InsuranceManager.Instance.PayForAllCoverages();
+            m_phase = GamePhase.Main;
 
-        // Pay for insurance 
-        foreach (UIInsuranceMenu.InsuranceType key in m_currCoverageDict.Keys) {
-            ModifyFunds(-(int)m_currCoverageDict[key].Premium);
+            float floodInsuranceAmt = InsuranceManager.Instance.GetInsuranceAmount(UIInsuranceMenu.InsuranceType.Flood);
+            float fireInsuranceAmt = InsuranceManager.Instance.GetInsuranceAmount(UIInsuranceMenu.InsuranceType.Fire);
+            float stormInsuranceAmt = InsuranceManager.Instance.GetInsuranceAmount(UIInsuranceMenu.InsuranceType.Storm);
+            float umbrellaInsuranceAmt = InsuranceManager.Instance.GetInsuranceAmount(UIInsuranceMenu.InsuranceType.Umbrella);
+
+            m_station.InitHealth(m_healthManager, m_levelData.StartHealth, floodInsuranceAmt, fireInsuranceAmt, stormInsuranceAmt, umbrellaInsuranceAmt);
         }
-
-        float floodInsuranceAmt = m_currCoverageDict.ContainsKey(UIInsuranceMenu.InsuranceType.Flood) ?
-            m_currCoverageDict[UIInsuranceMenu.InsuranceType.Flood].MaxCoverage : 0;
-        float fireInsuranceAmt = m_currCoverageDict.ContainsKey(UIInsuranceMenu.InsuranceType.Fire) ?
-            m_currCoverageDict[UIInsuranceMenu.InsuranceType.Fire].MaxCoverage : 0;
-        float stormInsuranceAmt = m_currCoverageDict.ContainsKey(UIInsuranceMenu.InsuranceType.Storm) ?
-            m_currCoverageDict[UIInsuranceMenu.InsuranceType.Storm].MaxCoverage : 0;
-        float umbrellaInsuranceAmt = m_currCoverageDict.ContainsKey(UIInsuranceMenu.InsuranceType.Umbrella) ?
-    m_currCoverageDict[UIInsuranceMenu.InsuranceType.Umbrella].MaxCoverage : 0;
-
-        m_station.InitHealth(m_healthManager, m_levelData.StartHealth, floodInsuranceAmt, fireInsuranceAmt, stormInsuranceAmt, umbrellaInsuranceAmt);
     }
 
     void HandleDeath() {
@@ -440,32 +404,6 @@ public class LevelManager : MonoBehaviour {
         }
 
         oncomer.ManualAwake();
-    }
-
-    #endregion
-
-    #region Coverage
-
-    public UIInsuranceMenu.Coverage GetCoverage(UIInsuranceMenu.InsuranceType type) {
-        // initialize the map if it does not exist
-        if (instance.m_availableCoverageMap == null) {
-            instance.m_availableCoverageMap = new Dictionary<UIInsuranceMenu.InsuranceType, UIInsuranceMenu.Coverage>();
-            foreach (UIInsuranceMenu.Coverage c in instance.m_availableCoverages) {
-                instance.m_availableCoverageMap.Add(c.Type, c);
-            }
-        }
-        if (instance.m_availableCoverageMap.ContainsKey(type)) {
-            return instance.m_availableCoverageMap[type];
-        }
-        else {
-            throw new KeyNotFoundException(string.Format("No Coverage " +
-                "with type `{0}' is in the level database of available coverages", type
-            ));
-        }
-    }
-
-    public List<UIInsuranceMenu.Coverage> GetAvailableCoverages() {
-        return m_availableCoverages;
     }
 
     #endregion

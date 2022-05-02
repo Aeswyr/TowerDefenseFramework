@@ -95,6 +95,8 @@ public class UIInsuranceMenu : MenuBase {
         if (LevelManager.instance != null) {
             Cleanup();
         }
+
+        GameManager.instance.IsPaused = false;
     }
 
     public void Open() {
@@ -110,7 +112,7 @@ public class UIInsuranceMenu : MenuBase {
             // check if umbrella insurance is still valid,
             if (m_selectUmbrellaButton != null 
                 && m_insuranceSelections.Count == 1
-                && m_insuranceSelections.Contains(LevelManager.instance.GetCoverage(InsuranceType.Umbrella))) {
+                && m_insuranceSelections.Contains(InsuranceManager.Instance.GetCoverage(InsuranceType.Umbrella))) {
                 m_insuranceSelections.Clear();
                 UpdateSelectColor(m_selectUmbrellaButton);
             }
@@ -137,8 +139,7 @@ public class UIInsuranceMenu : MenuBase {
 
     void HandleConfirm() {
         base.CloseMenu();
-        // TODO: may need to set these to coverages, not insurance types
-        LevelManager.instance.SetInsuranceSelections(m_insuranceSelections);
+        InsuranceManager.Instance.SetInsuranceSelections(m_insuranceSelections);
         EventManager.OnPurchaseInsuranceComplete.Invoke();
     }
 
@@ -165,7 +166,7 @@ public class UIInsuranceMenu : MenuBase {
         }
         Cleanup();
 
-        List<Coverage> coverages = LevelManager.instance.GetAvailableCoverages();
+        List<Coverage> coverages = InsuranceManager.Instance.GetAvailableCoverages();
 
         int colIndex = 0;
         foreach (Coverage coverage in coverages) {

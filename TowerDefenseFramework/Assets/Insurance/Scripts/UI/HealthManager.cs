@@ -8,14 +8,6 @@ public class HealthManager : MonoBehaviour {
 
     [SerializeField]
     private Slider m_baseSlider;
-    [SerializeField]
-    private Slider m_floodInsuranceSlider;
-    [SerializeField]
-    private Slider m_fireInsuranceSlider;
-    [SerializeField]
-    private Slider m_stormInsuranceSlider;
-    [SerializeField]
-    private Slider m_umbrellaInsuranceSlider;
 
     #region Health Grouping
 
@@ -43,42 +35,38 @@ public class HealthManager : MonoBehaviour {
     public void InitFields(float startBaseHealth, float startFloodHealth, float startFireHealth, float startStormHealth, float startUmbrellaHealth) {
         m_allHealth = new AllHealth();
 
+        // init health
         m_allHealth.Curr.Base = m_allHealth.Total.Base = startBaseHealth;
         m_allHealth.Curr.Flood = m_allHealth.Total.Flood = startFloodHealth;
         m_allHealth.Curr.Fire = m_allHealth.Total.Fire = startFireHealth;
         m_allHealth.Curr.Storm = m_allHealth.Total.Storm = startStormHealth;
         m_allHealth.Curr.Umbrella = m_allHealth.Total.Umbrella = startUmbrellaHealth;
 
-        m_baseSlider.value = m_allHealth.Curr.Base > 0 ? 1 : 0;
-        m_floodInsuranceSlider.value = m_allHealth.Curr.Flood > 0 ? 1 : 0;
-        m_fireInsuranceSlider.value = m_allHealth.Curr.Fire > 0 ? 1 : 0;
-        m_stormInsuranceSlider.value = m_allHealth.Curr.Storm > 0 ? 1 : 0;
-        m_umbrellaInsuranceSlider.value = m_allHealth.Curr.Umbrella > 0 ? 1 : 0;
+        // TODO: check if still needed
+        InsuranceManager.Instance.InitSliderVals();
 
-        //float totalHealth = startBaseHealth + startInsuranceHealth;
-        //m_insuranceSlider.value = m_currInsuranceHealth / totalHealth;
+        m_baseSlider.value = m_allHealth.Curr.Base > 0 ? 1 : 0;
     }
 
     public void ModifyHealth(float change, Oncomer.Type type) {
         if (change < 0) {
             DamageHealth(-change, type);
         }
-        else {
-
-        }
 
         // Update sliders
         m_baseSlider.value = m_allHealth.Curr.Base / m_allHealth.Total.Base;
-        m_floodInsuranceSlider.value = m_allHealth.Curr.Flood / m_allHealth.Total.Flood;
-        m_fireInsuranceSlider.value = m_allHealth.Curr.Fire / m_allHealth.Total.Fire;
-        m_stormInsuranceSlider.value = m_allHealth.Curr.Storm / m_allHealth.Total.Storm;
-        m_umbrellaInsuranceSlider.value = m_allHealth.Curr.Umbrella / m_allHealth.Total.Umbrella;
+
+        float floodVal = m_allHealth.Curr.Flood / m_allHealth.Total.Flood;
+        float fireVal = m_allHealth.Curr.Fire / m_allHealth.Total.Fire;
+        float stormVal = m_allHealth.Curr.Storm / m_allHealth.Total.Storm;
+        float umbrellaVal = m_allHealth.Curr.Umbrella / m_allHealth.Total.Umbrella;
+        InsuranceManager.Instance.ModifyInsuranceHealth(floodVal, fireVal, stormVal, umbrellaVal);
     }
 
     #region Helper Methods
 
     private void DamageHealth(float dmg, Oncomer.Type type) {
-        m_currCoveragesDict = LevelManager.instance.GetInsuranceSelections();
+        m_currCoveragesDict = InsuranceManager.Instance.GetInsuranceSelections();
 
         // divvy up damage according to insurance
         switch (type) {
