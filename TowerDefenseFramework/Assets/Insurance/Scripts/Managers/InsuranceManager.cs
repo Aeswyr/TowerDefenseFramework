@@ -62,6 +62,7 @@ public class InsuranceManager : MonoBehaviour
             return;
         }
 
+        // tick down insurance timers
         foreach(InsuranceSlider iSlider in m_allSliders) {
             if (m_currCoverageDict.ContainsKey(iSlider.Type)) {
                 iSlider.Timer.Tick();
@@ -77,7 +78,7 @@ public class InsuranceManager : MonoBehaviour
                             InitSliderHelper(slider, iSlider.Type);
 
                             // reset insurance-level health
-                            HealthManager.Instance.ResetHealth(iSlider.Type);
+                            HealthManager.Instance.SetHealth(iSlider.Type, m_currCoverageDict[iSlider.Type].MaxCoverage);
                         }
                         else {
                             Debug.Log("not enough funds!");
@@ -127,7 +128,7 @@ public class InsuranceManager : MonoBehaviour
     public void PayForNewCoverages() {
         foreach (UIInsuranceMenu.InsuranceType key in m_currCoverageDict.Keys) {
             // check radial timer
-            if (GetSliderByType(key).Timer.TimeRemaining == 0) {
+            if (GetSliderByType(key).Timer.TimeRemaining == 0 || GetSliderByType(key).CurrCoverageTitle != m_currCoverageDict[key].Title) {
                 // insurance is new
                 if (LevelManager.instance.AttemptPurchase((int)m_currCoverageDict[key].Premium)) {
                     InsuranceSlider slider = GetSliderByType(key);
@@ -137,7 +138,7 @@ public class InsuranceManager : MonoBehaviour
                     InitSliderHelper(slider, key);
 
                     // reset insurance-level health
-                    HealthManager.Instance.ResetHealth(key);
+                    HealthManager.Instance.SetHealth(key, m_currCoverageDict[key].MaxCoverage);
                 }
                 else {
                     Debug.Log("not enough funds!");

@@ -75,23 +75,25 @@ public class HealthManager : MonoBehaviour {
         InsuranceManager.Instance.ModifyInsuranceHealth(floodVal, fireVal, stormVal, umbrellaVal);
     }
 
-    public void ResetHealth(UIInsuranceMenu.InsuranceType type) {
+    public void SetHealth(UIInsuranceMenu.InsuranceType type, float maxCoverage) {
         switch (type) {
             case UIInsuranceMenu.InsuranceType.Flood:
-                m_allHealth.Curr.Flood = m_allHealth.Total.Flood;
+                m_allHealth.Curr.Flood = maxCoverage;
                 break;
             case UIInsuranceMenu.InsuranceType.Fire:
-                m_allHealth.Curr.Fire = m_allHealth.Total.Fire;
+                m_allHealth.Curr.Fire = maxCoverage;
                 break;
             case UIInsuranceMenu.InsuranceType.Storm:
-                m_allHealth.Curr.Storm = m_allHealth.Total.Storm;
+                m_allHealth.Curr.Storm = maxCoverage;
                 break;
             case UIInsuranceMenu.InsuranceType.Umbrella:
-                m_allHealth.Curr.Umbrella = m_allHealth.Total.Umbrella;
+                m_allHealth.Curr.Umbrella = maxCoverage;
                 break;
             default:
                 break;
         }
+
+        Debug.Log("reset health of " + type + " to " + maxCoverage);
     }
 
     #region Helper Methods

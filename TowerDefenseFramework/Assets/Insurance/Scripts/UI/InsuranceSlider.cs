@@ -19,4 +19,7 @@ public class InsuranceSlider : MonoBehaviour
     public UIInsuranceMenu.InsuranceType Type {
         get { return m_type; }
     }
+    public string CurrCoverageTitle {
+        get; set;
+    }
 }
