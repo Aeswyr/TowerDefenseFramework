@@ -182,6 +182,12 @@ public class InsuranceManager : MonoBehaviour
     }
 
     public List<UIInsuranceMenu.Coverage> GetAvailableCoverages() {
+        // all should start as non-auto-renewing
+        for (int i = 0; i < m_availableCoverages.Count; i++) {
+            UIInsuranceMenu.Coverage tempCoverage = m_availableCoverages[i];
+            tempCoverage.AutoRenew = false;
+            m_availableCoverages[i] = tempCoverage;
+        }
         return m_availableCoverages;
     }
 

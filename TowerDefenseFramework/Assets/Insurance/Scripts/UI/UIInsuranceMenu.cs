@@ -150,6 +150,14 @@ public class UIInsuranceMenu : MenuBase {
         Coverage tempCoverage = m_coveragesAvailable[index];
         tempCoverage.AutoRenew = !tempCoverage.AutoRenew;
         m_coveragesAvailable[index] = tempCoverage;
+
+        for (int i = 0; i < m_insuranceSelections.Count; i++) {
+            if (m_insuranceSelections[i].Title == tempCoverage.Title) {
+                Coverage tempSelection = m_insuranceSelections[i];
+                tempSelection.AutoRenew = tempCoverage.AutoRenew;
+                m_insuranceSelections[i] = tempSelection;
+            }
+        }
     }
 
     void HandleConfirm() {
