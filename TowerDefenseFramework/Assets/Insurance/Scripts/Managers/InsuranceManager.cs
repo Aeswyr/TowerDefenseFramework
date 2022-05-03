@@ -66,12 +66,34 @@ public class InsuranceManager : MonoBehaviour
             if (m_currCoverageDict.ContainsKey(iSlider.Type)) {
                 iSlider.Timer.Tick();
                 if (iSlider.Timer.TimeRemaining <= 0) {
-                    // remove coverage from list
-                    m_currCoverageDict.Remove(iSlider.Type);
+                    if (m_currCoverageDict[iSlider.Type].AutoRenew) {
+                        // try pay coverage
+                        if (LevelManager.instance.AttemptPurchase((int)m_currCoverageDict[iSlider.Type].Premium)) {
+                            InsuranceSlider slider = GetSliderByType(iSlider.Type);
 
-                    iSlider.Slider.value = 0;
+                            // start timer
+                            slider.Timer.Activate(m_timerTime);
 
-                    // TODO: auto-renew if applicable
+                            InitSliderHelper(slider, iSlider.Type);
+
+                            // reset insurance-level health
+                            HealthManager.Instance.ResetHealth(iSlider.Type);
+                        }
+                        else {
+                            Debug.Log("not enough funds!");
+
+                            // remove coverage from list
+                            m_currCoverageDict.Remove(iSlider.Type);
+
+                            iSlider.Slider.value = 0;
+                        }
+                    }
+                    else {
+                        // remove coverage from list
+                        m_currCoverageDict.Remove(iSlider.Type);
+
+                        iSlider.Slider.value = 0;
+                    }
                 }
             }
             else if (iSlider.Timer.TimeRemaining != 0) {

@@ -19,6 +19,8 @@ public class LevelData : ScriptableObject {
     [SerializeField] private float growthPerPeriod;
     [SerializeField] private float startHealth;
     [SerializeField] private List<Vector2> nexusHubsPos;
+    [SerializeField] private float presentMultiplier; // how much insurance costs rise if danger is present
+    [SerializeField] private float demonstrativeMultiplier; // how much insurance costs rise per demonstrated risk level
 
     [SerializeField] private Vector2 stationPos;
 

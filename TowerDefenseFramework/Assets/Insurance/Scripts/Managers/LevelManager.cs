@@ -170,9 +170,10 @@ public class LevelManager : MonoBehaviour
         m_butterflyTime = m_periodTime / n_butterflies;
         m_butterflyTimer = m_butterflyTime;
 
-        m_forecastTexts[0].text = "Hurricane: " + (p_storm * 100) + "%";
+        m_forecastTexts[0].text = "Flood: " + (p_flood * 100) + "%";
         m_forecastTexts[1].text = "Wildfire: " + (p_fire * 100) + "%";
-        m_forecastTexts[2].text = "Flood: " + (p_flood * 100) + "%";
+        m_forecastTexts[2].text = "Hurricane: " + (p_storm * 100) + "%";
+        m_forecastTexts[3].text = "Severe: " + (p_severe * 100) + "%";
 
         m_period = 0;
         m_periodText.text = "Period: 1";

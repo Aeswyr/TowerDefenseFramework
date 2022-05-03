@@ -29,6 +29,8 @@ MonoBehaviour:
   - {x: 5.5, y: 6.5}
   - {x: 0, y: 0}
   - {x: -5.5, y: 6.5}
+  presentMultiplier: 1.1
+  demonstrativeMultiplier: 1.3
   stationPos: {x: -0.5, y: -2.5}
   m_availableCoverages:
   - Type: 0

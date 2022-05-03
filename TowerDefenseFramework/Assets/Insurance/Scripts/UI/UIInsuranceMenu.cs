@@ -21,13 +21,15 @@ public class UIInsuranceMenu : MenuBase {
         public float Premium;
         public float Deductible;
         public float MaxCoverage;
+        public bool AutoRenew;
 
-        public Coverage(InsuranceType type, string title, float premium, float deductible, float maxCoverage) {
+        public Coverage(InsuranceType type, string title, float premium, float deductible, float maxCoverage, bool autoRenew) {
             Type = type;
             Title = title;
             Premium = premium;
             Deductible = deductible;
             MaxCoverage = maxCoverage;
+            AutoRenew = autoRenew;
         }
     }
 
@@ -54,10 +56,10 @@ public class UIInsuranceMenu : MenuBase {
     [SerializeField] private Button m_confirmButton;
     [SerializeField] private TextMeshProUGUI m_detailsText;
 
-    private List<Coverage> m_insuranceSelections;
+    private List<Coverage> m_coveragesAvailable; // the options to choose from
+    private List<Coverage> m_insuranceSelections; // the options chosen
 
     void OnEnable() {
-        // TODO: create a coverage button for each coverage in LevelManager.GetCoverages()
         if (LevelManager.instance == null) {
             base.CloseMenu();
             return;
@@ -112,7 +114,8 @@ public class UIInsuranceMenu : MenuBase {
 
     #region Button Handlers
 
-    void HandleSelect(Coverage coverage) {
+    void HandleSelect(int index) {
+        Coverage coverage = m_coveragesAvailable[index];
         if (m_insuranceSelections.Contains(coverage)) {
 
             m_insuranceSelections.Remove(coverage);
@@ -141,8 +144,12 @@ public class UIInsuranceMenu : MenuBase {
                 m_insuranceSelections.Add(coverage);
             }
         }
+    }
 
-        // TODO: open supporting checklist
+    void HandleSelectRenew(int index) {
+        Coverage tempCoverage = m_coveragesAvailable[index];
+        tempCoverage.AutoRenew = !tempCoverage.AutoRenew;
+        m_coveragesAvailable[index] = tempCoverage;
     }
 
     void HandleConfirm() {
@@ -176,10 +183,14 @@ public class UIInsuranceMenu : MenuBase {
             Cleanup();
         }
 
-        List<Coverage> coverages = InsuranceManager.Instance.GetAvailableCoverages();
+        if (m_coveragesAvailable == null) {
+            m_coveragesAvailable = InsuranceManager.Instance.GetAvailableCoverages();
+        }
 
         int colIndex = 0;
-        foreach (Coverage coverage in coverages) {
+        for (int i = 0; i < m_coveragesAvailable.Count; i++) {
+            Coverage coverage = m_coveragesAvailable[i];
+
             // instantiate button
             GameObject insuranceButtonObj = Instantiate(m_insuranceButtonPrefab, m_buttonHolder.transform);
 
@@ -189,20 +200,29 @@ public class UIInsuranceMenu : MenuBase {
             insuranceButtonObj.transform.position += new Vector3(horizSpacing, vertSpacing, 0);
 
             // assign scene and text
-            Button insuranceButton = insuranceButtonObj.GetComponent<Button>();
-            insuranceButton.onClick.AddListener(delegate { HandleSelect(coverage); });
-            insuranceButtonObj.GetComponent<InsuranceButton>().SetText(coverage.Title, ("" + coverage.Premium), ("" + coverage.Deductible));
+            Button insuranceBaseButton = insuranceButtonObj.GetComponent<Button>();
+            int tempI = i;
+            insuranceBaseButton.onClick.AddListener(delegate { HandleSelect(tempI); });
+            InsuranceButton insuranceButton = insuranceButtonObj.GetComponent<InsuranceButton>();
+            insuranceButton.SetText(coverage.Title, ("" + coverage.Premium), ("" + coverage.Deductible));
+
+            // restore existing auto-renew settings
+            if (coverage.AutoRenew) {
+                insuranceButton.SetAutoRenew(true);
+            }
+
+            insuranceButton.RenewToggle.onValueChanged.AddListener(delegate { HandleSelectRenew(tempI); });
 
             // set green if already selected from previous round
             if (InsuranceManager.Instance.CoverageIsActive(coverage)) {
                 m_insuranceSelections.Add(coverage);
-                UpdateSelectColor(insuranceButton);
+                UpdateSelectColor(insuranceBaseButton);
             }
 
             // save to buttons
             m_buttonObjs.Add(insuranceButtonObj);
             if (coverage.Type == InsuranceType.Umbrella) {
-                m_selectUmbrellaButton = insuranceButton;
+                m_selectUmbrellaButton = insuranceBaseButton;
             }
 
             // move to next column

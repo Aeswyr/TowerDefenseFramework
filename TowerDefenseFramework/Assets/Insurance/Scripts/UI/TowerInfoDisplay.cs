@@ -9,8 +9,8 @@ public class TowerInfoDisplay : MonoBehaviour
     private TextMeshProUGUI m_info;
 
     public void Populate(TowerData data) {
-        m_info.text = "Radius: " + data.Radius + "\n";
-        m_info.text += "Power: " + data.ProjectileDamage + "\n";
+        //m_info.text = "Radius: " + data.Radius + "\n";
+        m_info.text = "Power: " + data.ProjectileDamage + "\n";
 
         string targetStr = "Target(s): ";
 
