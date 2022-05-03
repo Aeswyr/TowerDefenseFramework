@@ -17,11 +17,11 @@ public class UIInsuranceMenu : MenuBase {
     [Serializable]
     public struct Coverage {
         public InsuranceType Type;
-        public string Title;
+        [TextArea] public string Title;
         public float Premium;
         public float Deductible;
         public float MaxCoverage;
-        public bool AutoRenew;
+        [HideInInspector] public bool AutoRenew;
 
         public Coverage(InsuranceType type, string title, float premium, float deductible, float maxCoverage, bool autoRenew) {
             Type = type;

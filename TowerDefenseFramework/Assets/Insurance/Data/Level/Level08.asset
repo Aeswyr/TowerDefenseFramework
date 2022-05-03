@@ -34,40 +34,59 @@ MonoBehaviour:
   stationPos: {x: 0.5, y: -4.5}
   m_availableCoverages:
   - Type: 0
-    Title: Flood Insurance (low premium, high deductible)
+    Title: 'Flood Insurance
+
+      (low premium, high deductible)'
     Premium: 8
     Deductible: 1
     MaxCoverage: 80
+    AutoRenew: 0
   - Type: 0
-    Title: Flood Insurance (high premium, low deductible)
+    Title: 'Flood Insurance
+
+      (high premium, low deductible)'
     Premium: 5
     Deductible: 1
     MaxCoverage: 80
+    AutoRenew: 0
   - Type: 1
-    Title: Fire Insurance (low premium, high deductible)
+    Title: 'Fire Insurance
+
+      (low premium, high deductible)'
     Premium: 5
     Deductible: 1
     MaxCoverage: 80
+    AutoRenew: 0
   - Type: 1
-    Title: Fire Insurance (high premium, low deductible)
+    Title: 'Fire Insurance
+
+      (high premium, low deductible)'
     Premium: 5
     Deductible: 1
     MaxCoverage: 80
+    AutoRenew: 0
   - Type: 2
-    Title: Storm Insurance (low premium, high deductible)
+    Title: 'Storm Insurance
+
+      (low premium, high deductible)'
     Premium: 6
     Deductible: 1
     MaxCoverage: 80
+    AutoRenew: 0
   - Type: 2
-    Title: Storm Insurance (high premium, low deductible)
+    Title: 'Storm Insurance
+
+      (high premium, low deductible)'
     Premium: 5
     Deductible: 1
     MaxCoverage: 80
+    AutoRenew: 0
   - Type: 3
     Title: Umbrella Insurance
     Premium: 5
     Deductible: 1
     MaxCoverage: 150
+    AutoRenew: 0
   severeEffects:
     BaseSize: 8
     GrowthMult: 4

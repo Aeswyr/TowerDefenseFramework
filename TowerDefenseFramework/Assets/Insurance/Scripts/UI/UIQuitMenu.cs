@@ -12,11 +12,17 @@ public class UIQuitMenu : MenuBase
     void OnEnable() {
         m_returnButton.onClick.AddListener(HandleReturnLevelSelect);
         m_continueButton.onClick.AddListener(HandleContinue);
+
+        // pause game
+        GameManager.instance.IsPaused = true;
     }
 
     void OnDisable() {
         m_returnButton.onClick.RemoveAllListeners();
         m_continueButton.onClick.RemoveAllListeners();
+
+        // resume game
+        GameManager.instance.IsPaused = false;
     }
 
     public void Open() {

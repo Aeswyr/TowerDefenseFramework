@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e9fe06dd20bd09a4c88f244e8eb2934a, type: 3}
-  m_Name: Level05
+  m_Name: Level06
   m_EditorClassIdentifier: 
-  levelID: level05
+  levelID: level06
   p_fire: 0.75
   p_storm: 0
   p_flood: 0.45
-  p_severe: 0.05
+  p_severe: 0.2
   numButterflies: 5
-  gridArrayTA: {fileID: 4900000, guid: 7d64f2c2a079f2f4682872ccaf1c2b17, type: 3}
+  gridArrayTA: {fileID: 4900000, guid: 6d3444dc0c65d034199db50e3110d75b, type: 3}
   startFunds: 50
   numPeriods: 6
   periodFunds: 25
@@ -64,6 +64,12 @@ MonoBehaviour:
     Premium: 7
     Deductible: 1
     MaxCoverage: 80
+    AutoRenew: 0
+  - Type: 3
+    Title: Umbrella Insurance
+    Premium: 5
+    Deductible: 1
+    MaxCoverage: 150
     AutoRenew: 0
   severeEffects:
     BaseSize: 8

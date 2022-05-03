@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class LevelManager : MonoBehaviour
 {
@@ -51,7 +52,9 @@ public class LevelManager : MonoBehaviour
     [SerializeField]
     private UILevelCompleteMenu m_levelCompleteMenu;
     [SerializeField]
-    private UIQuitMenu m_quitMenu;
+    private UIQuitMenu m_pauseMenu;
+    [SerializeField]
+    private Button m_pauseButton;
 
 
 
@@ -113,6 +116,9 @@ public class LevelManager : MonoBehaviour
 
         // assign initial funds
         ModifyFunds(m_startFunds);
+
+        // set up buttons
+        m_pauseButton.onClick.AddListener(HandlePauseClicked);
 
         // begin level at insurance phase
         m_phase = GamePhase.Insurance;
@@ -363,7 +369,7 @@ public class LevelManager : MonoBehaviour
     private void GetLevelInputs() {
         if (Input.GetKeyDown(KeyCode.Escape)) {
             // open up quit menu
-            m_quitMenu.Open();
+            m_pauseMenu.Open();
         }
     }
 
@@ -439,4 +445,8 @@ public class LevelManager : MonoBehaviour
     }
 
     #endregion // SevereWeatherTrigger
+
+    private void HandlePauseClicked() {
+        m_pauseMenu.Open();
+    }
 }
