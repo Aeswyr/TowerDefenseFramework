@@ -89,9 +89,11 @@ public class UIInsuranceMenu : MenuBase {
 
         m_confirmButton.onClick.AddListener(HandleConfirm);
 
+        /*
         foreach (Button b in m_selectButtons) {
             b.onClick.AddListener(delegate { UpdateSelectColor(b); });
         }
+        */
         if (m_selectButtons.Count > 0) {
             m_detailsText.text = "Win-surance Coverage";
         }
@@ -114,17 +116,24 @@ public class UIInsuranceMenu : MenuBase {
 
     #region Button Handlers
 
-    void HandleSelect(int index) {
+    void HandleSelect(int index, Button selectedButton) {
         Coverage coverage = m_coveragesAvailable[index];
         if (m_insuranceSelections.Contains(coverage)) {
 
+            UpdateSelectColor(selectedButton);
             m_insuranceSelections.Remove(coverage);
 
-            // check if umbrella insurance is still valid,
-            if (m_selectUmbrellaButton != null 
+            if (m_selectUmbrellaButton != null) { Debug.Log("Removing: 1"); }
+            if (m_insuranceSelections.Count == 1) { Debug.Log("Removing: 2"); }
+            if (m_insuranceSelections.Contains(InsuranceManager.Instance.GetCoverageByType(InsuranceType.Umbrella))) { Debug.Log("Removing: 3"); }
+
+            // check if umbrella insurance is still valid
+            // TODO: debug this?
+            if (m_selectUmbrellaButton != null
                 && m_insuranceSelections.Count == 1
-                && m_insuranceSelections.Contains(InsuranceManager.Instance.GetCoverage(InsuranceType.Umbrella))) {
+                && m_insuranceSelections.Contains(InsuranceManager.Instance.GetCoverageByType(InsuranceType.Umbrella))) {
                 m_insuranceSelections.Clear();
+                // turn it white
                 UpdateSelectColor(m_selectUmbrellaButton);
             }
         }
@@ -133,15 +142,24 @@ public class UIInsuranceMenu : MenuBase {
             if (coverage.Type == InsuranceType.Umbrella) {
                 if (m_selectUmbrellaButton != null
                     && m_insuranceSelections.Count < 1) {
-                    UpdateSelectColor(m_selectUmbrellaButton);
+                    // do nothing
                 }
                 else {
                     m_insuranceSelections.Add(coverage);
+                    UpdateSelectColor(selectedButton);
                 }
             }
             // add normally
             else {
+                // only add if similar type does not exist
+                foreach(Coverage c in m_insuranceSelections) {
+                    if (c.Type == coverage.Type) {
+                        Debug.Log("Same type! Not selecting");
+                        return;
+                    }
+                }
                 m_insuranceSelections.Add(coverage);
+                UpdateSelectColor(selectedButton);
             }
         }
     }
@@ -210,7 +228,7 @@ public class UIInsuranceMenu : MenuBase {
             // assign scene and text
             Button insuranceBaseButton = insuranceButtonObj.GetComponent<Button>();
             int tempI = i;
-            insuranceBaseButton.onClick.AddListener(delegate { HandleSelect(tempI); });
+            insuranceBaseButton.onClick.AddListener(delegate { HandleSelect(tempI, insuranceBaseButton); });
             InsuranceButton insuranceButton = insuranceButtonObj.GetComponent<InsuranceButton>();
             insuranceButton.SetText(coverage.Title, ("" + coverage.Premium), ("" + coverage.Deductible));
 

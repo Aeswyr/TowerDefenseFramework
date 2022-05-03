@@ -22,10 +22,45 @@ public class InsuranceManager : MonoBehaviour
     private List<UIInsuranceMenu.Coverage> m_availableCoverages;
 
     // the coverage available in the level
-    private Dictionary<UIInsuranceMenu.InsuranceType, UIInsuranceMenu.Coverage> m_availableCoverageMap;
+    private Dictionary<UIInsuranceMenu.InsuranceType, UIInsuranceMenu.Coverage> m_availableCoverageTypeMap;
 
     // the coverage the player chooses to buy
-    private Dictionary<UIInsuranceMenu.InsuranceType, UIInsuranceMenu.Coverage> m_currCoverageDict;
+    public struct CoverageDicts
+    {
+        public Dictionary<UIInsuranceMenu.InsuranceType, UIInsuranceMenu.Coverage> TypeDict;
+        public Dictionary<string, UIInsuranceMenu.Coverage> TitleDict;
+
+        public CoverageDicts(Dictionary<UIInsuranceMenu.InsuranceType, UIInsuranceMenu.Coverage> typeDict, Dictionary<string, UIInsuranceMenu.Coverage> titleDict) {
+            TypeDict = typeDict;
+            TitleDict = titleDict;
+        }
+
+        public void ClearDicts() {
+            TypeDict.Clear();
+            TitleDict.Clear();
+        }
+
+        public void AddToDicts(UIInsuranceMenu.Coverage coverage) {
+            TypeDict.Add(coverage.Type, coverage);
+            TitleDict.Add(coverage.Title, coverage);
+        }
+
+        // removes by type
+        public void RemoveFromDicts(UIInsuranceMenu.InsuranceType type) {
+            UIInsuranceMenu.Coverage toRemove = TypeDict[type];
+            TitleDict.Remove(toRemove.Title);
+            TypeDict.Remove(toRemove.Type);
+        }
+
+        // removes by title
+        public void RemoveFromDicts(string title) {
+            UIInsuranceMenu.Coverage toRemove = TitleDict[title];
+            TypeDict.Remove(toRemove.Type);
+            TitleDict.Remove(toRemove.Title);
+        }
+    }
+
+    private CoverageDicts m_currCoverageDicts;
 
     private float m_timerTime;
     private InsuranceSlider[] m_allSliders;
@@ -50,6 +85,10 @@ public class InsuranceManager : MonoBehaviour
 
         // Event Handlers
         EventManager.OnPurchaseInsuranceComplete.AddListener(HandlePurchaseInsuranceComplete);
+
+        Dictionary<UIInsuranceMenu.InsuranceType, UIInsuranceMenu.Coverage> currCoverageDictType = new Dictionary<UIInsuranceMenu.InsuranceType, UIInsuranceMenu.Coverage>();
+        Dictionary<string, UIInsuranceMenu.Coverage> currCoverageDictTitle = new Dictionary<string, UIInsuranceMenu.Coverage>();
+        m_currCoverageDicts = new CoverageDicts(currCoverageDictType, currCoverageDictTitle);
     }
 
     private void Start() {
@@ -64,12 +103,12 @@ public class InsuranceManager : MonoBehaviour
 
         // tick down insurance timers
         foreach(InsuranceSlider iSlider in m_allSliders) {
-            if (m_currCoverageDict.ContainsKey(iSlider.Type)) {
+            if (m_currCoverageDicts.TypeDict.ContainsKey(iSlider.Type)) {
                 iSlider.Timer.Tick();
                 if (iSlider.Timer.TimeRemaining <= 0) {
-                    if (m_currCoverageDict[iSlider.Type].AutoRenew) {
+                    if (m_currCoverageDicts.TypeDict[iSlider.Type].AutoRenew) {
                         // try pay coverage
-                        if (LevelManager.instance.AttemptPurchase((int)m_currCoverageDict[iSlider.Type].Premium)) {
+                        if (LevelManager.instance.AttemptPurchase((int)m_currCoverageDicts.TypeDict[iSlider.Type].Premium)) {
                             InsuranceSlider slider = GetSliderByType(iSlider.Type);
 
                             // start timer
@@ -78,20 +117,20 @@ public class InsuranceManager : MonoBehaviour
                             InitSliderHelper(slider, iSlider.Type);
 
                             // reset insurance-level health
-                            HealthManager.Instance.SetHealth(iSlider.Type, m_currCoverageDict[iSlider.Type].MaxCoverage);
+                            HealthManager.Instance.SetHealth(iSlider.Type, m_currCoverageDicts.TypeDict[iSlider.Type].MaxCoverage);
                         }
                         else {
                             Debug.Log("not enough funds!");
 
                             // remove coverage from list
-                            m_currCoverageDict.Remove(iSlider.Type);
+                            m_currCoverageDicts.RemoveFromDicts(iSlider.Type);
 
                             iSlider.Slider.value = 0;
                         }
                     }
                     else {
                         // remove coverage from list
-                        m_currCoverageDict.Remove(iSlider.Type);
+                        m_currCoverageDicts.RemoveFromDicts(iSlider.Type);
 
                         iSlider.Slider.value = 0;
                     }
@@ -113,24 +152,25 @@ public class InsuranceManager : MonoBehaviour
     }
 
     public void SetInsuranceSelections(List<UIInsuranceMenu.Coverage> insuranceSelections) {
-        if (m_currCoverageDict == null) {
-            m_currCoverageDict = new Dictionary<UIInsuranceMenu.InsuranceType, UIInsuranceMenu.Coverage>();
-        }
-        else {
-            m_currCoverageDict.Clear();
-        }
+        // TODO: consolidate this and PayForNewCoverages into one function
+
+        m_currCoverageDicts.ClearDicts();
 
         foreach (UIInsuranceMenu.Coverage coverage in insuranceSelections) {
-            m_currCoverageDict.Add(coverage.Type, coverage);
+            m_currCoverageDicts.AddToDicts(coverage);
+            if (GetSliderByType(coverage.Type).CurrCoverageTitle != coverage.Title) {
+                GetSliderByType(coverage.Type).SetDirty(true);
+            }
+            GetSliderByType(coverage.Type).CurrCoverageTitle = coverage.Title;
         }
     }
 
     public void PayForNewCoverages() {
-        foreach (UIInsuranceMenu.InsuranceType key in m_currCoverageDict.Keys) {
+        foreach (UIInsuranceMenu.InsuranceType key in m_currCoverageDicts.TypeDict.Keys) {
             // check radial timer
-            if (GetSliderByType(key).Timer.TimeRemaining == 0 || GetSliderByType(key).CurrCoverageTitle != m_currCoverageDict[key].Title) {
+            if (GetSliderByType(key).Timer.TimeRemaining == 0 || GetSliderByType(key).IsDirty) {
                 // insurance is new
-                if (LevelManager.instance.AttemptPurchase((int)m_currCoverageDict[key].Premium)) {
+                if (LevelManager.instance.AttemptPurchase((int)m_currCoverageDicts.TypeDict[key].Premium)) {
                     InsuranceSlider slider = GetSliderByType(key);
                     // start timer
                     slider.Timer.Activate(m_timerTime);
@@ -138,11 +178,13 @@ public class InsuranceManager : MonoBehaviour
                     InitSliderHelper(slider, key);
 
                     // reset insurance-level health
-                    HealthManager.Instance.SetHealth(key, m_currCoverageDict[key].MaxCoverage);
+                    HealthManager.Instance.SetHealth(key, m_currCoverageDicts.TypeDict[key].MaxCoverage);
                 }
                 else {
                     Debug.Log("not enough funds!");
                 }
+
+                GetSliderByType(key).SetDirty(false);
             }
             else {
                 // still in effect, so no payment
@@ -151,29 +193,31 @@ public class InsuranceManager : MonoBehaviour
     }
 
     public void PayForAllCoverages() {
-        foreach (UIInsuranceMenu.InsuranceType key in m_currCoverageDict.Keys) {
-            LevelManager.instance.AttemptPurchase((int)m_currCoverageDict[key].Premium);
+        foreach (UIInsuranceMenu.InsuranceType key in m_currCoverageDicts.TypeDict.Keys) {
+            LevelManager.instance.AttemptPurchase((int)m_currCoverageDicts.TypeDict[key].Premium);
         }
     }
 
     public float GetInsuranceAmount(UIInsuranceMenu.InsuranceType type) {
-        return m_currCoverageDict.ContainsKey(type) ? m_currCoverageDict[type].MaxCoverage : 0;
+        return m_currCoverageDicts.TypeDict.ContainsKey(type) ? m_currCoverageDicts.TypeDict[type].MaxCoverage : 0;
     }
 
     public Dictionary<UIInsuranceMenu.InsuranceType, UIInsuranceMenu.Coverage> GetInsuranceSelections() {
-        return m_currCoverageDict;
+        return  m_currCoverageDicts.TypeDict;
     }
 
-    public UIInsuranceMenu.Coverage GetCoverage(UIInsuranceMenu.InsuranceType type) {
+    public UIInsuranceMenu.Coverage GetCoverageByType(UIInsuranceMenu.InsuranceType type) {
         // initialize the map if it does not exist
-        if (Instance.m_availableCoverageMap == null) {
-            Instance.m_availableCoverageMap = new Dictionary<UIInsuranceMenu.InsuranceType, UIInsuranceMenu.Coverage>();
+        if (Instance.m_availableCoverageTypeMap == null) {
+            Instance.m_availableCoverageTypeMap = new Dictionary<UIInsuranceMenu.InsuranceType, UIInsuranceMenu.Coverage>();
             foreach (UIInsuranceMenu.Coverage c in Instance.m_availableCoverages) {
-                Instance.m_availableCoverageMap.Add(c.Type, c);
+                if (!Instance.m_availableCoverageTypeMap.ContainsKey(c.Type)) {
+                    Instance.m_availableCoverageTypeMap.Add(c.Type, c);
+                }
             }
         }
-        if (Instance.m_availableCoverageMap.ContainsKey(type)) {
-            return Instance.m_availableCoverageMap[type];
+        if (Instance.m_availableCoverageTypeMap.ContainsKey(type)) {
+            return Instance.m_availableCoverageTypeMap[type];
         }
         else {
             throw new KeyNotFoundException(string.Format("No Coverage " +
@@ -205,7 +249,7 @@ public class InsuranceManager : MonoBehaviour
     }
 
     private void InitSliderHelper(InsuranceSlider iSlider, UIInsuranceMenu.InsuranceType type) {
-        iSlider.Slider.value = iSlider.Timer.Radial.fillAmount = m_currCoverageDict.ContainsKey(type) ? 1 : 0;
+        iSlider.Slider.value = iSlider.Timer.Radial.fillAmount =  m_currCoverageDicts.TypeDict.ContainsKey(type) ? 1 : 0;
     }
 
     public void ModifyInsuranceHealth(float floodVal, float fireVal, float stormVal, float umbrellaVal) {
@@ -231,11 +275,11 @@ public class InsuranceManager : MonoBehaviour
     }
 
     public bool CoverageIsActive(UIInsuranceMenu.Coverage coverage) {
-        if (m_currCoverageDict == null) {
+        if (m_currCoverageDicts.TitleDict == null) {
             return false;
         }
 
-        return m_currCoverageDict.ContainsKey(coverage.Type);
+        return m_currCoverageDicts.TitleDict.ContainsKey(coverage.Title);
     }
 
     #region Event Handlers

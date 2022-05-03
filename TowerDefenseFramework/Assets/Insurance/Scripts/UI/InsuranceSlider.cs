@@ -9,6 +9,8 @@ public class InsuranceSlider : MonoBehaviour
     [SerializeField] private InsuranceTimer timer;
     [SerializeField] private UIInsuranceMenu.InsuranceType m_type;
 
+    private bool isDirty;
+
 
     public Slider Slider {
         get { return slider; }
@@ -21,5 +23,13 @@ public class InsuranceSlider : MonoBehaviour
     }
     public string CurrCoverageTitle {
         get; set;
+    }
+
+    public void SetDirty(bool dirty) {
+        isDirty = dirty;
+    }
+
+    public bool IsDirty {
+        get { return isDirty; }
     }
 }
