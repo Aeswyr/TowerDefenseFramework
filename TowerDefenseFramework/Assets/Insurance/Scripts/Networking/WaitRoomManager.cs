@@ -36,7 +36,14 @@ public class WaitRoomManager : NetworkBehaviour
     void OnGUI() {
         GUILayout.BeginArea(new Rect(10, 10, 300, 300));
         if (!NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsServer) {
-            StartButtons();
+            if (SceneManager.GetActiveScene().name != "WaitingRoom") {
+                // host aborted session
+                AudioManager.instance.StopAudio();
+                SceneManager.LoadScene("LevelSelect");
+            }
+            else {
+                StartButtons();
+            }
         }
         else {
             StatusLabels();
@@ -49,7 +56,9 @@ public class WaitRoomManager : NetworkBehaviour
 
     private void UpdatePlayerCount(ulong clientID) {
         Debug.Log("updating...");
-        WaitRoomManager.Instance.PlayerCount.Value = WaitRoomManager.Instance.PlayerCount.Value + 1;
+        if (IsOwner) {
+            WaitRoomManager.Instance.PlayerCount.Value = WaitRoomManager.Instance.PlayerCount.Value + 1;
+        }
     }
 
     private void UpdateCountText(int prevVal, int newVal) {

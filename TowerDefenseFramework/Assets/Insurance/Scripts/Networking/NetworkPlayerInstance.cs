@@ -15,8 +15,6 @@ public class NetworkPlayerInstance : NetworkBehaviour
 
     [SerializeField] private Button m_waitRoomContinueButton;
 
-    private static int LEVEL_BUILD_INDEX = 5; // statically defined because SceneManager can't get index of unloaded scene
-
     public override void OnNetworkSpawn() {
         if (IsOwner) {
             // TODO: debug why this appears for client when connected to host
@@ -41,16 +39,13 @@ public class NetworkPlayerInstance : NetworkBehaviour
         // removed
     }
 
-    private void UpdatePlayerCount(ulong clientID) {
-        WaitRoomManager.Instance.PlayerCount.Value = WaitRoomManager.Instance.PlayerCount.Value + 1;
-        WaitRoomManager.Instance.PlayerCountText.text = WaitRoomManager.Instance.PlayerCount.Value + "/2 Players";
-    }
-
     private void HandleContinue() {
-        NetworkSceneManager.Instance.CurrScene.Value = LEVEL_BUILD_INDEX;
+        NetworkSceneManager.Instance.CurrScene.Value = NetworkSceneManager.LEVEL_BUILD_INDEX;
     }
 
     private void HandleSceneChanged(int prevVal, int currVal) {
+        Debug.Log("scene changed");
+        AudioManager.instance.StopAudio();
         SceneManager.LoadScene(currVal);
     }
 

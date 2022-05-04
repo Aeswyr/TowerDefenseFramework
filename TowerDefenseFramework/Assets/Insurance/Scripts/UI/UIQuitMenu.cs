@@ -33,8 +33,7 @@ public class UIQuitMenu : MenuBase
         base.CloseMenu();
         EventManager.OnLevelQuit.Invoke();
         EventManager.OnReturnLevelSelect.Invoke();
-        AudioManager.instance.StopAudio();
-        SceneManager.LoadScene("LevelSelect");
+        // SceneManager.LoadScene("LevelSelect");
     }
 
     void HandleContinue() {
