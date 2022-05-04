@@ -21,7 +21,7 @@ public class Report
 
 public static class WinsuranceAnalytics
 {
-
+    /*
     private const string path = "Assets/Logs/userLog.json";
     private static readonly StreamWriter Writer = new(path, true);
 
@@ -32,17 +32,15 @@ public static class WinsuranceAnalytics
     }
     
     public static void Close() => Writer.Close();
+    */
 
-    /*
-    private static string path = Application.persistentDataPath + "/UserLogs/userLog.json";
+    private static string path = Application.streamingAssetsPath + "/UserLogs/userLog.json";
     private static StreamWriter Writer = null;
-
-
 
     public static void ReportEvent(string userId, string eventKey, string levelID)
     {
-        if (!Directory.Exists(Application.persistentDataPath + "/UserLogs/")) {
-            Directory.CreateDirectory(Application.persistentDataPath + "/UserLogs/");
+        if (!Directory.Exists(Application.streamingAssetsPath + "/UserLogs/")) {
+            Directory.CreateDirectory(Application.streamingAssetsPath + "/UserLogs/");
         }
         if (Writer == null) {
             Writer = new(path, true);
@@ -53,7 +51,6 @@ public static class WinsuranceAnalytics
     }
 
     public static void Close() => Writer.Close();
-    */
 }
 
 
