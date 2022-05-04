@@ -55,6 +55,7 @@ public class UIInsuranceMenu : MenuBase {
 
     [SerializeField] private Button m_confirmButton;
     [SerializeField] private TextMeshProUGUI m_detailsText;
+    [SerializeField] private TMP_Text m_renewText;
 
     private List<Coverage> m_coveragesAvailable; // the options to choose from
     private List<Coverage> m_insuranceSelections; // the options chosen
@@ -123,12 +124,7 @@ public class UIInsuranceMenu : MenuBase {
             UpdateSelectColor(selectedButton);
             m_insuranceSelections.Remove(coverage);
 
-            if (m_selectUmbrellaButton != null) { Debug.Log("Removing: 1"); }
-            if (m_insuranceSelections.Count == 1) { Debug.Log("Removing: 2"); }
-            if (m_insuranceSelections.Contains(InsuranceManager.Instance.GetCoverageByType(InsuranceType.Umbrella))) { Debug.Log("Removing: 3"); }
-
             // check if umbrella insurance is still valid
-            // TODO: debug this?
             if (m_selectUmbrellaButton != null
                 && m_insuranceSelections.Count == 1
                 && m_insuranceSelections.Contains(InsuranceManager.Instance.GetCoverageByType(InsuranceType.Umbrella))) {
@@ -211,6 +207,14 @@ public class UIInsuranceMenu : MenuBase {
 
         if (m_coveragesAvailable == null) {
             m_coveragesAvailable = InsuranceManager.Instance.GetAvailableCoverages();
+        }
+
+        // only show renew text if list has options
+        if (m_coveragesAvailable.Count == 0) {
+            m_renewText.gameObject.SetActive(false);
+        }
+        else {
+            m_renewText.gameObject.SetActive(true);
         }
 
         int colIndex = 0;

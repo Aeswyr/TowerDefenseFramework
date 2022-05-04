@@ -17,6 +17,7 @@ public class UIBummerMenu : MenuBase
     }
 
     void HandleReturnLevelSelect() {
+        EventManager.OnReturnLevelSelect.Invoke();
         SceneManager.LoadScene("LevelSelect");
     }
 }

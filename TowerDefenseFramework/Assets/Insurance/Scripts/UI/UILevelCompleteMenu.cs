@@ -26,6 +26,7 @@ public class UILevelCompleteMenu : MenuBase
     void HandleReturnLevelSelect() {
         base.CloseMenu();
         AudioManager.instance.StopAudio();
+        EventManager.OnReturnLevelSelect.Invoke();
         SceneManager.LoadScene("LevelSelect");
     }
 
@@ -34,5 +35,6 @@ public class UILevelCompleteMenu : MenuBase
         AudioManager.instance.StopAudio();
         // TODO: determine next level
         SceneManager.LoadScene("LevelSelect");
+        EventManager.OnReturnLevelSelect.Invoke();
     }
 }

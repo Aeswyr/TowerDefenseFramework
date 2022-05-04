@@ -32,6 +32,7 @@ public class UIQuitMenu : MenuBase
     void HandleReturnLevelSelect() {
         base.CloseMenu();
         EventManager.OnLevelQuit.Invoke();
+        EventManager.OnReturnLevelSelect.Invoke();
         AudioManager.instance.StopAudio();
         SceneManager.LoadScene("LevelSelect");
     }

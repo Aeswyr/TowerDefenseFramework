@@ -1,8 +1,38 @@
 
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class HelloWorldManager : MonoBehaviour {
+[RequireComponent(typeof(NetworkObject))]
+public class WaitRoomManager : NetworkBehaviour
+{
+    public static WaitRoomManager Instance;
+
+    public TMP_Text PlayerCountText;
+
+    [HideInInspector]
+    public NetworkVariable<int> PlayerCount = new NetworkVariable<int>();
+
+    private void Awake() {
+        if (Instance == null) {
+            Instance = this;
+        }
+        else if (this != Instance) {
+            //Destroy(this.gameObject);
+        }
+
+        NetworkManager.Singleton.OnClientConnectedCallback += UpdatePlayerCount;
+
+        PlayerCount.OnValueChanged += new NetworkVariable<int>.OnValueChangedDelegate(UpdateCountText);
+    }
+    private void Start() {
+        int waitingRoomIndex = SceneManager.GetSceneByName("WaitingRoom").buildIndex;
+        if (NetworkSceneManager.Instance.CurrScene.Value != waitingRoomIndex) {
+            NetworkSceneManager.Instance.CurrScene.Value = waitingRoomIndex;
+        }
+    }
+
     void OnGUI() {
         GUILayout.BeginArea(new Rect(10, 10, 300, 300));
         if (!NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsServer) {
@@ -15,6 +45,15 @@ public class HelloWorldManager : MonoBehaviour {
         }
 
         GUILayout.EndArea();
+    }
+
+    private void UpdatePlayerCount(ulong clientID) {
+        Debug.Log("updating...");
+        WaitRoomManager.Instance.PlayerCount.Value = WaitRoomManager.Instance.PlayerCount.Value + 1;
+    }
+
+    private void UpdateCountText(int prevVal, int newVal) {
+        WaitRoomManager.Instance.PlayerCountText.text = newVal + "/2 Players";
     }
 
     static void StartButtons() {
@@ -31,6 +70,7 @@ public class HelloWorldManager : MonoBehaviour {
             NetworkManager.Singleton.NetworkConfig.NetworkTransport.GetType().Name);
         GUILayout.Label("Mode: " + mode);
     }
+
 
     static void SubmitNewPosition() {
         /*

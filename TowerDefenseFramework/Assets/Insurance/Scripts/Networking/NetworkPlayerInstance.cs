@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using UnityEditor;
 
 public class NetworkPlayerInstance : NetworkBehaviour
 {
@@ -10,19 +13,51 @@ public class NetworkPlayerInstance : NetworkBehaviour
     [SerializeField] private RequestMenu m_requestMenu;
     [SerializeField] private RequestReponseMenu m_requestResponseMenu;
 
+    [SerializeField] private Button m_waitRoomContinueButton;
+
+    private static int LEVEL_BUILD_INDEX = 5; // statically defined because SceneManager can't get index of unloaded scene
+
     public override void OnNetworkSpawn() {
         if (IsOwner) {
-
+            // TODO: debug why this appears for client when connected to host
+            m_waitRoomContinueButton.gameObject.SetActive(true);
+            m_waitRoomContinueButton.onClick.AddListener(HandleContinue);
         }
-        else {
-            // set new player to offset position?
-        }
 
-        //IsRequesting.Value = false;
-        ActivateRequestMenu();
+        NetworkSceneManager.Instance.CurrScene.OnValueChanged += new NetworkVariable<int>.OnValueChangedDelegate(HandleSceneChanged);
     }
 
+    private void RecordPlayerArrival() {
+        if (NetworkManager.Singleton.IsServer) {
+            // removed
+        }
+        else {
+            RecordPlayerArrivalRequestServerRpc();
+        }
+    }
+
+    [ServerRpc]
+    void RecordPlayerArrivalRequestServerRpc(ServerRpcParams rpcParams = default) {
+        // removed
+    }
+
+    private void UpdatePlayerCount(ulong clientID) {
+        WaitRoomManager.Instance.PlayerCount.Value = WaitRoomManager.Instance.PlayerCount.Value + 1;
+        WaitRoomManager.Instance.PlayerCountText.text = WaitRoomManager.Instance.PlayerCount.Value + "/2 Players";
+    }
+
+    private void HandleContinue() {
+        NetworkSceneManager.Instance.CurrScene.Value = LEVEL_BUILD_INDEX;
+    }
+
+    private void HandleSceneChanged(int prevVal, int currVal) {
+        SceneManager.LoadScene(currVal);
+    }
+
+
     private void Update() {
+
+        /*
         if (NetworkRequestManager.instance.AnyPlayerRequesting.Value) {
             if (!m_requestResponseMenu.gameObject.activeSelf) {
                 HandleIncomingRequest();
@@ -34,8 +69,10 @@ public class NetworkPlayerInstance : NetworkBehaviour
                 m_requestResponseMenu.Close();
             }
         }
+        */
     }
 
+    /*
     #region Own Request Menu
 
     void ActivateRequestMenu() {
@@ -73,4 +110,6 @@ public class NetworkPlayerInstance : NetworkBehaviour
     }
 
     #endregion // Incoming Request Reponse Menu
+
+    */
 }

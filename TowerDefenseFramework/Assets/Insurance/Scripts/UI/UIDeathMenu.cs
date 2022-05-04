@@ -32,6 +32,7 @@ public class UIDeathMenu : MenuBase {
         base.CloseMenu();
         AudioManager.instance.StopAudio();
         string destScene = GetRedirect(LevelManager.instance.GetCurrLevelID());
+        if (destScene == "LevelSelect") { EventManager.OnReturnLevelSelect.Invoke(); }
         SceneManager.LoadScene(destScene);
     }
 

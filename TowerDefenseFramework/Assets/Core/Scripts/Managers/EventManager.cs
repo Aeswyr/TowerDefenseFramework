@@ -10,6 +10,7 @@ public class EventManager : MonoBehaviour {
     public static UnityEvent OnDeath;
     public static UnityEvent OnLevelComplete;
     public static UnityEvent OnLevelQuit;
+    public static UnityEvent OnReturnLevelSelect;
 
     private void OnEnable() {
         if (instance == null) {
@@ -25,5 +26,17 @@ public class EventManager : MonoBehaviour {
         OnDeath = new UnityEvent();
         OnLevelComplete = new UnityEvent();
         OnLevelQuit = new UnityEvent();
+        OnReturnLevelSelect = new UnityEvent();
+
+        OnPurchaseInsuranceComplete.AddListener(delegate { LogEvent("OnPurchaseInsuranceComplete"); });
+        OnLevelStart.AddListener(delegate { LogEvent("OnLevelStart"); });
+        OnDeath.AddListener(delegate { LogEvent("OnDeath"); });
+        OnLevelComplete.AddListener(delegate { LogEvent("OnLevelComplete"); });
+        OnLevelQuit.AddListener(delegate { LogEvent("OnLevelQuit"); });
+        OnReturnLevelSelect.AddListener(delegate { LogEvent("OnReturnLevelSelect"); });
+    }
+
+    private void LogEvent(string name) {
+        Debug.Log("[Event Manager] Invoked " + name);
     }
 }

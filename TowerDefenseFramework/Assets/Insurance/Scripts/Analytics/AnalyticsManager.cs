@@ -26,6 +26,7 @@ public class AnalyticsManager : MonoBehaviour
     }
 
     private void OnDisable() {
+        Debug.Log("closed");
         WinsuranceAnalytics.Close();
     }
 

@@ -3310,6 +3310,7 @@ MonoBehaviour:
   m_buttonHolder: {fileID: 2034514737}
   m_confirmButton: {fileID: 24123045}
   m_detailsText: {fileID: 1805047093}
+  m_renewText: {fileID: 1064566361}
 --- !u!1 &577945958
 GameObject:
   m_ObjectHideFlags: 0
