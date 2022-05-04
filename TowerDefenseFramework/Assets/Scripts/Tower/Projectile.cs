@@ -12,14 +12,22 @@ public class Projectile : MonoBehaviour
     public GameObject TargetObj {
         get; set;
     }
-    public float Damage {
+    public float Volume {
+        get; set;
+    }
+
+    public float MolH {
+        get; set;
+    }
+
+    public float MolOH {
         get; set;
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
         if (collision.gameObject == TargetObj) {
             // affect the target
-            TargetObj.GetComponent<Oncomer>().ApplyDamage(this.Damage);
+            TargetObj.GetComponent<Oncomer>().MixSolution(Volume, MolH, MolOH);
 
             // destroy this projectile
             Destroy(this.gameObject);

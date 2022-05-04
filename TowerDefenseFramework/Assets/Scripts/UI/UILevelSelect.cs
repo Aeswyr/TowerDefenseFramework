@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using PhNarwahl;
+using pHAnalytics;
 
 public class UILevelSelect : MenuBase {
     #region Editor
@@ -18,7 +19,8 @@ public class UILevelSelect : MenuBase {
     private void Awake() {
         foreach(Button button in MenuButtons) {
             //TODO Figure out how to pass in level number
-            button.onClick.AddListener(HandleLevelSelection);
+            
+            button.onClick.AddListener(delegate{HandleLevelSelection(button);});
         }
     }
 
@@ -26,8 +28,9 @@ public class UILevelSelect : MenuBase {
 
     #region ButtonHandlers
 
-    private void HandleLevelSelection() {
+    private void HandleLevelSelection(Button button) {
         SetupLevelData();
+        FirebaseUtil.LevelSelect(button.name);
         SceneManager.LoadScene("SampleScene"); // change to whichever scene is your next
         AudioManager.instance.PlayOneShot("menu-click-default");
     }

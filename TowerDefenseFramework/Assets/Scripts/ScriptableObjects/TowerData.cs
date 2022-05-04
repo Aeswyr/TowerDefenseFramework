@@ -22,7 +22,9 @@ public class TowerData : ScriptableObject
     [SerializeField]
     private GameObject m_projectilePrefab;
     [SerializeField]
-    private float m_projectileDamage;
+    private float m_projectileVolume;
+    [SerializeField]
+    private float m_projectilePh;
     [SerializeField]
     private int m_cost;
 
@@ -47,8 +49,11 @@ public class TowerData : ScriptableObject
     public GameObject ProjectilePrefab {
         get { return m_projectilePrefab; }
     }
-    public float ProjectileDamage {
-        get { return m_projectileDamage; }
+    public float ProjectileVolume {
+        get { return m_projectileVolume; }
+    }
+    public float ProjectilePh {
+        get { return m_projectilePh; }
     }
     public int Cost {
         get { return m_cost; }

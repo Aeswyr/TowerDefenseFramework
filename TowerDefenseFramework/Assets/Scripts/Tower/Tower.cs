@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PhNarwahl.pH;
 
 [RequireComponent(typeof(BoxCollider2D))]
 [RequireComponent(typeof(SpriteRenderer))]
@@ -30,7 +31,8 @@ public class Tower : MonoBehaviour {
     [SerializeField]
     private GameObject projectilePrefab;
     [SerializeField]
-    private float projectileDamage;
+    private float projectilePh;
+    private float projectileVolume;
 
     [SerializeField]
     private CircleCollider2D m_radiusCollider;
@@ -118,7 +120,10 @@ public class Tower : MonoBehaviour {
         // Assign projectile target
         Projectile projectileComp = projectileObj.GetComponent<Projectile>();
         projectileComp.TargetObj = chosenTarget;
-        projectileComp.Damage = projectileDamage;
+        projectileComp.Volume = projectileVolume;
+        projectileComp.MolH = pH.getAcidMolarity(projectilePh) * projectileVolume;
+        projectileComp.MolOH = pH.getBaseMolarity(projectilePh) * projectileVolume;
+
 
         // tower must now reload
         currState = State.Reloading;
@@ -176,7 +181,8 @@ public class Tower : MonoBehaviour {
         // TODO: set projectiles with their own data
         projectileSoundID = data.ProjectileSoundID;
         projectilePrefab = data.ProjectilePrefab;
-        projectileDamage = data.ProjectileDamage;
+        projectileVolume = data.ProjectileVolume;
+        projectilePh = data.ProjectilePh;
 
         m_cost = data.Cost;
 

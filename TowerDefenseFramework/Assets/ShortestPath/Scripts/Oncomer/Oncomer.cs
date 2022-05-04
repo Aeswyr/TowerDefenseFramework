@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PhNarwahl.pH;
 
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(BoxCollider2D))]
@@ -8,7 +9,8 @@ public class Oncomer : MonoBehaviour {
     public enum Type {
         // Framework
         Spider,
-        Salamander
+        Salamander,
+        Truck
     }
 
     [SerializeField]
@@ -20,13 +22,17 @@ public class Oncomer : MonoBehaviour {
     [SerializeField]
     private Type m_type; // only serialized for manual spawning
 
-    private float m_maxHealth; // or equivalent measurement of Oncomer trait that is modified by towers
-    private float m_currHealth; // or equivalent measurement of Oncomer trait that is modified by towers
     private List<TileData.WalkType> m_canWalkOn;
     private List<Vector2> m_waypoints;
     private float m_speed;
     private bool m_movesDiagonal;
     private int m_currWaypointIndex;
+
+   //pH variables
+    private float m_molOH;
+    private float m_molH;
+    private float m_volume;
+    private float m_volumeMax;
 
     public OncomerData OncomerData {
         get; set;
@@ -34,6 +40,10 @@ public class Oncomer : MonoBehaviour {
 
     private static float WAYPOINT_BUFFER = 0.05f;
 
+    public float getPH() {
+        return pH.getPH(m_volume, m_molH, m_molOH);
+    }
+    
     private void Awake() {
         if (m_type == Type.Spider || m_type == Type.Salamander) {
             // Framework Case
@@ -58,8 +68,10 @@ public class Oncomer : MonoBehaviour {
     }
 
     private void OnTriggerEnter2D(Collider2D other) {
-        // TODO: check if collider belongs to the destination object
-        // if (other.gameObject.tag == "") { Destroy(this.gameObject); } // also apply damage
+        if (other.gameObject.tag == "moat") {
+            other.gameObject.GetComponent<Moat>().MixSolution(m_volume, m_molH, m_molOH);
+            Destroy(this.gameObject);
+        }
     }
 
     private void MoveThroughPoints() {
@@ -100,9 +112,24 @@ public class Oncomer : MonoBehaviour {
         GetComponent<SpriteRenderer>().sprite = this.OncomerData.Sprite;
         m_canWalkOn = this.OncomerData.CanWalkOn;
         m_speed = this.OncomerData.Speed;
-        m_maxHealth = this.OncomerData.MaxHealth;
-        m_currHealth = m_maxHealth;
+        m_volume = this.OncomerData.StartingVolume;
+        m_volumeMax = this.OncomerData.MaxVolume;
+        m_molH = pH.getAcidMolarity(this.OncomerData.StartingPh);
+        m_molOH = pH.getBaseMolarity(this.OncomerData.StartingPh);
         m_movesDiagonal = this.OncomerData.MovesDiagonal;
+    }
+
+    public void MixSolution(float volume, float molH, float molOH) {
+        float roomLeft = m_volumeMax - m_volume;
+        if(roomLeft <= 0) {
+            return;
+        }
+
+        float percentMixed = Mathf.Min(1, roomLeft / volume);
+        
+        m_volume += percentMixed * volume;
+        m_molH += percentMixed * molH;
+        m_molOH += percentMixed * molOH;
     }
 
     private void CalculatePath() {
@@ -124,19 +151,6 @@ public class Oncomer : MonoBehaviour {
             m_debugHolder.transform.parent = null;
         }
     }
-
-    #region Projectile
-
-    public void ApplyDamage(float damage) {
-        m_currHealth -= damage;
-
-        if (m_currHealth <= 0) {
-            // Handle removal of enemy
-            Destroy(this.gameObject);
-        }
-    }
-
-    #endregion
 
     public Type GetOncomerType() {
         return m_type;
