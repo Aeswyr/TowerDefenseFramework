@@ -123,7 +123,9 @@ public class Tower : MonoBehaviour {
         projectileComp.Volume = projectileVolume;
         projectileComp.MolH = pH.getAcidMolarity(projectilePh) * projectileVolume;
         projectileComp.MolOH = pH.getBaseMolarity(projectilePh) * projectileVolume;
-
+        
+        Debug.Log("Projectile molOH " + projectileComp.MolOH);
+        Debug.Log("Projectile molH " + projectileComp.MolH);
 
         // tower must now reload
         currState = State.Reloading;
@@ -131,9 +133,11 @@ public class Tower : MonoBehaviour {
     }
 
     private void PlayLaunchSound() {
-        AudioClip clip = m_audioData.Clip;
-        m_audioSrc.volume = m_audioData.Volume;
-        m_audioSrc.PlayOneShot(clip);
+        if(m_audioData) {
+            AudioClip clip = m_audioData.Clip;
+            m_audioSrc.volume = m_audioData.Volume;
+            m_audioSrc.PlayOneShot(clip);
+        }
     }
 
     // Note: currently gets the target which first entered the tower's radius
@@ -172,7 +176,6 @@ public class Tower : MonoBehaviour {
     }
 
     public void SetFields(TowerData data) {
-        Debug.Log("Setting towerdata fields in tower");
         this.GetComponent<SpriteRenderer>().sprite = data.Sprite;
         m_oncomerTargetTypes = data.OncomerTargets;
         shootSpeed = data.ShootSpeed;
@@ -186,7 +189,9 @@ public class Tower : MonoBehaviour {
 
         m_cost = data.Cost;
 
-        m_audioData = GameDB.instance.GetAudioData(projectileSoundID);
+        if (GameDB.instance != null) {
+            m_audioData = GameDB.instance.GetAudioData(projectileSoundID);
+        }
     }
 
     private bool CanTarget(GameObject potentialTarget) {

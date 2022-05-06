@@ -18,7 +18,6 @@ public class TowerPlacementButton : MonoBehaviour {
     }
 
     public void SetTower(TowerData tower) {
-        Debug.Log("Set Tower in placement button" + tower.name);
         data = tower;
         image.sprite = data.Sprite;
     }

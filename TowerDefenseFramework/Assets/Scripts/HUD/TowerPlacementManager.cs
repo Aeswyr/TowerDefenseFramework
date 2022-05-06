@@ -40,7 +40,6 @@ public class TowerPlacementManager : MonoBehaviour {
     }
 
     public void PlaceTower() {
-        Debug.Log("Placing Tower: " + targetTowerData.name);
         if (targetTowerData == null) {
             return;
         }
@@ -52,7 +51,6 @@ public class TowerPlacementManager : MonoBehaviour {
         bool validCell = TilemapManager.instance.IsValidPlacement(potentialTowerPos);
 
         if (validCell) {
-            Debug.Log("Actually creating new tower instance!");
             Tower newTower = Instantiate(m_towerPrefab, tilemap.WorldToCell(cam.ScreenToWorldPoint(Input.mousePosition)), m_towerPrefab.transform.rotation);
             newTower.SetFields(targetTowerData);
         }
@@ -63,12 +61,9 @@ public class TowerPlacementManager : MonoBehaviour {
     }
 
     public void SetPlaceable(TowerData targetTowerData) {
-        Debug.Log("SetPlaceable ");
         this.targetTowerData = targetTowerData;
         placementIndicator.SetActive(true);
         exitButton.SetActive(true);
-        
-        Debug.Log("Is exit button active " + exitButton.activeSelf);
         placementIndicator.GetComponent<Image>().sprite = targetTowerData.Sprite;
     }
 

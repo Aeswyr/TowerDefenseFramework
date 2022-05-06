@@ -238,7 +238,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 8724628980181432944}
         m_TargetAssemblyTypeName: TowerPlacementButton, Assembly-CSharp
-        m_MethodName: SetPlacable
+        m_MethodName: SetPlaceable
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -261,3 +261,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   image: {fileID: 8515716987129306385}
+  data: {fileID: 0}

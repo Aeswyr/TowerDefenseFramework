@@ -6,8 +6,8 @@ namespace PhNarwahl {
     [RequireComponent(typeof(SpriteRenderer))]
     [RequireComponent(typeof(PhContainer))]
     public class PhIndicator : MonoBehaviour {
-        public static Color acidColor = Color.magenta;
-        public static Color baseColor = Color.cyan;
+        public static Color acidColor = Color.red;
+        public static Color baseColor = Color.blue;
 
         void Update()
         {

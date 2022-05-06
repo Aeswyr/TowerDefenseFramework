@@ -107,12 +107,16 @@ public class Oncomer : MonoBehaviour, PhContainer {
     }
 
     public void MixSolution(float volume, float molH, float molOH) {
+        
+        Debug.Log("Mixing solution for " + volume + ", " + molH + ", " + molOH);
         float roomLeft = m_volumeMax - m_volume;
+        Debug.Log("Room left = " + roomLeft);
         if(roomLeft <= 0) {
             return;
         }
 
         float percentMixed = Mathf.Min(1, roomLeft / volume);
+        Debug.Log("Percent mixed = " + percentMixed);
         
         m_volume += percentMixed * volume;
         m_molH += percentMixed * molH;
