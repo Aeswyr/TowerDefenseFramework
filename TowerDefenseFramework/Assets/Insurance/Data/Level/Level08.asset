@@ -24,7 +24,7 @@ MonoBehaviour:
   periodFunds: 30
   periodTime: 25
   growthPerPeriod: 0.8
-  startHealth: 50
+  startHealth: 200
   nexusHubsPos:
   - {x: -6.62, y: 2.55}
   - {x: 2.95, y: 6.98}
@@ -37,55 +37,55 @@ MonoBehaviour:
     Title: 'Flood Insurance
 
       (low premium, high deductible)'
-    Premium: 8
-    Deductible: 1
-    MaxCoverage: 80
+    Premium: 6
+    Deductible: 4
+    MaxCoverage: 240
     AutoRenew: 0
   - Type: 0
     Title: 'Flood Insurance
 
       (high premium, low deductible)'
-    Premium: 5
-    Deductible: 1
-    MaxCoverage: 80
+    Premium: 12
+    Deductible: 2
+    MaxCoverage: 240
     AutoRenew: 0
   - Type: 1
     Title: 'Fire Insurance
 
       (low premium, high deductible)'
     Premium: 5
-    Deductible: 1
-    MaxCoverage: 80
+    Deductible: 4
+    MaxCoverage: 240
     AutoRenew: 0
   - Type: 1
     Title: 'Fire Insurance
 
       (high premium, low deductible)'
-    Premium: 5
-    Deductible: 1
-    MaxCoverage: 80
+    Premium: 10
+    Deductible: 2
+    MaxCoverage: 240
     AutoRenew: 0
   - Type: 2
     Title: 'Storm Insurance
 
       (low premium, high deductible)'
-    Premium: 6
-    Deductible: 1
-    MaxCoverage: 80
+    Premium: 4
+    Deductible: 4
+    MaxCoverage: 240
     AutoRenew: 0
   - Type: 2
     Title: 'Storm Insurance
 
       (high premium, low deductible)'
-    Premium: 5
+    Premium: 8
     Deductible: 1
-    MaxCoverage: 80
+    MaxCoverage: 240
     AutoRenew: 0
   - Type: 3
     Title: Umbrella Insurance
-    Premium: 5
-    Deductible: 1
-    MaxCoverage: 150
+    Premium: 10
+    Deductible: 0
+    MaxCoverage: 240
     AutoRenew: 0
   severeEffects:
     BaseSize: 8

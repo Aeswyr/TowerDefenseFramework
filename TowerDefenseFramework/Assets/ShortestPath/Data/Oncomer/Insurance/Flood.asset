@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Flood
   m_EditorClassIdentifier: 
   m_type: 0
-  m_sprite: {fileID: 21300000, guid: 180c49e8916348c49af4d23e724cb428, type: 3}
+  m_sprite: {fileID: 21300000, guid: 228d2993a5dec9d428de628a5c006187, type: 3}
   m_canWalkOn: 03000000050000000800000006000000
   m_speed: 0.5
-  m_dmg: 5
-  m_maxHealth: 5
+  m_dmg: 20
+  m_maxHealth: 50
   m_movesDiagonal: 0

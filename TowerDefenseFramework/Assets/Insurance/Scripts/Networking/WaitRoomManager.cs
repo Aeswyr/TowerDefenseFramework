@@ -55,7 +55,6 @@ public class WaitRoomManager : NetworkBehaviour
     }
 
     private void UpdatePlayerCount(ulong clientID) {
-        Debug.Log("updating...");
         if (IsOwner) {
             WaitRoomManager.Instance.PlayerCount.Value = WaitRoomManager.Instance.PlayerCount.Value + 1;
         }

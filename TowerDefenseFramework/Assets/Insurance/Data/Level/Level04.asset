@@ -24,7 +24,7 @@ MonoBehaviour:
   periodFunds: 20
   periodTime: 20
   growthPerPeriod: 0.6
-  startHealth: 50
+  startHealth: 200
   nexusHubsPos:
   - {x: 5.5, y: 6.5}
   - {x: 0, y: 0}
@@ -36,13 +36,15 @@ MonoBehaviour:
   - Type: 0
     Title: Flood Insurance
     Premium: 4
-    Deductible: 1
-    MaxCoverage: 80
+    Deductible: 2
+    MaxCoverage: 240
+    AutoRenew: 0
   - Type: 1
     Title: Fire Insurance
     Premium: 3
     Deductible: 1
-    MaxCoverage: 80
+    MaxCoverage: 240
+    AutoRenew: 0
   severeEffects:
     BaseSize: 8
     GrowthMult: 4

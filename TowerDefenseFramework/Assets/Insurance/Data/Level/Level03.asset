@@ -35,9 +35,10 @@ MonoBehaviour:
   m_availableCoverages:
   - Type: 0
     Title: Flood Insurance
-    Premium: 4
-    Deductible: 1
-    MaxCoverage: 80
+    Premium: 5
+    Deductible: 2
+    MaxCoverage: 240
+    AutoRenew: 0
   severeEffects:
     BaseSize: 7
     GrowthMult: 3
