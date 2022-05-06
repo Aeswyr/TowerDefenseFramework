@@ -406,7 +406,7 @@ GameObject:
   - component: {fileID: 287218786}
   - component: {fileID: 287218785}
   m_Layer: 5
-  m_Name: Level2
+  m_Name: Level_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -701,7 +701,7 @@ GameObject:
   - component: {fileID: 769512658}
   - component: {fileID: 769512657}
   m_Layer: 5
-  m_Name: Level3
+  m_Name: Level_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -958,7 +958,7 @@ GameObject:
   - component: {fileID: 1265264526}
   - component: {fileID: 1265264525}
   m_Layer: 5
-  m_Name: Level1
+  m_Name: Level_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

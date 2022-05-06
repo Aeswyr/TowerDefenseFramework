@@ -19,7 +19,7 @@ public class Tower : MonoBehaviour {
     }
 
     [SerializeField]
-    private Type m_type;
+    private TowerData m_towerData;
     [SerializeField]
     private Oncomer.Type[] m_oncomerTargetTypes;
     [SerializeField]
@@ -172,7 +172,7 @@ public class Tower : MonoBehaviour {
     }
 
     public void SetFields(TowerData data) {
-        m_type = data.Type;
+        Debug.Log("Setting towerdata fields in tower");
         this.GetComponent<SpriteRenderer>().sprite = data.Sprite;
         m_oncomerTargetTypes = data.OncomerTargets;
         shootSpeed = data.ShootSpeed;

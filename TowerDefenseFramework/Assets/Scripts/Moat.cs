@@ -1,20 +1,20 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using PhNarwahl.pH;
 
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(BoxCollider2D))]
-public class Moat : MonoBehaviour {
+public class Moat : MonoBehaviour, PhContainer {
     [SerializeField]
     private GameObject m_debugPrefab;
     [SerializeField]
     private GameObject m_debugHolder;
-    [SerializeField]
 
    //pH variables
+    [SerializeField]
     private float m_molOH = 0;
+    [SerializeField]
     private float m_molH = 0;
+    [SerializeField]
     private float m_volume = 2000;
 
     // public MoatData MoatData {

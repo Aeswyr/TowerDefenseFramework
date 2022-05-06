@@ -3,6 +3,12 @@ using UnityEngine;
 
 namespace PhNarwahl {
     namespace pH {
+
+        public interface PhContainer {
+            float getPH();
+            void MixSolution(float volume, float molH, float molOH);
+        }
+
         public static class pH
         {
             
@@ -20,14 +26,14 @@ namespace PhNarwahl {
             }
 
             public static float getAcidMolarity(float ph) {
-                if (0 <= ph || ph >= 7) {
+                if (ph <= 0 || 7 <= ph) {
                     return 0;
                 }
                 return Mathf.Pow(10, -ph);
             }
 
             public static float getBaseMolarity(float ph) {
-                if(7 <= ph || ph >= 14) {
+                if(ph <= 7 || 14 <= ph) {
                     return 0;
                 }
                 return Mathf.Pow(10, ph - 14);
@@ -46,11 +52,11 @@ namespace PhNarwahl {
             }
 
             public static float getAcidPH(float molarity) {
-                return Mathf.Max(-Mathf.Log10(molarity), 7);
+                return Mathf.Min(-Mathf.Log10(molarity), 7);
             }
 
             public static float getBasePOH(float molarity) {
-                return Mathf.Max(-Mathf.Log10(molarity), 7);
+                return Mathf.Min(-Mathf.Log10(molarity), 7);
             }
         }
     }

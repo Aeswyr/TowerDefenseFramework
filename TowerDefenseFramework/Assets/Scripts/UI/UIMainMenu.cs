@@ -27,14 +27,8 @@ public class UIMainMenu : MenuBase {
     #region ButtonHandlers
 
     private void HandleNewGame() {
-        SetupLevelData();
         SceneManager.LoadScene("LevelSelect"); // change to whichever scene is your next
         AudioManager.instance.PlayOneShot("menu-click-default");
-    }
-
-    private void SetupLevelData() {
-        LevelData.timeBetweenWaves = 2;
-        LevelData.totalWaves = 5;
     }
 
     private void HandleQuit() {

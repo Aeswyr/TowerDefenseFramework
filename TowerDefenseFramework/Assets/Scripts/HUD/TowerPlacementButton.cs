@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class TowerPlacementButton : MonoBehaviour {
     [SerializeField] private Image image;
     [SerializeField]
-    private Tower.Type towerType;
+    private TowerData data;
     private TowerPlacementManager manager;
     private Button m_button;
 
@@ -17,13 +17,13 @@ public class TowerPlacementButton : MonoBehaviour {
         m_button = this.GetComponent<Button>();
     }
 
-    public void SetTower(Tower.Type type) {
-        TowerData data = GameDB.instance.GetTowerData(type);
-        towerType = data.Type;
+    public void SetTower(TowerData tower) {
+        Debug.Log("Set Tower in placement button" + tower.name);
+        data = tower;
         image.sprite = data.Sprite;
     }
 
-    public void SetPlacable() {
-        manager.SetPlacable(towerType);
+    public void SetPlaceable() {
+        manager.SetPlaceable(data);
     }
 }

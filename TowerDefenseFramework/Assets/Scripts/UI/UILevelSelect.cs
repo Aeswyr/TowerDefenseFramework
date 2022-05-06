@@ -29,15 +29,9 @@ public class UILevelSelect : MenuBase {
     #region ButtonHandlers
 
     private void HandleLevelSelection(Button button) {
-        SetupLevelData();
         FirebaseUtil.LevelSelect(button.name);
-        SceneManager.LoadScene("SampleScene"); // change to whichever scene is your next
+        SceneManager.LoadScene(button.name); // change to whichever scene is your next
         AudioManager.instance.PlayOneShot("menu-click-default");
-    }
-
-    private void SetupLevelData() {
-        LevelData.timeBetweenWaves = 2;
-        LevelData.totalWaves = 5;
     }
 
     private void HandleQuit() {

@@ -14,15 +14,16 @@ public class TowerPlacementManager : MonoBehaviour {
     private Camera cam;
 
     [SerializeField]
-    private Tower.Type[] m_unlockedTowers;
-    [SerializeField] private GameObject towerPrefab;
+    private TowerData[] m_unlockedTowers;
+    [SerializeField]
+    private Tower m_towerPrefab;
 
     private TowerData targetTowerData = null;
 
     // Start is called before the first frame update
     void Start() {
-        foreach (Tower.Type towerType in m_unlockedTowers) {
-            Instantiate(buttonPrefab, buttonHolder.transform).GetComponent<TowerPlacementButton>().SetTower(towerType);
+        foreach (TowerData towerData in m_unlockedTowers) {
+            Instantiate(buttonPrefab, buttonHolder.transform).GetComponent<TowerPlacementButton>().SetTower(towerData);
         }
         cam = FindObjectOfType<Camera>();
         tilemap = FindObjectOfType<Tilemap>();
@@ -39,6 +40,7 @@ public class TowerPlacementManager : MonoBehaviour {
     }
 
     public void PlaceTower() {
+        Debug.Log("Placing Tower: " + targetTowerData.name);
         if (targetTowerData == null) {
             return;
         }
@@ -50,8 +52,8 @@ public class TowerPlacementManager : MonoBehaviour {
         bool validCell = TilemapManager.instance.IsValidPlacement(potentialTowerPos);
 
         if (validCell) {
-            GameObject newTowerObj = Instantiate(towerPrefab, tilemap.WorldToCell(cam.ScreenToWorldPoint(Input.mousePosition)), towerPrefab.transform.rotation);
-            Tower newTower = newTowerObj.GetComponent<Tower>();
+            Debug.Log("Actually creating new tower instance!");
+            Tower newTower = Instantiate(m_towerPrefab, tilemap.WorldToCell(cam.ScreenToWorldPoint(Input.mousePosition)), m_towerPrefab.transform.rotation);
             newTower.SetFields(targetTowerData);
         }
         else {
@@ -60,10 +62,13 @@ public class TowerPlacementManager : MonoBehaviour {
 
     }
 
-    public void SetPlacable(Tower.Type towerType) {
-        targetTowerData = GameDB.instance.GetTowerData(towerType);
+    public void SetPlaceable(TowerData targetTowerData) {
+        Debug.Log("SetPlaceable ");
+        this.targetTowerData = targetTowerData;
         placementIndicator.SetActive(true);
         exitButton.SetActive(true);
+        
+        Debug.Log("Is exit button active " + exitButton.activeSelf);
         placementIndicator.GetComponent<Image>().sprite = targetTowerData.Sprite;
     }
 
