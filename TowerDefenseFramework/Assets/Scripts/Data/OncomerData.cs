@@ -3,28 +3,24 @@ using UnityEngine;
 
 [CreateAssetMenu]
 public class OncomerData : ScriptableObject {
-    [SerializeField]
-    private Oncomer.Type m_oncomerType;
-    [SerializeField]
-    private Sprite m_sprite;
-    [SerializeField]
-    private List<TileData.WalkType> m_canWalkOn;
-    [SerializeField]
-    private float m_speed;
-    [SerializeField]
-    private float m_phStart;
-    [SerializeField]
-    private float m_volumeStart;
-    [SerializeField]
-    private float m_volumeMax;
-    [SerializeField]
-    private bool m_movesDiagonal = false;
+    [SerializeField] private Oncomer.Type m_oncomerType;
+    [SerializeField] private Sprite m_sprite;
+    [SerializeField] private Sprite m_emptySprite;
+    [SerializeField] private List<TileData.WalkType> m_canWalkOn;
+    [SerializeField] private float m_speed;
+    [SerializeField] private float m_phStart;
+    [SerializeField] private float m_volumeStart;
+    [SerializeField] private float m_volumeMax;
+    [SerializeField] private bool m_movesDiagonal = false;
 
     public Oncomer.Type Type {
         get { return m_oncomerType; }
     }
     public Sprite Sprite {
         get { return m_sprite; }
+    }
+    public Sprite EmptySprite {
+        get { return m_emptySprite; }
     }
     public List<TileData.WalkType> CanWalkOn {
         get { return m_canWalkOn; }

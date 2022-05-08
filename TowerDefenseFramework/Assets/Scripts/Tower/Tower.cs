@@ -6,10 +6,12 @@ using PhNarwahl.pH;
 [RequireComponent(typeof(BoxCollider2D))]
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(AudioSource))]
-public class Tower : MonoBehaviour {
-    public enum Type {
-        Default,
-        SpiderOnly
+public class Tower : MonoBehaviour, HasPh {
+    public enum TargetStrategy {
+        LowestPH,
+        HighestPH,
+        First,
+        Last,
     }
 
     // The tower's state of readiness
@@ -18,24 +20,18 @@ public class Tower : MonoBehaviour {
         Reloading
     }
 
-    [SerializeField]
-    private TowerData m_towerData;
-    [SerializeField]
-    private Oncomer.Type[] m_oncomerTargetTypes;
-    [SerializeField]
-    private float shootSpeed = 1f;
-    [SerializeField]
-    private float radius = 3f;
-    [SerializeField]
-    private string projectileSoundID = "projectile-default";
-    [SerializeField]
-    private GameObject projectilePrefab;
-    [SerializeField]
-    private float projectilePh;
+    [SerializeField] private TowerData m_towerData;
+    [SerializeField] private Oncomer.Type[] m_oncomerTargetTypes;
+    [SerializeField] private Tower.TargetStrategy m_targetStrategy;
+    [SerializeField] private bool ignoreFullOncomers;
+    [SerializeField] private float shootSpeed = 1f;
+    [SerializeField] private float radius = 3f;
+    [SerializeField] private string projectileSoundID = "projectile-default";
+    [SerializeField] private GameObject projectilePrefab;
+    [SerializeField] private float projectilePh;
     private float projectileVolume;
 
-    [SerializeField]
-    private CircleCollider2D m_radiusCollider;
+    [SerializeField] private CircleCollider2D m_radiusCollider;
 
     private int m_cost;
 
@@ -49,6 +45,10 @@ public class Tower : MonoBehaviour {
     private AudioData m_audioData;
 
     private const float CELL_OFFSET = 0.5f;
+
+    public float getPH() {
+        return projectilePh;
+    }
 
     // Handles triggers of this tower's radius collider
     public void HandleTriggerEnter2D(Collider2D collider) {
@@ -101,7 +101,7 @@ public class Tower : MonoBehaviour {
 
     private void Shoot() {
         // TODO: check for nexus
-        GameObject chosenTarget = getClosestTarget(transform.position);
+        GameObject chosenTarget = ChooseTarget(transform.position);
         if (chosenTarget == null) {
             return;
         }
@@ -140,26 +140,74 @@ public class Tower : MonoBehaviour {
         }
     }
 
-    // Note: currently gets the target which first entered the tower's radius
-    private GameObject getClosestTarget(Vector3 Position) {
+
+    private GameObject ChooseTarget(Vector3 Position) {
         // clear enemies which have been destroyed
         m_targets = m_targets.FindAll(t => t != null);
 
         if (m_targets.Count == 0) {
             return null;
         }
-
-        float closestDis = 1000f;
-        // TODO: specify priority (currently closest)
-        GameObject closestTarget = m_targets[0];
-        foreach (GameObject t in m_targets) {
-            if (Vector3.Distance(t.transform.position, Position) < closestDis) {
-                closestDis = Vector3.Distance(t.transform.position, Position);
-                closestTarget = t.gameObject;
-            }
+        
+        switch (m_targetStrategy) {
+            case TargetStrategy.First:
+                int lowestSpawnId = int.MaxValue;
+                GameObject bestTarget = null;
+                foreach (GameObject t in m_targets) {
+                    Oncomer oncomer = t.GetComponent<Oncomer>();
+                    if (ignoreFullOncomers && oncomer != null && oncomer.IsFull()) {
+                        continue;
+                    }
+                    if (oncomer != null && oncomer.SpawnId < lowestSpawnId) {
+                        lowestSpawnId = oncomer.SpawnId;
+                        bestTarget = t;
+                    }
+                }
+                return bestTarget;
+            case TargetStrategy.Last:
+                int highestSpawnId = int.MinValue;
+                bestTarget = null;
+                foreach (GameObject t in m_targets) {
+                    Oncomer oncomer = t.GetComponent<Oncomer>();
+                    if (ignoreFullOncomers && oncomer != null && oncomer.IsFull()) {
+                        continue;
+                    }
+                    if (oncomer != null && oncomer.SpawnId > highestSpawnId) {
+                        highestSpawnId = oncomer.SpawnId;
+                        bestTarget = t;
+                    }
+                }
+                return bestTarget;
+            case TargetStrategy.HighestPH:
+                float highestPH = 0;
+                bestTarget = null;
+                foreach (GameObject t in m_targets) {
+                    Oncomer oncomer = t.GetComponent<Oncomer>();
+                    if (ignoreFullOncomers && oncomer != null && oncomer.IsFull()) {
+                        continue;
+                    }
+                    if (oncomer != null && oncomer.getPH() > highestPH) {
+                        highestPH = oncomer.getPH();
+                        bestTarget = t;
+                    }
+                }
+                return bestTarget;
+            case TargetStrategy.LowestPH:
+                float lowestPH = 0;
+                bestTarget = null;
+                foreach (GameObject t in m_targets) {
+                    Oncomer oncomer = t.GetComponent<Oncomer>();
+                    if (ignoreFullOncomers && oncomer != null && oncomer.IsFull()) {
+                        continue;
+                    }
+                    if (oncomer != null && oncomer.getPH() < lowestPH) {
+                        lowestPH = oncomer.getPH();
+                        bestTarget = t;
+                    }
+                }
+                return bestTarget;
         }
-
-        return closestTarget;
+        return null;
     }
 
     void CreateWeaponTracer(Vector3 fromPos, Vector3 toPos, float width) {
@@ -175,8 +223,10 @@ public class Tower : MonoBehaviour {
         tracerObject.GetComponent<Trace>().vertices = vt;
     }
 
-    public void SetFields(TowerData data) {
+    public void ApplyTowerData(TowerData data) {
         this.GetComponent<SpriteRenderer>().sprite = data.Sprite;
+        m_targetStrategy = data.TargetStrategy;
+        ignoreFullOncomers = data.IgnoreFullOncomers;
         m_oncomerTargetTypes = data.OncomerTargets;
         shootSpeed = data.ShootSpeed;
         radius = data.Radius;

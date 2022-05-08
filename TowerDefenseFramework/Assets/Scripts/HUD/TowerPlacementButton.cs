@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using PhNarwahl;
+using PhNarwahl.pH;
 
 [RequireComponent(typeof(Button))]
 public class TowerPlacementButton : MonoBehaviour {
     [SerializeField] private Image image;
-    [SerializeField]
-    private TowerData data;
+    [SerializeField] private TowerData data;
     private TowerPlacementManager manager;
     private Button m_button;
 
@@ -20,6 +21,7 @@ public class TowerPlacementButton : MonoBehaviour {
     public void SetTower(TowerData tower) {
         data = tower;
         image.sprite = data.Sprite;
+        image.color = PhIndicator.GetColor(data.ProjectilePh);
     }
 
     public void SetPlaceable() {

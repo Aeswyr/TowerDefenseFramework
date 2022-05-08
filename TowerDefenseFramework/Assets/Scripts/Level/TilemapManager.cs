@@ -316,7 +316,7 @@ public class TilemapManager : MonoBehaviour {
         try {
             return mapArray[y, x] == 0;
         }
-        catch (Exception e) {
+        catch (Exception) {
             return false;
         }
     }

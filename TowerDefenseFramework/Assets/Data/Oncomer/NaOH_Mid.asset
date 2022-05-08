@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1a4eba442501c341a1be83da22c85ba, type: 3}
   m_Name: NaOH_Mid
   m_EditorClassIdentifier: 
-  m_oncomerType: 0
-  m_sprite: {fileID: -2413806693520163455, guid: 55c9fd356273f174d9eb3c2ca480b862, type: 3}
+  m_oncomerType: 1
+  m_sprite: {fileID: 21300000, guid: 55c9fd356273f174d9eb3c2ca480b862, type: 3}
+  m_emptySprite: {fileID: 21300000, guid: 3e6107725b237104187a4500f390352a, type: 3}
   m_canWalkOn: 00000000
   m_speed: 1
   m_phStart: 13

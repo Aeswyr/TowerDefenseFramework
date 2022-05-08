@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
+using PhNarwahl;
 
 public class TowerPlacementManager : MonoBehaviour {
     [SerializeField] private GameObject buttonPrefab;
@@ -52,7 +53,7 @@ public class TowerPlacementManager : MonoBehaviour {
 
         if (validCell) {
             Tower newTower = Instantiate(m_towerPrefab, tilemap.WorldToCell(cam.ScreenToWorldPoint(Input.mousePosition)), m_towerPrefab.transform.rotation);
-            newTower.SetFields(targetTowerData);
+            newTower.ApplyTowerData(targetTowerData);
         }
         else {
             // TODO: handle full cell case
@@ -65,6 +66,7 @@ public class TowerPlacementManager : MonoBehaviour {
         placementIndicator.SetActive(true);
         exitButton.SetActive(true);
         placementIndicator.GetComponent<Image>().sprite = targetTowerData.Sprite;
+        placementIndicator.GetComponent<Image>().color = PhIndicator.GetColor(targetTowerData.ProjectilePh);
     }
 
     public void RevokePlacable() {

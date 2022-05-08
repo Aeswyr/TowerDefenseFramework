@@ -6,7 +6,7 @@ using PhNarwahl;
 
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(BoxCollider2D))]
-public class Oncomer : MonoBehaviour, PhContainer {
+public class Oncomer : MonoBehaviour, HasPh {
     public enum Type {
         Acid,
         Base,
@@ -32,7 +32,12 @@ public class Oncomer : MonoBehaviour, PhContainer {
     public float getPH() {
         return pH.getPH(m_volume, m_molH, m_molOH);
     }
+
+    public bool IsFull() {
+        return m_volume >= m_volumeMax;
+    }
     
+    public int SpawnId { get; set; }
     private void Awake() {
         // Framework Case
         ApplyOncomerData(m_oncomerData);
@@ -48,7 +53,7 @@ public class Oncomer : MonoBehaviour, PhContainer {
     }
 
     private void OnTriggerEnter2D(Collider2D other) {
-        Moat moat = other.gameObject.GetComponent<Moat>();
+        Destination moat = other.gameObject.GetComponent<Destination>();
         if (moat != null) {
             moat.MixSolution(m_volume, m_molH, m_molOH);
             Destroy(this.gameObject);
@@ -94,33 +99,42 @@ public class Oncomer : MonoBehaviour, PhContainer {
         }
         m_oncomerData = oncomerData;
         m_type = oncomerData.Type;
-        GetComponent<SpriteRenderer>().sprite = this.m_oncomerData.Sprite;
+        GetComponent<SpriteRenderer>().sprite = oncomerData.Sprite;
+        transform.Find("Sprite_Empty").GetComponent<SpriteRenderer>().sprite = oncomerData.EmptySprite;
         m_canWalkOn = oncomerData.CanWalkOn;
         m_speed = oncomerData.Speed;
         m_volume = oncomerData.StartingVolume;
         m_volumeMax = oncomerData.MaxVolume;
+        UpdateVolumeMask();
+
         m_molH = pH.getAcidMolarity(oncomerData.StartingPh);
         m_molOH = pH.getBaseMolarity(oncomerData.StartingPh);
         m_movesDiagonal = oncomerData.MovesDiagonal;
         
+        
         CalculatePath();
+    }
+
+    private void UpdateVolumeMask() {
+        float fillPercent = m_volume / m_volumeMax;
+        Transform spriteMask = gameObject.transform.Find("Sprite_Mask");
+        float currentFillPercent = spriteMask.localScale.y;
+        spriteMask.localScale += new Vector3(0, fillPercent - currentFillPercent, 0);
     }
 
     public void MixSolution(float volume, float molH, float molOH) {
         
-        Debug.Log("Mixing solution for " + volume + ", " + molH + ", " + molOH);
         float roomLeft = m_volumeMax - m_volume;
-        Debug.Log("Room left = " + roomLeft);
         if(roomLeft <= 0) {
             return;
         }
 
         float percentMixed = Mathf.Min(1, roomLeft / volume);
-        Debug.Log("Percent mixed = " + percentMixed);
         
         m_volume += percentMixed * volume;
         m_molH += percentMixed * molH;
         m_molOH += percentMixed * molOH;
+        UpdateVolumeMask();
     }
 
     private void CalculatePath() {

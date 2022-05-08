@@ -15,6 +15,7 @@ namespace PhNarwahl {
         private float countdown = 2f;
         private int waveNumber = 0;
         private int enemyNumber = 0;
+        private int spawnId = 100;
 
         void Update ()
         {
@@ -44,9 +45,11 @@ namespace PhNarwahl {
         }
 
         void SpawnOncomer (OncomerData oncomerData) {
+
             Transform transform = gameObject.GetComponent<Transform>();
             Oncomer oncomer = Instantiate(oncomerPrefab, transform.position, transform.rotation);
             oncomer.ApplyOncomerData(oncomerData);
+            oncomer.SpawnId = spawnId++;
         }
 
     }

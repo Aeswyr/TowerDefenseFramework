@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3356676678996801152}
   - component: {fileID: 3504779166992461938}
   - component: {fileID: 724073787001987452}
+  - component: {fileID: -4267587454132448353}
   m_Layer: 8
   m_Name: Tower
   m_TagString: Untagged
@@ -101,11 +102,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01d121395f5a3b9469d42fe9b9907bbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_towerData: {fileID: 0}
+  m_oncomerTargetTypes: 
+  m_targetStrategy: 0
+  ignoreFullOncomers: 0
   shootSpeed: 1
   radius: 3
   projectileSoundID: projectile-default
   projectilePrefab: {fileID: 7706054819071973796, guid: a78acdf8f38343447a942451b67da1d5, type: 3}
-  projectileDamage: 1
+  projectilePh: 0
   m_radiusCollider: {fileID: 168148999677368749}
   Tracer: {fileID: 6213430191266403413, guid: 955b4046bb0bf7246b6a49d2be5630df, type: 3}
 --- !u!61 &3356676678996801152
@@ -251,6 +256,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &-4267587454132448353
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4267734552468271425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b258a3b67b11434eb0e740d7085134e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  displayedPh: 7
 --- !u!1 &5084780802615024936
 GameObject:
   m_ObjectHideFlags: 0

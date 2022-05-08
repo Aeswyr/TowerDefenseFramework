@@ -4,9 +4,8 @@ using UnityEngine;
 namespace PhNarwahl {
     namespace pH {
 
-        public interface PhContainer {
+        public interface HasPh {
             float getPH();
-            void MixSolution(float volume, float molH, float molOH);
         }
 
         public static class pH
