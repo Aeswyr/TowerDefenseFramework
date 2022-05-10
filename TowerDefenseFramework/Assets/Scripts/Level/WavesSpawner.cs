@@ -12,6 +12,8 @@ namespace PhNarwahl {
 
         public Oncomer oncomerPrefab;
 
+        private bool done = false;
+        private int totalSpawned = 0;
         private float countdown = 2f;
         private int waveNumber = 0;
         private int enemyNumber = 0;
@@ -19,6 +21,8 @@ namespace PhNarwahl {
 
         void Update ()
         {
+            if (done) return;
+
             if (countdown <= 0f)
             {
                 AttemptSpawn();
@@ -31,17 +35,25 @@ namespace PhNarwahl {
             if (waveNumber >= m_waves.Length) {
                 return;
             }
-            
-            if (enemyNumber >= m_waves[waveNumber].Oncomers.Length) {
+
+            SpawnOncomer(m_waves[waveNumber].Oncomers[enemyNumber]);
+            enemyNumber++;
+
+            int numEnemiesInWave = m_waves[waveNumber].Oncomers.Length;
+            if (enemyNumber < numEnemiesInWave) {
+                countdown = m_waves[waveNumber].Interval;
+            }
+            else if (enemyNumber >= numEnemiesInWave) {
                 countdown = m_interval;
                 waveNumber++;
                 enemyNumber = 0;
-                return;
             }
 
-            SpawnOncomer(m_waves[waveNumber].Oncomers[enemyNumber]);
-            countdown = m_waves[waveNumber].Interval;
-            enemyNumber++;
+            if (waveNumber >= m_waves.Length) {
+                done = true;
+                WaveSpawnManager.instance.SpawnerComplete(totalSpawned);
+            }
+
         }
 
         void SpawnOncomer (OncomerData oncomerData) {
@@ -50,6 +62,7 @@ namespace PhNarwahl {
             Oncomer oncomer = Instantiate(oncomerPrefab, transform.position, transform.rotation);
             oncomer.ApplyOncomerData(oncomerData);
             oncomer.SpawnId = spawnId++;
+            totalSpawned++;
         }
 
     }

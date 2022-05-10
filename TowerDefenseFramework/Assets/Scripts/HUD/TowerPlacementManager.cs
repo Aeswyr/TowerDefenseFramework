@@ -12,6 +12,7 @@ public class TowerPlacementManager : MonoBehaviour {
     [SerializeField] private GameObject exitButton;
 
     private Tilemap tilemap;
+    private GridLayout gridLayout;
     private Camera cam;
 
     [SerializeField]
@@ -28,19 +29,26 @@ public class TowerPlacementManager : MonoBehaviour {
         }
         cam = FindObjectOfType<Camera>();
         tilemap = FindObjectOfType<Tilemap>();
+        gridLayout = tilemap.GetComponentInParent<GridLayout>();
         targetTowerData = null;
     }
 
     // Update is called once per frame
     void FixedUpdate() {
         if (targetTowerData != null) {
-            Vector3 currPos = cam.WorldToScreenPoint(tilemap.WorldToCell(cam.ScreenToWorldPoint(Input.mousePosition)));
-            placementIndicator.transform.position = currPos;
+
+            Vector3 inputPos = Input.mousePosition;
+            Vector3 mouseWorldPos = cam.ScreenToWorldPoint(inputPos);
+            Vector3Int cellPos = tilemap.WorldToCell(mouseWorldPos);
+            Vector3 cellWorldPos = gridLayout.CellToWorld(cellPos);
+
+            placementIndicator.transform.position = cellWorldPos;
 
         }
     }
 
     public void PlaceTower() {
+        Debug.Log("Placing Tower after click. " + targetTowerData.name);
         if (targetTowerData == null) {
             return;
         }
@@ -50,6 +58,8 @@ public class TowerPlacementManager : MonoBehaviour {
 
         // TODO: check if a tower already exists on this square
         bool validCell = TilemapManager.instance.IsValidPlacement(potentialTowerPos);
+
+        Debug.Log("Is valid cell? " + validCell);
 
         if (validCell) {
             Tower newTower = Instantiate(m_towerPrefab, tilemap.WorldToCell(cam.ScreenToWorldPoint(Input.mousePosition)), m_towerPrefab.transform.rotation);
@@ -62,6 +72,7 @@ public class TowerPlacementManager : MonoBehaviour {
     }
 
     public void SetPlaceable(TowerData targetTowerData) {
+        Debug.Log("Setting placable! " + targetTowerData.name);
         this.targetTowerData = targetTowerData;
         placementIndicator.SetActive(true);
         exitButton.SetActive(true);

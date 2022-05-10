@@ -57,6 +57,7 @@ public class Oncomer : MonoBehaviour, HasPh {
         if (moat != null) {
             moat.MixSolution(m_volume, m_molH, m_molOH);
             Destroy(this.gameObject);
+            WaveSpawnManager.instance.OncomersFinished(1);
         }
     }
 

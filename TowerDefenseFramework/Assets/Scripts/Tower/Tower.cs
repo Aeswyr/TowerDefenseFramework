@@ -1,6 +1,7 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using PhNarwahl;
 using PhNarwahl.pH;
 
 [RequireComponent(typeof(BoxCollider2D))]
@@ -123,9 +124,6 @@ public class Tower : MonoBehaviour, HasPh {
         projectileComp.Volume = projectileVolume;
         projectileComp.MolH = pH.getAcidMolarity(projectilePh) * projectileVolume;
         projectileComp.MolOH = pH.getBaseMolarity(projectilePh) * projectileVolume;
-        
-        Debug.Log("Projectile molOH " + projectileComp.MolOH);
-        Debug.Log("Projectile molH " + projectileComp.MolH);
 
         // tower must now reload
         currState = State.Reloading;
@@ -140,6 +138,19 @@ public class Tower : MonoBehaviour, HasPh {
         }
     }
 
+    private Func<Oncomer, Oncomer, bool> withFullCheck(Func<Oncomer, Oncomer, bool> isBetter) {
+        return (oncomer, best) => !(ignoreFullOncomers && oncomer.IsFull()) && isBetter(oncomer, best);
+    }
+
+    private Func<Oncomer, Oncomer, bool> isBetterByStrategy(TargetStrategy strategy) {
+        switch(strategy) {
+            case TargetStrategy.First: return (a, b) => a.SpawnId < b.SpawnId;
+            case TargetStrategy.Last: return (a, b) => a.SpawnId > b.SpawnId;
+            case TargetStrategy.LowestPH: return (a, b) => a.getPH() < b.getPH();
+            case TargetStrategy.HighestPH: return (a, b) => a.getPH() > b.getPH();
+        }
+        return (a, b) => false;
+    }
 
     private GameObject ChooseTarget(Vector3 Position) {
         // clear enemies which have been destroyed
@@ -148,66 +159,10 @@ public class Tower : MonoBehaviour, HasPh {
         if (m_targets.Count == 0) {
             return null;
         }
-        
-        switch (m_targetStrategy) {
-            case TargetStrategy.First:
-                int lowestSpawnId = int.MaxValue;
-                GameObject bestTarget = null;
-                foreach (GameObject t in m_targets) {
-                    Oncomer oncomer = t.GetComponent<Oncomer>();
-                    if (ignoreFullOncomers && oncomer != null && oncomer.IsFull()) {
-                        continue;
-                    }
-                    if (oncomer != null && oncomer.SpawnId < lowestSpawnId) {
-                        lowestSpawnId = oncomer.SpawnId;
-                        bestTarget = t;
-                    }
-                }
-                return bestTarget;
-            case TargetStrategy.Last:
-                int highestSpawnId = int.MinValue;
-                bestTarget = null;
-                foreach (GameObject t in m_targets) {
-                    Oncomer oncomer = t.GetComponent<Oncomer>();
-                    if (ignoreFullOncomers && oncomer != null && oncomer.IsFull()) {
-                        continue;
-                    }
-                    if (oncomer != null && oncomer.SpawnId > highestSpawnId) {
-                        highestSpawnId = oncomer.SpawnId;
-                        bestTarget = t;
-                    }
-                }
-                return bestTarget;
-            case TargetStrategy.HighestPH:
-                float highestPH = 0;
-                bestTarget = null;
-                foreach (GameObject t in m_targets) {
-                    Oncomer oncomer = t.GetComponent<Oncomer>();
-                    if (ignoreFullOncomers && oncomer != null && oncomer.IsFull()) {
-                        continue;
-                    }
-                    if (oncomer != null && oncomer.getPH() > highestPH) {
-                        highestPH = oncomer.getPH();
-                        bestTarget = t;
-                    }
-                }
-                return bestTarget;
-            case TargetStrategy.LowestPH:
-                float lowestPH = 0;
-                bestTarget = null;
-                foreach (GameObject t in m_targets) {
-                    Oncomer oncomer = t.GetComponent<Oncomer>();
-                    if (ignoreFullOncomers && oncomer != null && oncomer.IsFull()) {
-                        continue;
-                    }
-                    if (oncomer != null && oncomer.getPH() < lowestPH) {
-                        lowestPH = oncomer.getPH();
-                        bestTarget = t;
-                    }
-                }
-                return bestTarget;
-        }
-        return null;
+
+        var isBetter = isBetterByStrategy(m_targetStrategy);
+        var best = NarwhalUtils.BestGameObjectBy<Oncomer>(m_targets, withFullCheck(isBetter));
+        return best?.gameObject;
     }
 
     void CreateWeaponTracer(Vector3 fromPos, Vector3 toPos, float width) {
