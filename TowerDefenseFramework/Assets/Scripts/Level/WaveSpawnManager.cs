@@ -1,13 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Tilemaps;
+using UnityEngine.SceneManagement;
 using PhNarwahl;
+using pHAnalytics;
 
 public class WaveSpawnManager : MonoBehaviour {
     public static WaveSpawnManager instance;
 
+    private Destination moat;
+
     private bool done = false;
+
     private int totalSpawners;
     private int finishedSpawners;
 
@@ -22,6 +26,7 @@ public class WaveSpawnManager : MonoBehaviour {
             Debug.Log("Warning! You have multiple TilemapManagers simultaneously. This may result in unexpected behavior.");
         }
 
+        moat = FindObjectOfType<Destination>();
         totalSpawners = FindObjectsOfType<WavesSpawner>().Length;
         finishedSpawners = 0;
     }
@@ -32,7 +37,8 @@ public class WaveSpawnManager : MonoBehaviour {
 
         if (finishedSpawners >= totalSpawners) {
             if (finishedOncomers >= totalOncomers) {
-                Debug.Log("Level is Done!!!!");
+                var currentScene = SceneManager.GetActiveScene().name;
+                FirebaseUtil.LevelEnd(currentScene, moat.getPH(), moat.getVolume());
                 done = true;
             }
         }

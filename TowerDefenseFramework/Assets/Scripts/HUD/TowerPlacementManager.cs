@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 using PhNarwahl;
+using pHAnalytics;
 
 public class TowerPlacementManager : MonoBehaviour {
     [SerializeField] private GameObject buttonPrefab;
@@ -64,6 +66,9 @@ public class TowerPlacementManager : MonoBehaviour {
         if (validCell) {
             Tower newTower = Instantiate(m_towerPrefab, tilemap.WorldToCell(cam.ScreenToWorldPoint(Input.mousePosition)), m_towerPrefab.transform.rotation);
             newTower.ApplyTowerData(targetTowerData);
+
+            var currentScene = SceneManager.GetActiveScene().name;
+            FirebaseUtil.TowerPlaced(currentScene, potentialTowerPos, targetTowerData.name);
         }
         else {
             // TODO: handle full cell case

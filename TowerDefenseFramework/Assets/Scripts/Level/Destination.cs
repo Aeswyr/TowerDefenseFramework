@@ -16,6 +16,10 @@ public class Destination : MonoBehaviour, HasPh {
         return pH.getPH(m_volume, m_molH, m_molOH);
     }
 
+    public float getVolume() {
+        return m_volume;
+    }
+
     public float MinAcceptablePh {
         get { return m_minAcceptablePh; }
     }

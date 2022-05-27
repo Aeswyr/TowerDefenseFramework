@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_targetStratgey: 2
   m_ignoreFullOncomers: 1
-  m_color: {r: 0.41037738, g: 0.41037738, b: 1, a: 1}
+  m_color: {r: 0, g: 0.22352943, b: 0.7843138, a: 1}
   m_sprite: {fileID: 21300000, guid: 820a2e2f70a16084a8702774e5a98bb0, type: 3}
   m_oncomerTargets: 0000000001000000
   m_shootSpeed: 1

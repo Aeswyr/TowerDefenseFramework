@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using PhNarwahl.pH;
-using PhNarwahl;
+using pHAnalytics;
 
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(BoxCollider2D))]
@@ -55,9 +56,22 @@ public class Oncomer : MonoBehaviour, HasPh {
     private void OnTriggerEnter2D(Collider2D other) {
         Destination moat = other.gameObject.GetComponent<Destination>();
         if (moat != null) {
+            float oncomerPH = getPH();
+            float oncomerVolume = m_volume;
+            float moatPH = moat.getPH();
+            float moatVolume = moat.getVolume();
             moat.MixSolution(m_volume, m_molH, m_molOH);
             Destroy(this.gameObject);
             WaveSpawnManager.instance.OncomersFinished(1);
+            
+            var currentScene = SceneManager.GetActiveScene().name;
+            FirebaseUtil.HitMoat(currentScene,
+                m_oncomerData.name,
+                oncomerPH,
+                oncomerVolume,
+                moatPH,
+                moatVolume
+            );
         }
     }
 

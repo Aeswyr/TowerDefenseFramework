@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 38482ab70a17e914395e2508c9de0cca, type: 3}
-  m_Name: Basic Tower Strong
+  m_Name: Neutral
   m_EditorClassIdentifier: 
-  m_targetStratgey: 2
+  m_targetStratgey: 3
   m_ignoreFullOncomers: 1
-  m_color: {r: 0, g: 0.45882356, b: 0.16078432, a: 1}
-  m_sprite: {fileID: 21300000, guid: 820a2e2f70a16084a8702774e5a98bb0, type: 3}
+  m_color: {r: 0.28057137, g: 0.88693225, b: 0.9150943, a: 1}
+  m_sprite: {fileID: 21300000, guid: 806a7969d54bb0540bde4c2a89b2d874, type: 3}
   m_oncomerTargets: 0000000001000000
   m_shootSpeed: 1
   m_radius: 3
   m_projectileSoundID: projectile-default
   m_projectilePrefab: {fileID: 7706054819071973796, guid: a78acdf8f38343447a942451b67da1d5, type: 3}
   m_projectileVolume: 10
-  m_projectilePh: 14
+  m_projectilePh: 7
   m_cost: 0

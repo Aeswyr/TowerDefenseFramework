@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using pHAnalytics;
 
 namespace PhNarwahl {
     public class WavesSpawner : MonoBehaviour {
@@ -63,6 +65,9 @@ namespace PhNarwahl {
             oncomer.ApplyOncomerData(oncomerData);
             oncomer.SpawnId = spawnId++;
             totalSpawned++;
+
+            var currentScene = SceneManager.GetActiveScene().name;
+            FirebaseUtil.OncomerSpawned(currentScene, oncomerData.name);
         }
 
     }
